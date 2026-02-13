@@ -1,0 +1,1394 @@
+{% extends "admin/base_site.html" %}
+{% load humanize %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+    :root {
+        --primary: #2563eb;
+        --success: #16a34a;
+        --warning: #ca8a04;
+        --danger: #dc2626;
+        --text: #1e293b;
+        --muted: #64748b;
+        --bg: #f8fafc;
+        --card: #ffffff;
+        --border: #e2e8f0;
+    }
+    
+    /* Dark mode support - follows Django admin theme */
+    [data-theme="dark"],
+    body.theme-dark,
+    html[data-theme="dark"] {
+        --primary: #3b82f6;
+        --success: #22c55e;
+        --warning: #eab308;
+        --danger: #ef4444;
+        --text: #f1f5f9;
+        --muted: #94a3b8;
+        --bg: #1e1e1e;
+        --card: #2d2d2d;
+        --border: #404040;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) {
+            --primary: #3b82f6;
+            --success: #22c55e;
+            --warning: #eab308;
+            --danger: #ef4444;
+            --text: #f1f5f9;
+            --muted: #94a3b8;
+            --bg: #1e1e1e;
+            --card: #2d2d2d;
+            --border: #404040;
+        }
+    }
+    
+    .dashboard {
+        padding: 20px;
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        min-height: 100vh;
+    }
+    
+    [data-theme="dark"] .dashboard,
+    body.theme-dark .dashboard,
+    html[data-theme="dark"] .dashboard {
+        background: linear-gradient(135deg, #1e1e1e 0%, #0f172a 100%);
+    }
+    
+    @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) .dashboard {
+            background: linear-gradient(135deg, #1e1e1e 0%, #0f172a 100%);
+        }
+    }
+    
+    /* Force dark mode when dashboard-dark class is present */
+    .dashboard-dark {
+        background: linear-gradient(135deg, #1e1e1e 0%, #0f172a 100%) !important;
+    }
+    
+    .dashboard-dark .stat-card {
+        background: linear-gradient(135deg, rgba(45, 45, 45, 0.9) 0%, rgba(30, 30, 30, 0.7) 100%) !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+    }
+    
+    .dashboard-dark .stat-card .value {
+        background: linear-gradient(135deg, #f1f5f9 0%, #cbd5e1 100%) !important;
+        -webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+        background-clip: text !important;
+    }
+    
+    .dashboard-dark .emi-section {
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.12) 0%, rgba(139, 92, 246, 0.12) 100%) !important;
+        border: 1px solid rgba(59, 130, 246, 0.3) !important;
+    }
+    
+    .dashboard-dark .card {
+        background: linear-gradient(135deg, rgba(45, 45, 45, 0.95) 0%, rgba(30, 30, 30, 0.85) 100%) !important;
+        border: 1px solid rgba(59, 130, 246, 0.2) !important;
+    }
+    
+    .dashboard h1 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #ec4899 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin: 0 0 20px;
+    }
+    
+    .quick-links {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+    }
+    
+    .quick-links a {
+        padding: 8px 16px;
+        background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+        color: white;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 0.875rem;
+        font-weight: 500;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        transition: all 0.3s ease;
+    }
+    
+    .quick-links a:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+    }
+    
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+    
+    .stat-card {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
+        border-radius: 12px;
+        padding: 20px;
+        border: none;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
+    }
+    
+    .stat-card:nth-child(1)::before { background: linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%); }
+    .stat-card:nth-child(2)::before { background: linear-gradient(90deg, #10b981 0%, #34d399 100%); }
+    .stat-card:nth-child(3)::before { background: linear-gradient(90deg, #f59e0b 0%, #fbbf24 100%); }
+    .stat-card:nth-child(4)::before { background: linear-gradient(90deg, #8b5cf6 0%, #a78bfa 100%); }
+    .stat-card:nth-child(5)::before { background: linear-gradient(90deg, #ef4444 0%, #f87171 100%); }
+    .stat-card:nth-child(6)::before { background: linear-gradient(90deg, #ec4899 0%, #f472b6 100%); }
+    
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    }
+    
+    [data-theme="dark"] .stat-card,
+    body.theme-dark .stat-card,
+    html[data-theme="dark"] .stat-card {
+        background: linear-gradient(135deg, rgba(45, 45, 45, 0.9) 0%, rgba(30, 30, 30, 0.7) 100%);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+    
+    .stat-card .label {
+        font-size: 0.7rem;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 8px;
+        font-weight: 600;
+    }
+    
+    .stat-card .value {
+        font-size: 1.75rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #1e293b 0%, #475569 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    [data-theme="dark"] .stat-card .value,
+    body.theme-dark .stat-card .value,
+    html[data-theme="dark"] .stat-card .value {
+        background: linear-gradient(135deg, #f1f5f9 0%, #cbd5e1 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .stat-card .sub {
+        font-size: 0.75rem;
+        color: var(--muted);
+        margin-top: 6px;
+        font-weight: 500;
+    }
+    
+    .stat-card .sub.positive { 
+        color: #10b981;
+        font-weight: 600;
+    }
+    .stat-card .sub.negative { 
+        color: #ef4444;
+        font-weight: 600;
+    }
+    
+    .section-title {
+        font-size: 1rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin: 0 0 12px;
+    }
+    
+    .emi-section {
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(139, 92, 246, 0.08) 100%);
+        border-radius: 12px;
+        padding: 20px;
+        border: 1px solid rgba(59, 130, 246, 0.2);
+        margin-bottom: 24px;
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.1);
+    }
+    
+    [data-theme="dark"] .emi-section,
+    body.theme-dark .emi-section,
+    html[data-theme="dark"] .emi-section {
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.12) 0%, rgba(139, 92, 246, 0.12) 100%);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+    
+    .emi-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 16px;
+    }
+    
+    .emi-header h2 {
+        font-size: 1rem;
+        font-weight: 600;
+        margin: 0;
+        color: var(--text);
+    }
+    
+    .emi-links a {
+        color: var(--primary);
+    }
+    
+    .card h3 {
+        color: var(--text);
+    }
+    
+    .card h3 a {
+        color: var(--primary);
+    }
+    
+    table th {
+        color: var(--muted);
+        background: var(--bg);
+    }
+    
+    table td {
+        color: var(--text);
+        border-color: var(--border);
+    }
+    
+    table th {
+        border-color: var(--border);
+    }
+    
+    .brand-item {
+        background: var(--bg);
+    }
+    
+    .brand-item .name {
+        color: var(--text);
+    }
+    
+    .emi-stat {
+        background: var(--bg);
+    }
+    
+    .emi-stat .value {
+        color: var(--text);
+    }
+    
+    .emi-stat .label {
+        color: var(--muted);
+    }
+
+    .emi-links {
+        display: flex;
+        gap: 8px;
+    }
+    
+    .emi-links a {
+        font-size: 0.75rem;
+        color: var(--primary);
+        text-decoration: none;
+    }
+    
+    .emi-links a:hover {
+        text-decoration: underline;
+    }
+    
+    .emi-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 12px;
+    }
+    
+    .emi-stat {
+        text-align: center;
+        padding: 12px;
+        background: var(--bg);
+        border-radius: 6px;
+    }
+    
+    .emi-stat .value {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--text);
+    }
+    
+    .emi-stat .label {
+        font-size: 0.7rem;
+        color: var(--muted);
+        text-transform: uppercase;
+    }
+    
+    .grid-2 {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+    
+    .card {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.85) 100%);
+        border-radius: 12px;
+        padding: 20px;
+        border: 1px solid rgba(59, 130, 246, 0.15);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+        transition: all 0.3s ease;
+    }
+    
+    .card:hover {
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+    }
+    
+    [data-theme="dark"] .card,
+    body.theme-dark .card,
+    html[data-theme="dark"] .card {
+        background: linear-gradient(135deg, rgba(45, 45, 45, 0.95) 0%, rgba(30, 30, 30, 0.85) 100%);
+        border: 1px solid rgba(59, 130, 246, 0.2);
+    }
+    
+    .card h3 {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--text);
+        margin: 0 0 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .card h3 a {
+        font-size: 0.75rem;
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 500;
+    }
+    
+    .chart-box {
+        height: 200px;
+    }
+    
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.8rem;
+    }
+    
+    table th {
+        text-align: left;
+        padding: 8px;
+        color: var(--muted);
+        font-weight: 500;
+        border-bottom: 1px solid var(--border);
+        font-size: 0.7rem;
+        text-transform: uppercase;
+    }
+    
+    table td {
+        padding: 8px;
+        border-bottom: 1px solid var(--border);
+        color: var(--text);
+    }
+    
+    table tr:last-child td {
+        border-bottom: none;
+    }
+    
+    .badge {
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 0.7rem;
+        font-weight: 500;
+    }
+    
+    .badge-success { background: #dcfce7; color: #166534; }
+    .badge-warning { background: #fef3c7; color: #92400e; }
+    .badge-danger { background: #fee2e2; color: #991b1b; }
+    
+    .brand-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .brand-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px;
+        background: var(--bg);
+        border-radius: 4px;
+        font-size: 0.8rem;
+    }
+    
+    .brand-item .rank {
+        width: 20px;
+        height: 20px;
+        background: var(--primary);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7rem;
+        font-weight: 600;
+    }
+    
+    .brand-item .name {
+        flex: 1;
+        font-weight: 500;
+    }
+    
+    .brand-item .count {
+        color: var(--muted);
+    }
+    
+    .empty {
+        text-align: center;
+        color: var(--muted);
+        padding: 20px;
+        font-size: 0.8rem;
+    }
+    
+    @media (max-width: 768px) {
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        .grid-2 {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <h1>Dashboard</h1>
+    
+    <div class="quick-links">
+        <a href="/admin/car/car/add/">+ Add Car</a>
+        <a href="/admin/car/customer/add/">+ Add Customer</a>
+        <a href="/admin/car/inquiry/">Inquiries</a>
+    </div>
+    
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="label">Total Cars</div>
+            <div class="value">{{ total_cars }}</div>
+            <div class="sub positive">{{ available_cars }} available</div>
+        </div>
+        <div class="stat-card">
+            <div class="label">Revenue</div>
+            <div class="value">₹{{ total_revenue|floatformat:0|intcomma }}</div>
+            <div class="sub {% if sells_growth >= 0 %}positive{% else %}negative{% endif %}" id="revenueGrowth">
+                {% if sells_growth >= 0 %}↑{% else %}↓{% endif %} {{ sells_growth }}% this month
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="label">Total Sales</div>
+            <div class="value">{{ total_sells }}</div>
+            <div class="sub"><span id="monthlySells">{{ monthly_sells }}</span> this month</div>
+        </div>
+        <div class="stat-card">
+            <div class="label">Customers</div>
+            <div class="value">{{ total_customers }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="label">Pending Payments</div>
+            <div class="value">{{ pending_payments }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="label">Inquiries</div>
+            <div class="value">{{ total_inquiries }}</div>
+            <div class="sub {% if unresolved_inquiries > 0 %}negative{% else %}positive{% endif %}">{{ unresolved_inquiries }} pending</div>
+        </div>
+    </div>
+    
+    <div class="emi-section">
+        <div class="emi-header">
+            <h2>EMI Overview</h2>
+            <div class="emi-links">
+                <a href="/admin/car/emiplan/">Manage Plans</a>
+                <a href="{{ finance_setting_change_url }}">Settings</a>
+            </div>
+        </div>
+        <div class="emi-stats">
+            <div class="emi-stat">
+                <div class="value">{{ active_emi }}</div>
+                <div class="label">Active Plans</div>
+            </div>
+            <div class="emi-stat">
+                <div class="value">{{ overdue_emi }}</div>
+                <div class="label">Overdue</div>
+            </div>
+            <div class="emi-stat">
+                <div class="value">₹{{ emi_outstanding|floatformat:0|intcomma }}</div>
+                <div class="label">Outstanding</div>
+            </div>
+            <div class="emi-stat">
+                <div class="value">{{ default_interest_rate|floatformat:1 }}%</div>
+                <div class="label">Interest Rate</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="grid-2">
+        <div class="card">
+            <h3>Fuel Types</h3>
+            <div class="chart-box">
+                <canvas id="fuelTypeChart"></canvas>
+            </div>
+        </div>
+        <div class="card">
+            <h3>Cars by Brand</h3>
+            <div class="chart-box">
+                <canvas id="brandChart"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <div class="grid-2">
+        <div class="card">
+            <h3>Payment Status</h3>
+            <div class="chart-box">
+                <canvas id="paymentStatusChart"></canvas>
+            </div>
+        </div>
+        <div class="card">
+            <h3>Availability</h3>
+            <div class="chart-box">
+                <canvas id="availabilityChart"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <!-- NEW: Essential Analytics Charts -->
+    <h2 class="section-title" style="margin-top: 24px;">📊 Sales Analytics</h2>
+    
+    <div class="grid-2">
+        <div class="card">
+            <h3>Monthly Sales Trend (Last 6 Months)</h3>
+            <div class="chart-box">
+                <canvas id="salesTrendChart"></canvas>
+            </div>
+        </div>
+        <div class="card">
+            <h3>Monthly Revenue (Last 6 Months)</h3>
+            <div class="chart-box">
+                <canvas id="revenueTrendChart"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <div class="grid-2">
+        <div class="card">
+            <h3>Price Range Distribution</h3>
+            <div class="chart-box">
+                <canvas id="priceDistChart"></canvas>
+            </div>
+        </div>
+        <div class="card">
+            <h3>Daily Inquiries (Last 7 Days)</h3>
+            <div class="chart-box">
+                <canvas id="dailyInquiriesChart"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Conversion Rate Card -->
+    <div class="grid-2">
+        <div class="card">
+            <h3>Inquiry to Sale Conversion</h3>
+            <div style="display: flex; align-items: center; gap: 20px; padding: 10px 0;">
+                <div style="text-align: center; flex: 1;">
+                    <div id="conversionRate" style="font-size: 2rem; font-weight: 700; color: var(--success);">{{ conversion_rate }}%</div>
+                    <div style="font-size: 0.75rem; color: var(--muted);">Conversion Rate</div>
+                </div>
+                <div style="flex: 1; font-size: 0.8rem; color: var(--muted);">
+                    <div><span id="conversionSales">{{ total_sells }}</span> total sales</div>
+                    <div><span id="conversionInquiries">{{ total_resolved_inquiries }}</span> resolved inquiries</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="grid-2">
+        <div class="card">
+            <h3>Recent Sales <a href="/admin/car/sell/">View All →</a></h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Car</th>
+                        <th>Customer</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sell in recent_sells %}
+                    <tr>
+                        <td>{{ sell.car.name }}</td>
+                        <td>{{ sell.customer.name }}</td>
+                        <td>₹{{ sell.sell_price|floatformat:0|intcomma }}</td>
+                        <td>{{ sell.sell_date|date:"M d" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="4" class="empty">No recent sales</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="card">
+            <h3>Recent Payments <a href="/admin/car/payment/">View All →</a></h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Customer</th>
+                        <th>Amount</th>
+                        <th>Method</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for payment in recent_payments %}
+                    <tr>
+                        <td>{{ payment.customer.name }}</td>
+                        <td>₹{{ payment.amount|floatformat:0|intcomma }}</td>
+                        <td>{{ payment.payment_method|title }}</td>
+                        <td>
+                            {% if payment.payment_status == 'completed' %}
+                                <span class="badge badge-success">Done</span>
+                            {% elif payment.payment_status == 'pending' %}
+                                <span class="badge badge-warning">Pending</span>
+                            {% else %}
+                                <span class="badge badge-danger">Failed</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="4" class="empty">No recent payments</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div class="grid-2">
+        <div class="card">
+            <h3>Pending Inquiries <a href="/admin/car/inquiry/">View All →</a></h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Car</th>
+                        <th>Phone</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for inquiry in recent_inquiries %}
+                    <tr>
+                        <td>{{ inquiry.name }}</td>
+                        <td>{{ inquiry.car.name|default:"General" }}</td>
+                        <td>{{ inquiry.phone }}</td>
+                        <td>{{ inquiry.created_at|date:"M d" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="4" class="empty">All clear! 🎉</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="card">
+            <h3>Top Brands</h3>
+            <div class="brand-list">
+                {% for brand in top_brands %}
+                <div class="brand-item">
+                    <div class="rank">{{ forloop.counter }}</div>
+                    <div class="name">{{ brand.car__brand }}</div>
+                    <div class="count">{{ brand.count }} sold</div>
+                </div>
+                {% empty %}
+                <div class="empty">No sales data</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Store chart instances
+    let charts = {};
+    
+    function getThemeColors() {
+        // Check the actual background color of the admin body to determine theme
+        const bodyBg = window.getComputedStyle(document.body).backgroundColor;
+        
+        // Parse RGB values
+        const rgbMatch = bodyBg.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+        let isDark = false;
+        
+        if (rgbMatch) {
+            const r = parseInt(rgbMatch[1]);
+            const g = parseInt(rgbMatch[2]);
+            const b = parseInt(rgbMatch[3]);
+            // Calculate luminance - if it's dark (< 128), we're in dark mode
+            const luminance = (r + g + b) / 3;
+            isDark = luminance < 128;
+        }
+        
+        // Also check traditional methods as fallback
+        const htmlTheme = document.documentElement.getAttribute('data-theme');
+        const bodyTheme = document.body.classList.contains('theme-dark');
+        const prefersColorScheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        isDark = isDark || htmlTheme === 'dark' || bodyTheme || (prefersColorScheme && htmlTheme !== 'light');
+        
+        // Apply dark mode class to dashboard for CSS styling
+        const dashboard = document.querySelector('.dashboard');
+        if (dashboard) {
+            if (isDark) {
+                dashboard.classList.add('dashboard-dark');
+            } else {
+                dashboard.classList.remove('dashboard-dark');
+            }
+        }
+        
+        return {
+            textColor: isDark ? '#f1f5f9' : '#1e293b',
+            gridColor: isDark ? '#404040' : '#e2e8f0'
+        };
+    }
+    
+    // Helper function to create gradient
+    function createGradient(ctx, color1, color2, direction = 'vertical') {
+        const gradient = direction === 'vertical' 
+            ? ctx.createLinearGradient(0, 0, 0, ctx.canvas.height)
+            : ctx.createLinearGradient(0, 0, ctx.canvas.width, 0);
+        gradient.addColorStop(0, color1);
+        gradient.addColorStop(1, color2);
+        return gradient;
+    }
+    
+    // Multiple gradient colors for charts
+    function createMultiGradients(ctx, colorPairs, direction = 'vertical') {
+        return colorPairs.map(([c1, c2]) => createGradient(ctx, c1, c2, direction));
+    }
+    
+    function initCharts() {
+        // Destroy existing charts
+        Object.values(charts).forEach(chart => chart && chart.destroy());
+        charts = {};
+        
+        const { textColor, gridColor } = getThemeColors();
+        
+        Chart.defaults.color = textColor;
+        Chart.defaults.borderColor = gridColor;
+        
+        // Fuel Type Chart (Doughnut with gradients)
+        const fuelData = {{ cars_by_fuel|safe }};
+        const fuelCanvas = document.getElementById('fuelTypeChart');
+        if (fuelData.length > 0 && fuelCanvas) {
+            const ctx = fuelCanvas.getContext('2d');
+            const gradientColors = [
+                ['#3b82f6', '#1d4ed8'], // Blue gradient
+                ['#ec4899', '#be185d'], // Pink gradient
+                ['#10b981', '#059669'], // Green gradient
+                ['#f59e0b', '#d97706'], // Amber gradient
+                ['#8b5cf6', '#6d28d9'], // Purple gradient
+                ['#06b6d4', '#0891b2'], // Cyan gradient
+                ['#f43f5e', '#e11d48'], // Rose gradient
+                ['#84cc16', '#65a30d']  // Lime gradient
+            ];
+            
+            charts.fuel = new Chart(fuelCanvas, {
+                type: 'doughnut',
+                data: {
+                    labels: fuelData.map(i => i.fuel_type),
+                    datasets: [{
+                        data: fuelData.map(i => i.count),
+                        backgroundColor: createMultiGradients(ctx, gradientColors.slice(0, fuelData.length)),
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '65%',
+                    plugins: { 
+                        legend: { 
+                            position: 'bottom', 
+                            labels: { 
+                                boxWidth: 15, 
+                                padding: 12, 
+                                color: textColor,
+                                font: { size: 12, weight: '500' }
+                            } 
+                        } 
+                    }
+                }
+            });
+        }
+        
+        // Brand Chart (Bar with gradient)
+        const brandData = {{ cars_by_brand|safe }};
+        const brandCanvas = document.getElementById('brandChart');
+        if (brandData.length > 0 && brandCanvas) {
+            const ctx = brandCanvas.getContext('2d');
+            const brandGradients = brandData.map((_, idx) => {
+                const gradients = [
+                    ['#3b82f6', '#1e40af'],
+                    ['#8b5cf6', '#6d28d9'],
+                    ['#ec4899', '#be185d'],
+                    ['#10b981', '#047857'],
+                    ['#f59e0b', '#d97706'],
+                    ['#06b6d4', '#0e7490'],
+                    ['#f43f5e', '#be123c'],
+                    ['#84cc16', '#4d7c0f']
+                ];
+                const [c1, c2] = gradients[idx % gradients.length];
+                return createGradient(ctx, c1, c2);
+            });
+            
+            charts.brand = new Chart(brandCanvas, {
+                type: 'bar',
+                data: {
+                    labels: brandData.map(i => i.brand),
+                    datasets: [{
+                        data: brandData.map(i => i.count),
+                        backgroundColor: brandGradients,
+                        borderRadius: 6,
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { 
+                        y: { beginAtZero: true, ticks: { stepSize: 1, color: textColor }, grid: { color: gridColor } },
+                        x: { ticks: { color: textColor }, grid: { color: gridColor } }
+                    }
+                }
+            });
+        }
+        
+        // Payment Status Chart (Doughnut with status gradients)
+        const paymentData = {{ payment_status_dist|safe }};
+        const paymentCanvas = document.getElementById('paymentStatusChart');
+        if (paymentData.length > 0 && paymentCanvas) {
+            const ctx = paymentCanvas.getContext('2d');
+            const statusGradients = {
+                'completed': createGradient(ctx, '#22c55e', '#15803d'),
+                'pending': createGradient(ctx, '#eab308', '#ca8a04'),
+                'failed': createGradient(ctx, '#ef4444', '#dc2626')
+            };
+            
+            charts.payment = new Chart(paymentCanvas, {
+                type: 'doughnut',
+                data: {
+                    labels: paymentData.map(i => i.payment_status),
+                    datasets: [{
+                        data: paymentData.map(i => i.count),
+                        backgroundColor: paymentData.map(i => statusGradients[i.payment_status] || '#64748b'),
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '65%',
+                    plugins: { 
+                        legend: { 
+                            position: 'bottom', 
+                            labels: { 
+                                boxWidth: 15, 
+                                padding: 12, 
+                                color: textColor,
+                                font: { size: 12, weight: '500' }
+                            } 
+                        } 
+                    }
+                }
+            });
+        }
+        
+        // Availability Chart (Doughnut with gradient)
+        const availCanvas = document.getElementById('availabilityChart');
+        if (availCanvas) {
+            const ctx = availCanvas.getContext('2d');
+            charts.availability = new Chart(availCanvas, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Available', 'Sold'],
+                    datasets: [{
+                        data: [{{ available_cars }}, {{ sold_cars }}],
+                        backgroundColor: [
+                            createGradient(ctx, '#22c55e', '#15803d'),
+                            createGradient(ctx, '#ef4444', '#b91c1c')
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '65%',
+                    plugins: { 
+                        legend: { 
+                            position: 'bottom', 
+                            labels: { 
+                                boxWidth: 15, 
+                                padding: 12, 
+                                color: textColor,
+                                font: { size: 12, weight: '500' }
+                            } 
+                        } 
+                    }
+                }
+            });
+        }
+        
+        // Sales Trend Chart (Line with gradient fill)
+        const salesTrendData = {{ monthly_sales_trend|safe }};
+        const salesTrendCanvas = document.getElementById('salesTrendChart');
+        if (salesTrendData.length > 0 && salesTrendCanvas) {
+            const ctx = salesTrendCanvas.getContext('2d');
+            const salesGradient = ctx.createLinearGradient(0, 0, 0, ctx.canvas.height);
+            salesGradient.addColorStop(0, 'rgba(59, 130, 246, 0.4)');
+            salesGradient.addColorStop(1, 'rgba(59, 130, 246, 0.05)');
+            
+            charts.salesTrend = new Chart(salesTrendCanvas, {
+                type: 'line',
+                data: {
+                    labels: salesTrendData.map(i => i.month),
+                    datasets: [{
+                        label: 'Sales',
+                        data: salesTrendData.map(i => i.count),
+                        borderColor: '#3b82f6',
+                        backgroundColor: salesGradient,
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
+                        pointBackgroundColor: '#3b82f6',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, ticks: { stepSize: 1, color: textColor }, grid: { color: gridColor } },
+                        x: { ticks: { color: textColor }, grid: { color: gridColor } }
+                    }
+                }
+            });
+        }
+        
+        // Revenue Trend Chart (Bar with gradient)
+        const revenueTrendData = {{ monthly_revenue_trend|safe }};
+        const revenueTrendCanvas = document.getElementById('revenueTrendChart');
+        if (revenueTrendData.length > 0 && revenueTrendCanvas) {
+            const ctx = revenueTrendCanvas.getContext('2d');
+            const revenueGradients = revenueTrendData.map(() => createGradient(ctx, '#10b981', '#047857'));
+            
+            charts.revenueTrend = new Chart(revenueTrendCanvas, {
+                type: 'bar',
+                data: {
+                    labels: revenueTrendData.map(i => i.month),
+                    datasets: [{
+                        label: 'Revenue (₹)',
+                        data: revenueTrendData.map(i => i.revenue),
+                        backgroundColor: revenueGradients,
+                        borderRadius: 8,
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { 
+                            beginAtZero: true, 
+                            ticks: { 
+                                color: textColor,
+                                callback: function(value) {
+                                    if (value >= 100000) return '₹' + (value/100000).toFixed(1) + 'L';
+                                    if (value >= 1000) return '₹' + (value/1000).toFixed(0) + 'K';
+                                    return '₹' + value;
+                                }
+                            }, 
+                            grid: { color: gridColor } 
+                        },
+                        x: { ticks: { color: textColor }, grid: { color: gridColor } }
+                    }
+                }
+            });
+        }
+        
+        // Price Distribution Chart (Horizontal Bar with gradient)
+        const priceDistData = {{ price_distribution|safe }};
+        const priceDistCanvas = document.getElementById('priceDistChart');
+        if (priceDistData.length > 0 && priceDistCanvas) {
+            const ctx = priceDistCanvas.getContext('2d');
+            const priceGradients = [
+                createGradient(ctx, '#fbbf24', '#f59e0b', 'horizontal'),
+                createGradient(ctx, '#f59e0b', '#f97316', 'horizontal'),
+                createGradient(ctx, '#f97316', '#ef4444', 'horizontal'),
+                createGradient(ctx, '#ef4444', '#dc2626', 'horizontal'),
+                createGradient(ctx, '#dc2626', '#b91c1c', 'horizontal')
+            ];
+            
+            charts.priceDist = new Chart(priceDistCanvas, {
+                type: 'bar',
+                data: {
+                    labels: priceDistData.map(i => i.range),
+                    datasets: [{
+                        label: 'Cars',
+                        data: priceDistData.map(i => i.count),
+                        backgroundColor: priceGradients.slice(0, priceDistData.length),
+                        borderRadius: 6,
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { 
+                            beginAtZero: true, 
+                            ticks: { stepSize: 1, color: textColor }, 
+                            grid: { color: gridColor },
+                            title: { display: true, text: 'Number of Cars', color: textColor, font: { weight: 'bold' } }
+                        },
+                        y: { 
+                            ticks: { color: textColor }, 
+                            grid: { display: false },
+                            title: { display: true, text: 'Price Range', color: textColor, font: { weight: 'bold' } }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Daily Inquiries Chart (Line with gradient fill)
+        const dailyInquiriesData = {{ daily_inquiries|safe }};
+        const dailyInquiriesCanvas = document.getElementById('dailyInquiriesChart');
+        if (dailyInquiriesData.length > 0 && dailyInquiriesCanvas) {
+            const ctx = dailyInquiriesCanvas.getContext('2d');
+            const inquiriesGradient = ctx.createLinearGradient(0, 0, 0, ctx.canvas.height);
+            inquiriesGradient.addColorStop(0, 'rgba(139, 92, 246, 0.4)');
+            inquiriesGradient.addColorStop(1, 'rgba(139, 92, 246, 0.05)');
+            
+            charts.dailyInquiries = new Chart(dailyInquiriesCanvas, {
+                type: 'line',
+                data: {
+                    labels: dailyInquiriesData.map(i => i.day),
+                    datasets: [{
+                        label: 'Inquiries',
+                        data: dailyInquiriesData.map(i => i.count),
+                        borderColor: '#8b5cf6',
+                        backgroundColor: inquiriesGradient,
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
+                        pointBackgroundColor: '#8b5cf6',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, ticks: { stepSize: 1, color: textColor }, grid: { color: gridColor } },
+                        x: { ticks: { color: textColor }, grid: { color: gridColor } }
+                    }
+                }
+            });
+        }
+    }
+    
+    // Apply theme immediately on load
+    getThemeColors();
+    
+    // Initialize charts on load
+    initCharts();
+    
+    // Watch for theme changes and reinitialize charts
+    const observer = new MutationObserver(() => {
+        setTimeout(initCharts, 100);
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+    
+    // ===== REAL-TIME UPDATES =====
+    let updateInterval;
+    let lastUpdate = new Date();
+    
+    function formatNumber(num) {
+        return new Intl.NumberFormat('en-IN').format(Math.round(num));
+    }
+    
+    function formatCurrency(num) {
+        if (num >= 10000000) return '₹' + (num/10000000).toFixed(2) + ' Cr';
+        if (num >= 100000) return '₹' + (num/100000).toFixed(1) + ' L';
+        return '₹' + formatNumber(num);
+    }
+    
+    async function fetchAndUpdateData() {
+        try {
+            const response = await fetch('/admin/api/chart-data/');
+            if (!response.ok) throw new Error('Failed to fetch');
+            const data = await response.json();
+            
+            // Update stats cards
+            const stats = data.stats;
+            const statCards = document.querySelectorAll('.stat-card');
+            if (statCards[0]) {
+                statCards[0].querySelector('.value').textContent = stats.total_cars;
+                const sub = statCards[0].querySelector('.sub');
+                if (sub) sub.textContent = stats.available_cars + ' available';
+            }
+            if (statCards[1]) statCards[1].querySelector('.value').textContent = formatCurrency(stats.total_revenue);
+            if (statCards[2]) statCards[2].querySelector('.value').textContent = stats.total_sells;
+            if (statCards[3]) statCards[3].querySelector('.value').textContent = stats.total_customers;
+            if (statCards[4]) statCards[4].querySelector('.value').textContent = stats.pending_payments;
+            if (statCards[5]) {
+                statCards[5].querySelector('.value').textContent = stats.total_inquiries;
+                const sub = statCards[5].querySelector('.sub');
+                if (sub) sub.textContent = stats.unresolved_inquiries + ' unresolved';
+            }
+            
+            // Update EMI stats
+            const emiStats = document.querySelectorAll('.emi-stat .value');
+            if (emiStats[0]) emiStats[0].textContent = data.emi.active_emi;
+            if (emiStats[1]) emiStats[1].textContent = data.emi.overdue_emi;
+            if (emiStats[2]) emiStats[2].textContent = formatCurrency(data.emi.emi_outstanding);
+            
+            // Update conversion stats
+            const conversionRate = document.getElementById('conversionRate');
+            const conversionSales = document.getElementById('conversionSales');
+            const conversionInquiries = document.getElementById('conversionInquiries');
+            const monthlySells = document.getElementById('monthlySells');
+            
+            if (conversionRate) conversionRate.textContent = stats.conversion_rate + '%';
+            if (conversionSales) conversionSales.textContent = stats.total_sells;
+            if (conversionInquiries) conversionInquiries.textContent = stats.resolved_inquiries;
+            if (monthlySells) monthlySells.textContent = stats.monthly_sells;
+            
+            // Update ALL charts data (smooth update)
+            if (charts.fuel && data.cars_by_fuel) {
+                charts.fuel.data.labels = data.cars_by_fuel.map(i => i.fuel_type);
+                charts.fuel.data.datasets[0].data = data.cars_by_fuel.map(i => i.count);
+                charts.fuel.update('none');
+            }
+            if (charts.brand && data.cars_by_brand) {
+                charts.brand.data.labels = data.cars_by_brand.map(i => i.brand);
+                charts.brand.data.datasets[0].data = data.cars_by_brand.map(i => i.count);
+                charts.brand.update('none');
+            }
+            if (charts.payment && data.payment_status_dist) {
+                charts.payment.data.labels = data.payment_status_dist.map(i => i.payment_status);
+                charts.payment.data.datasets[0].data = data.payment_status_dist.map(i => i.count);
+                charts.payment.update('none');
+            }
+            if (charts.availability && data.stats) {
+                charts.availability.data.datasets[0].data = [data.stats.available_cars, data.stats.sold_cars];
+                charts.availability.update('none');
+            }
+            if (charts.salesTrend && data.monthly_sales_trend) {
+                charts.salesTrend.data.labels = data.monthly_sales_trend.map(i => i.month);
+                charts.salesTrend.data.datasets[0].data = data.monthly_sales_trend.map(i => i.count);
+                charts.salesTrend.update('none');
+            }
+            if (charts.revenueTrend && data.monthly_revenue_trend) {
+                charts.revenueTrend.data.labels = data.monthly_revenue_trend.map(i => i.month);
+                charts.revenueTrend.data.datasets[0].data = data.monthly_revenue_trend.map(i => i.revenue);
+                charts.revenueTrend.update('none');
+            }
+            if (charts.priceDist && data.price_distribution) {
+                charts.priceDist.data.labels = data.price_distribution.map(i => i.range);
+                charts.priceDist.data.datasets[0].data = data.price_distribution.map(i => i.count);
+                charts.priceDist.update('none');
+            }
+            if (charts.dailyInquiries && data.daily_inquiries) {
+                charts.dailyInquiries.data.labels = data.daily_inquiries.map(i => i.day);
+                charts.dailyInquiries.data.datasets[0].data = data.daily_inquiries.map(i => i.count);
+                charts.dailyInquiries.update('none');
+            }
+            
+            // Update Recent Sells table
+            if (data.recent_sells) {
+                const sellsTbody = document.querySelector('.card table tbody');
+                if (sellsTbody && data.recent_sells.length > 0) {
+                    sellsTbody.innerHTML = data.recent_sells.map(s => `
+                        <tr>
+                            <td>${s.car__name || 'N/A'}</td>
+                            <td>${s.customer__name || 'N/A'}</td>
+                            <td>₹${formatNumber(s.sell_price)}</td>
+                            <td>${new Date(s.sell_date).toLocaleDateString('en-IN', {month: 'short', day: 'numeric'})}</td>
+                        </tr>
+                    `).join('');
+                }
+            }
+            
+            // Update Recent Payments table
+            if (data.recent_payments) {
+                const tables = document.querySelectorAll('.card table tbody');
+                const paymentsTbody = tables[1];
+                if (paymentsTbody && data.recent_payments.length > 0) {
+                    const statusBadge = (s) => {
+                        if (s === 'completed') return '<span class="badge badge-success">Done</span>';
+                        if (s === 'pending') return '<span class="badge badge-warning">Pending</span>';
+                        return '<span class="badge badge-danger">Failed</span>';
+                    };
+                    paymentsTbody.innerHTML = data.recent_payments.map(p => `
+                        <tr>
+                            <td>${p.customer__name || 'N/A'}</td>
+                            <td>₹${formatNumber(p.amount)}</td>
+                            <td>${p.payment_method ? p.payment_method.charAt(0).toUpperCase() + p.payment_method.slice(1) : 'N/A'}</td>
+                            <td>${statusBadge(p.payment_status)}</td>
+                        </tr>
+                    `).join('');
+                }
+            }
+            
+            // Update Unresolved Inquiries table
+            if (data.recent_inquiries) {
+                const tables = document.querySelectorAll('.card table tbody');
+                const inquiriesTbody = tables[2];
+                if (inquiriesTbody) {
+                    if (data.recent_inquiries.length > 0) {
+                        inquiriesTbody.innerHTML = data.recent_inquiries.map(i => `
+                            <tr>
+                                <td>${i.name || 'N/A'}</td>
+                                <td>${i.car__name || 'General'}</td>
+                                <td>${i.phone || 'N/A'}</td>
+                                <td>${new Date(i.created_at).toLocaleDateString('en-IN', {month: 'short', day: 'numeric'})}</td>
+                            </tr>
+                        `).join('');
+                    } else {
+                        inquiriesTbody.innerHTML = '<tr><td colspan="4" class="empty">All clear! 🎉</td></tr>';
+                    }
+                }
+            }
+            
+            // Update Top Brands
+            if (data.top_brands) {
+                const brandList = document.querySelector('.brand-list');
+                if (brandList) {
+                    if (data.top_brands.length > 0) {
+                        brandList.innerHTML = data.top_brands.map((b, i) => `
+                            <div class="brand-item">
+                                <div class="rank">${i + 1}</div>
+                                <div class="name">${b.car__brand || 'Unknown'}</div>
+                                <div class="count">${b.count} sold</div>
+                            </div>
+                        `).join('');
+                    } else {
+                        brandList.innerHTML = '<div class="empty">No sales data</div>';
+                    }
+                }
+            }
+            
+            lastUpdate = new Date();
+            console.log('Dashboard updated:', lastUpdate.toLocaleTimeString());
+            
+        } catch (error) {
+            console.error('Failed to fetch dashboard data:', error);
+        }
+    }
+    
+    // Start real-time updates (every 30 seconds)
+    function startRealTimeUpdates() {
+        updateInterval = setInterval(fetchAndUpdateData, 1000); // Update every 3 seconds
+    }
+    
+    // Stop updates when page is hidden
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            clearInterval(updateInterval);
+        } else {
+            fetchAndUpdateData(); // Immediate update when page becomes visible
+            startRealTimeUpdates();
+        }
+    });
+    
+    // Start polling
+    startRealTimeUpdates();
+    
+    // Show last update indicator
+    const dashboard = document.querySelector('.dashboard h1');
+    if (dashboard) {
+        const indicator = document.createElement('span');
+        indicator.id = 'liveIndicator';
+        indicator.style.cssText = `
+    font-size: 0.75rem; 
+    background: #ff0000ff; 
+    color: white; 
+    padding: 2px 10px; 
+    border-radius: 50px; 
+    margin-left: 10px; 
+    animation: pulse 2s infinite; 
+    display: inline-flex; 
+    align-items: center; 
+    font-weight: bold; 
+    vertical-align: middle;
+    /* FIX: Reset the gradient clipping from parent H1 */
+    -webkit-text-fill-color: white; 
+    -webkit-background-clip: border-box; 
+    background-clip: border-box;
+`;
+        indicator.textContent = '● LIVE';
+        dashboard.appendChild(indicator);
+    }
+</script>
+<style>
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(0.95); }
+}
+</style>
+{% endblock %}

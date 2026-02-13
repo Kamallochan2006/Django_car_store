@@ -1,0 +1,323 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}EMI Plan - {{ plan.car.name }}{% endblock %}
+
+{% block content %}
+<style>
+    .emi-page { max-width: 700px; margin: 0 auto; padding: 30px 20px; }
+    .back-link { font-size: 0.85rem; color: var(--text-muted); text-decoration: none; margin-bottom: 20px; display: inline-block; }
+    .back-link:hover { color: var(--accent-primary); }
+    .emi-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); }
+    .emi-header h1 { font-size: 1.2rem; font-weight: 600; margin: 0 0 4px 0; }
+    .emi-header p { font-size: 0.8rem; color: var(--text-muted); margin: 0; }
+    .status-badge { padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: 500; }
+    .status-completed { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+    .status-active { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+    .status-danger { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+    .status-closed { background: var(--bg-tertiary); color: var(--text-muted); }
+    .section-title { font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin: 20px 0 10px 0; }
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .info-item { background: var(--bg-secondary); padding: 12px; border-radius: 6px; border: 1px solid var(--border-color); }
+    .info-item label { display: block; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 2px; }
+    .info-item span { font-size: 0.9rem; color: var(--text-primary); }
+    .progress-section { margin: 20px 0; }
+    .progress-header { display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 6px; }
+    .progress-bar-bg { background: var(--bg-tertiary); border-radius: 4px; height: 8px; overflow: hidden; }
+    .progress-bar-fill { background: var(--accent-primary); height: 100%; border-radius: 4px; }
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 15px 0; }
+    .stat-item { text-align: center; padding: 12px 8px; border-radius: 6px; border: 1px solid var(--border-color); }
+    .stat-item label { display: block; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 4px; }
+    .stat-item span { font-size: 0.95rem; font-weight: 600; }
+    .stat-paid { background: rgba(16, 185, 129, 0.1); }
+    .stat-paid span { color: #10b981; }
+    .stat-outstanding { background: rgba(245, 158, 11, 0.1); }
+    .stat-outstanding span { color: #f59e0b; }
+    .breakdown-list { margin: 0; padding: 0; list-style: none; }
+    .breakdown-list li { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border-color); font-size: 0.85rem; }
+    .breakdown-list li:last-child { border-bottom: none; }
+    .breakdown-list span:last-child { font-weight: 500; }
+    .help-section { margin-top: 25px; padding-top: 20px; border-top: 1px solid var(--border-color); }
+    .help-section p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px; }
+    .help-section a { font-size: 0.85rem; color: var(--accent-primary); text-decoration: none; }
+    .overdue-tag { font-size: 0.65rem; background: rgba(239,68,68,0.2); color: #ef4444; padding: 2px 6px; border-radius: 3px; margin-left: 5px; }
+    .action-buttons { display: flex; gap: 10px; margin-top: 20px; }
+    .btn-payment { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s ease; }
+    .btn-payment:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); }
+    .btn-payment:disabled { opacity: 0.6; cursor: not-allowed; }
+    .payment-modal { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(8px); z-index: 10000; align-items: center; justify-content: center; }
+    .payment-modal.show { display: flex; }
+    .payment-modal-content { background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 12px; max-width: 500px; width: 90%; padding: 30px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); }
+    .payment-modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .payment-modal-header h2 { font-size: 1.3rem; font-weight: 700; margin: 0; }
+    .payment-modal-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted); }
+    .payment-modal-close:hover { color: var(--text-primary); }
+    .payment-form-group { margin-bottom: 15px; }
+    .payment-form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+    .payment-form-group input, .payment-form-group select { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-secondary); color: var(--text-primary); font-size: 0.9rem; }
+    .payment-form-group input:focus, .payment-form-group select:focus { outline: none; border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.15); }
+    .payment-summary { background: var(--bg-secondary); padding: 15px; border-radius: 6px; margin: 15px 0; border-left: 4px solid var(--accent-primary); }
+    .payment-summary-row { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 8px; }
+    .payment-summary-row:last-child { margin-bottom: 0; font-weight: 700; color: var(--accent-primary); }
+    .payment-modal-actions { display: flex; gap: 10px; margin-top: 20px; }
+    .btn-modal { flex: 1; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s ease; }
+    .btn-modal-cancel { background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color); }
+    .btn-modal-cancel:hover { background: var(--bg-tertiary); }
+    .btn-modal-confirm { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; }
+    .btn-modal-confirm:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); }
+    .payment-info { font-size: 0.75rem; color: var(--text-muted); margin-top: 10px; padding: 10px; background: rgba(59, 130, 246, 0.1); border-radius: 4px; border-left: 3px solid #3b82f6; }
+    @media (max-width: 576px) { .info-grid, .stats-grid { grid-template-columns: 1fr 1fr; } .action-buttons { flex-direction: column; } }
+</style>
+
+<div class="emi-page">
+    <a href="{% url 'profile' %}" class="back-link">
+        <svg class="arrow-svg arrow-left" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Back to Profile
+    </a>
+    
+    <div class="emi-header">
+        <div>
+            <h1>{{ plan.car.brand }} {{ plan.car.name }}</h1>
+            <p>Started {{ plan.start_date|date:"d M, Y" }}</p>
+        </div>
+        <span class="status-badge {% if plan.plan_status == 'completed' %}status-completed{% elif plan.plan_status == 'defaulted' %}status-danger{% elif plan.plan_status == 'closed' %}status-closed{% else %}status-active{% endif %}">
+            {{ plan.get_plan_status_display }}
+        </span>
+    </div>
+
+    <div class="section-title">Car & Loan Details</div>
+    <div class="info-grid">
+        <div class="info-item">
+            <label>Fuel Type</label>
+            <span>{{ plan.car.get_fuel_type_display }}</span>
+        </div>
+        <div class="info-item">
+            <label>Transmission</label>
+            <span>{{ plan.car.get_transmission_display }}</span>
+        </div>
+        <div class="info-item">
+            <label>Down Payment</label>
+            <span>₹{{ plan.down_payment|intcomma }}</span>
+        </div>
+        <div class="info-item">
+            <label>Loan Amount</label>
+            <span>₹{{ plan.loan_amount|intcomma }}</span>
+        </div>
+        <div class="info-item">
+            <label>Monthly EMI</label>
+            <span>₹{{ plan.monthly_emi|intcomma }}</span>
+        </div>
+        <div class="info-item">
+            <label>Tenure</label>
+            <span>{{ plan.tenure_months }} months</span>
+        </div>
+    </div>
+
+    <div class="progress-section">
+        <div class="progress-header">
+            <span><i class="fas fa-chart-line me-2"></i>Payment Progress</span>
+            <span style="font-weight: 700; color: var(--accent-primary);">{{ completed_installments }} / {{ plan.tenure_months }} EMIs</span>
+        </div>
+        <div class="progress-bar-bg">
+            <div class="progress-bar-fill" style="width: {{ progress_percent }}%; background: linear-gradient(90deg, #10b981 0%, #059669 100%);"></div>
+        </div>
+        <div style="margin-top: 8px; display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted);">
+            <span>0%</span>
+            <span>{{ progress_percent }}%</span>
+            <span>100%</span>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-item stat-paid">
+            <label>Total Paid</label>
+            <span>₹{{ total_paid|floatformat:0|intcomma }}</span>
+        </div>
+        <div class="stat-item stat-outstanding">
+            <label>Outstanding</label>
+            <span>₹{{ remaining_balance|floatformat:0|intcomma }}</span>
+        </div>
+        <div class="stat-item">
+            <label>Next EMI</label>
+            <span>{% if plan.next_due_date %}{{ plan.next_due_date|date:"d M" }}{% else %}-{% endif %}</span>
+            {% if plan.plan_status == 'active' and plan.next_due_date and plan.next_due_date < today %}
+            <span class="overdue-tag">Overdue</span>
+            {% endif %}
+        </div>
+        <div class="stat-item">
+            <label>Ends On</label>
+            <span>{% if plan.final_due_date %}{{ plan.final_due_date|date:"d M, Y" }}{% else %}-{% endif %}</span>
+        </div>
+    </div>
+
+    <div class="section-title">Breakdown</div>
+    <ul class="breakdown-list">
+        <li><span>Completed Installments</span><span>{{ completed_installments }}</span></li>
+        <li><span>Remaining Installments</span><span>{{ remaining_installments }}</span></li>
+        <li><span>Total Interest</span><span>₹{{ plan.total_interest|intcomma }}</span></li>
+        <li><span>Total Payable</span><span>₹{{ plan.total_payable|intcomma }}</span></li>
+    </ul>
+    <div class="help-section">
+        <p>Need to make early payment or close the plan?</p>
+    <div class="action-buttons">
+        {% if plan.plan_status == 'active' %}
+        <button class="btn-payment" onclick="openPaymentModal()">
+            <i class="fas fa-credit-card me-2"></i>Make Payment
+            </button>
+            {% endif %}
+            <a href="{% url 'contact' %}" style="flex: 1; padding: 12px 24px; text-align: center; color: var(--accent-primary); border: 1px solid var(--border-color); border-radius: 6px; text-decoration: none; font-weight: 600; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-headset me-2"></i>Contact Support
+            </a>
+        </div>
+    </div>
+
+    <div class="section-title">Payment History</div>
+    {% if payments %}
+    <div style="background: var(--bg-secondary); border-radius: 8px; padding: 15px; border: 1px solid var(--border-color); max-height: 300px; overflow-y: auto;">
+        <table style="width: 100%; font-size: 0.85rem;">
+            <thead>
+                <tr style="border-bottom: 2px solid var(--border-color);">
+                    <th style="text-align: left; padding: 8px; color: var(--text-muted); font-weight: 600;">Date</th>
+                    <th style="text-align: right; padding: 8px; color: var(--text-muted); font-weight: 600;">Amount</th>
+                    <th style="text-align: center; padding: 8px; color: var(--text-muted); font-weight: 600;">Method</th>
+                    <th style="text-align: center; padding: 8px; color: var(--text-muted); font-weight: 600;">Receipt</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for payment in payments %}
+                <tr style="border-bottom: 1px solid var(--border-color);">
+                    <td style="padding: 10px 8px;">
+                        <strong>{{ payment.payment_date|date:"d M Y" }}</strong>
+                        <br><span style="font-size: 0.75rem; color: var(--text-muted);">{{ payment.payment_date|date:"H:i" }}</span>
+                    </td>
+                    <td style="text-align: right; padding: 10px 8px; font-weight: 600; color: #10b981;">
+                        ₹{{ payment.amount|intcomma }}
+                    </td>
+                    <td style="text-align: center; padding: 10px 8px;">
+                        <span style="font-size: 0.7rem; background: rgba(251, 191, 36, 0.1); color: #f59e0b; padding: 4px 8px; border-radius: 4px;">
+                            {{ payment.get_payment_method_display|default:payment.payment_method }}
+                        </span>
+                    </td>
+                    <td style="text-align: center;"><a href="{% url 'payment_success' payment.id %}" class="view-link">View <svg class="arrow-svg" width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div style="background: var(--bg-secondary); padding: 20px; border-radius: 8px; text-align: center; color: var(--text-muted);">
+        <i class="fas fa-inbox" style="font-size: 2rem; opacity: 0.3; margin-bottom: 10px; display: block;"></i>
+        <p>No payments recorded yet</p>
+    </div>
+    {% endif %}
+    
+</div>
+
+<!-- Payment Modal -->
+<div class="payment-modal" id="paymentModal">
+    <div class="payment-modal-content">
+        <div class="payment-modal-header">
+            <h2>Make EMI Payment</h2>
+            <button class="payment-modal-close" onclick="closePaymentModal()">×</button>
+        </div>
+        
+        <form id="paymentForm" method="POST" action="{% url 'create_emi_stripe_checkout' plan.id %}">
+            {% csrf_token %}
+            <div class="payment-form-group">
+                <label>Car</label>
+                <input type="text" value="{{ plan.car.brand }} {{ plan.car.name }}" readonly>
+            </div>
+            
+            <div class="payment-form-group">
+                <label>Payment Type</label>
+                <select id="paymentType" name="payment_type" onchange="updatePaymentSummary()">
+                    <option value="single">Single EMI (₹{{ plan.monthly_emi|intcomma }})</option>
+                    <option value="multiple">Multiple EMIs</option>
+                    <option value="full">Full Outstanding (₹{{ remaining_balance|floatformat:0|intcomma }})</option>
+                </select>
+            </div>
+            
+            <div class="payment-form-group" id="multipleEmiGroup" style="display: none;">
+                <label>Number of EMIs</label>
+                <input type="number" id="emiCount" name="emi_count" min="1" max="{{ remaining_installments }}" value="1" onchange="updatePaymentSummary()">
+            </div>
+            
+            <!-- Payment Method Removed -->
+            
+            <div class="payment-summary">
+                <div class="payment-summary-row">
+                    <span>Amount to Pay:</span>
+                    <span id="amountToPay">₹{{ plan.monthly_emi|intcomma }}</span>
+                </div>
+                <div class="payment-summary-row">
+                    <span>Processing Fee:</span>
+                    <span id="processingFee">₹0</span>
+                </div>
+                <div class="payment-summary-row">
+                    <span>Total Amount:</span>
+                    <span id="totalAmount">₹{{ plan.monthly_emi|intcomma }}</span>
+                </div>
+            </div>
+            
+            <div class="payment-info">
+                <i class="fas fa-info-circle me-2"></i>
+                <strong>Note:</strong> Payment will be processed immediately. Your EMI plan will be updated accordingly. For full outstanding payment, any remaining balance will be marked as paid in full.
+            </div>
+            
+            <div class="payment-modal-actions">
+                <button type="button" class="btn-modal btn-modal-cancel" onclick="closePaymentModal()">Cancel</button>
+                <button type="submit" class="btn-modal btn-modal-confirm">
+                    <i class="fas fa-lock me-2"></i>Pay with Stripe
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    const planMonthlyEmi = {{ plan.monthly_emi }};
+    const remainingBalance = {{ remaining_balance|floatformat:0 }};
+    const remainingInstallments = {{ remaining_installments }};
+    
+    function openPaymentModal() {
+        document.getElementById('paymentModal').classList.add('show');
+    }
+    
+    function closePaymentModal() {
+        document.getElementById('paymentModal').classList.remove('show');
+    }
+    
+    function updatePaymentSummary() {
+        const paymentType = document.getElementById('paymentType').value;
+        const multipleEmiGroup = document.getElementById('multipleEmiGroup');
+        let amountToPay = planMonthlyEmi;
+        
+        if (paymentType === 'multiple') {
+            multipleEmiGroup.style.display = 'block';
+            const emiCount = parseInt(document.getElementById('emiCount').value) || 1;
+            amountToPay = planMonthlyEmi * emiCount;
+        } else if (paymentType === 'full') {
+            multipleEmiGroup.style.display = 'none';
+            amountToPay = remainingBalance;
+        } else {
+            multipleEmiGroup.style.display = 'none';
+        }
+        
+        const processingFee = Math.round(amountToPay * 0.02);
+        const totalAmount = amountToPay + processingFee;
+        
+        document.getElementById('amountToPay').textContent = '₹' + amountToPay.toLocaleString('en-IN');
+        document.getElementById('processingFee').textContent = '₹' + processingFee.toLocaleString('en-IN');
+        document.getElementById('totalAmount').textContent = '₹' + totalAmount.toLocaleString('en-IN');
+    }
+    
+    // processPayment function removed as form submits directly to Stripe
+    
+    // Close modal when clicking outside
+    document.getElementById('paymentModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closePaymentModal();
+        }
+    });
+</script>
+{% endblock %}

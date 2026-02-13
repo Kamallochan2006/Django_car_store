@@ -1,0 +1,90 @@
+<!-- Premium Glassmorphic Car Card -->
+<div class="col-lg-4 col-md-6 mb-4">
+    <div class="premium-car-card car-card" 
+         data-car-id="{{ item.car.id }}{% if item.color %}-{{ item.color.id }}{% endif %}" 
+         data-car-name="{{ item.car.brand }} {{ item.car.name }}"
+         data-car-brand="{{ item.car.brand }}"
+         data-car-image="{{ item.image_url }}"
+         data-car-price="{{ item.car.price_display }}"
+         data-car-year="{{ item.car.model_year }}"
+         data-car-fuel="{{ item.car.get_fuel_type_display }}"
+         data-car-transmission="{{ item.car.get_transmission_display }}"
+         data-car-mileage="{{ item.car.mileage|default:'-' }}"
+         data-car-engine="{{ item.car.engine|default:'-' }}"
+         data-href="{% url 'car_detail' item.car.id %}{% if item.color %}?color={{ item.color.id }}{% endif %}">
+        
+        <!-- Compare Checkbox -->
+        <div class="card-compare-check compare-checkbox">
+            <input type="checkbox" id="compare-{{ item.car.id }}-{{ forloop.counter }}" class="compare-check" data-car-id="{{ item.car.id }}{% if item.color %}-{{ item.color.id }}{% endif %}">
+           
+        </div>
+        
+        <!-- Car Image -->
+        <div class="card-image-area">
+            <img src="{{ item.image_url }}" alt="{{ item.display_name }}" class="card-car-image"
+                 onload="this.style.opacity='1';"
+                 onerror="this.style.opacity='0'; this.nextElementSibling.style.display='flex';">
+            <div class="no-image-placeholder">
+                <i class="fas fa-car"></i>
+                <span>No Image</span>
+            </div>
+        </div>
+        
+        <!-- Brand Badge -->
+        <div class="card-brand-badge">
+            <span>{{ item.car.brand|upper }}</span>
+        </div>
+        
+        <!-- Card Content -->
+        <div class="card-content">
+            <!-- Car Name -->
+            <h3 class="card-car-name card-title">{{ item.car.name }}</h3>
+            
+            <!-- Tagline/Subtitle -->
+            <p class="card-tagline">{{ item.car.model_year }} • {{ item.car.get_fuel_type_display }} • {{ item.car.get_transmission_display }}</p>
+            
+            <!-- Color Swatches -->
+            {% if item.colors %}
+            <div class="card-color-swatches">
+                {% for color in item.colors %}
+                {% with color_img=color.images.first %}
+                <div class="color-dot{% if color == item.color %} active{% endif %}" 
+                     style="background: {% if color.hex_code %}{{ color.hex_code }}{% else %}#888{% endif %};"
+                     data-image-url="{% if color_img %}{{ color_img.image_url }}{% else %}{% endif %}"
+                     data-color-id="{{ color.id }}"
+                     data-color-name="{{ color.name }}"
+                     data-car-id="{{ item.car.id }}"
+                     data-base-name="{{ item.car.name }}"
+                     onclick="changeCardImage(this); event.stopPropagation();"
+                     title="{{ color.name }}"></div>
+                {% endwith %}
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+            <!-- Specs Row - Simplified -->
+            <div class="card-specs-row">
+                <div class="spec-item">
+                    <span class="spec-value">{{ item.car.engine|truncatechars:12 }}</span>
+                    <span class="spec-label">Engine</span>
+                </div>
+                <div class="spec-divider"></div>
+                <div class="spec-item">
+                    <span class="spec-value">{{ item.car.mileage|truncatechars:10 }}</span>
+                    <span class="spec-label">Mileage</span>
+                </div>
+                <div class="spec-divider"></div>
+                <div class="spec-item">
+                    <span class="spec-value">{{ item.car.get_fuel_type_display }}</span>
+                    <span class="spec-label">Fuel</span>
+                </div>
+            </div>
+            
+            <!-- Price Row -->
+            <div class="card-price-row">
+                <span class="card-price">{{ item.car.price_display }}</span>
+                <span class="card-view-btn">View <i class="fas fa-arrow-right"></i></span>
+            </div>
+        </div>
+    </div>
+</div>

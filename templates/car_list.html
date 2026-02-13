@@ -1,0 +1,234 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}All Cars - Car Store{% endblock %}
+
+{% block content %}
+<style>
+    .filter-toolbar {
+        position: sticky;
+        top: 85px;
+        z-index: 20;
+        margin-bottom: 1.25rem;
+    }
+
+    .filter-card {
+        background: rgba(17, 24, 39, 0.75);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(251, 191, 36, 0.15);
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        padding: 1rem 1.25rem;
+    }
+    
+    [data-theme="light"] .filter-card {
+        background: rgba(255, 255, 255, 0.75);
+        border: 1px solid rgba(245, 158, 11, 0.2);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+
+    .filter-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.75rem;
+    }
+
+    .filter-header h5 {
+        margin: 0;
+        font-size: 0.95rem;
+        font-weight: 600;
+    }
+
+    .filter-reset {
+        border: none;
+        background: transparent;
+        color: var(--accent-primary);
+        font-weight: 600;
+        font-size: 0.8rem;
+        cursor: pointer;
+    }
+
+    .filter-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        align-items: end;
+    }
+
+    .filter-section {
+        flex: 1;
+        min-width: 150px;
+    }
+
+    .filter-title {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--text-muted);
+        margin-bottom: 0.35rem;
+    }
+
+    .filter-control {
+        background: var(--input-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 0.5rem 0.65rem;
+        color: var(--text-primary);
+        width: 100%;
+        font-size: 0.9rem;
+    }
+
+    .filter-control:focus {
+        border-color: var(--accent-primary);
+        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
+        outline: none;
+    }
+
+    .quick-chips {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .quick-chip {
+        border-radius: 20px;
+        background: var(--bg-tertiary);
+        border: 1px solid var(--border-color);
+        padding: 0.3rem 0.75rem;
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .quick-chip:hover,
+    .quick-chip.active {
+        background: var(--accent-primary);
+        color: #fff;
+        border-color: var(--accent-primary);
+    }
+
+    .filter-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .filter-actions .btn {
+        font-size: 0.85rem;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+    }
+
+    @media (max-width: 991px) {
+        .filter-toolbar {
+            position: static;
+            margin-bottom: 1.5rem;
+        }
+    }
+</style>
+<div class="container py-4">
+    <h2 class="fw-bold mb-3" style="font-size: 1.3rem; color: var(--text-primary);">Our Car Collection</h2>
+    
+    <div class="filter-toolbar">
+        <div class="filter-card">
+            <form method="get" id="carFilterForm" class="filter-grid">
+                <div class="filter-section">
+                    <input type="text" name="q" class="filter-control" placeholder="Search cars..." value="{{ search_query }}">
+                </div>
+                <div class="filter-section">
+                    <select name="brand" class="filter-control">
+                        <option value="">All Brands</option>
+                        {% for brand in brands %}
+                        <option value="{{ brand }}" {% if request.GET.brand == brand %}selected{% endif %}>{{ brand }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="filter-section">
+                    <select name="max_price" class="filter-control">
+                        <option value="">Any Budget</option>
+                        <option value="1000000" {% if request.GET.max_price == '1000000' %}selected{% endif %}>Up to ₹10L</option>
+                        <option value="1500000" {% if request.GET.max_price == '1500000' %}selected{% endif %}>Up to ₹15L</option>
+                        <option value="2500000" {% if request.GET.max_price == '2500000' %}selected{% endif %}>Up to ₹25L</option>
+                        <option value="4000000" {% if request.GET.max_price == '4000000' %}selected{% endif %}>Up to ₹40L</option>
+                    </select>
+                </div>
+                <div class="filter-section">
+                    <select name="fuel_type" class="filter-control">
+                        <option value="">All Fuels</option>
+                        <option value="petrol" {% if request.GET.fuel_type == 'petrol' %}selected{% endif %}>Petrol</option>
+                        <option value="diesel" {% if request.GET.fuel_type == 'diesel' %}selected{% endif %}>Diesel</option>
+                        <option value="electric" {% if request.GET.fuel_type == 'electric' %}selected{% endif %}>Electric</option>
+                        <option value="cng" {% if request.GET.fuel_type == 'cng' %}selected{% endif %}>CNG</option>
+                    </select>
+                </div>
+                <div class="filter-actions">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                    <button type="button" class="btn btn-outline-secondary" id="submitClear">Clear</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Cars Grid -->
+    <div class="row">
+                {% for item in cars %}
+                {% include 'includes/car_card.html' with item=item %}
+                {% empty %}
+                <div class="col-12">
+                    <div class="alert alert-info text-center">
+                        <i class="fas fa-info-circle me-2"></i>No cars found matching your criteria.
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% if page_obj.paginator.num_pages > 1 %}
+            <nav aria-label="Car pagination" class="d-flex justify-content-center mt-4">
+                <ul class="pagination pagination-rounded">
+                    <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
+                        {% if page_obj.has_previous %}
+                        <a class="page-link" href="?{% if paginator_query %}{{ paginator_query }}&{% endif %}page={{ page_obj.previous_page_number }}">Previous</a>
+                        {% else %}
+                        <span class="page-link">Previous</span>
+                        {% endif %}
+                    </li>
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if num == page_obj.number %}
+                            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                        {% elif num >= page_obj.number|add:'-2' and num <= page_obj.number|add:'2' %}
+                            <li class="page-item"><a class="page-link" href="?{% if paginator_query %}{{ paginator_query }}&{% endif %}page={{ num }}">{{ num }}</a></li>
+                        {% elif num == 1 or num == page_obj.paginator.num_pages %}
+                            <li class="page-item"><a class="page-link" href="?{% if paginator_query %}{{ paginator_query }}&{% endif %}page={{ num }}">{{ num }}</a></li>
+                        {% elif num == page_obj.number|add:'-3' or num == page_obj.number|add:'3' %}
+                            <li class="page-item disabled"><span class="page-link">…</span></li>
+                        {% endif %}
+                    {% endfor %}
+                    <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
+                        {% if page_obj.has_next %}
+                        <a class="page-link" href="?{% if paginator_query %}{{ paginator_query }}&{% endif %}page={{ page_obj.next_page_number }}">Next</a>
+                        {% else %}
+                        <span class="page-link">Next</span>
+                        {% endif %}
+                    </li>
+                </ul>
+            </nav>
+            {% endif %}
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('carFilterForm');
+    const submitClear = document.getElementById('submitClear');
+
+    if (submitClear) {
+        submitClear.addEventListener('click', () => {
+            form.reset();
+            window.location.href = window.location.pathname;
+        });
+    }
+});
+
+
+</script>
+{% endblock %}

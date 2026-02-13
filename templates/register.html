@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<style>
+    .auth-page { max-width: 400px; margin: 40px auto; padding: 20px; }
+    .auth-header { text-align: center; margin-bottom: 25px; }
+    .auth-header h1 { font-size: 1.3rem; font-weight: 600; margin-bottom: 5px; }
+    .auth-header p { font-size: 0.85rem; color: var(--text-muted); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-group { margin-bottom: 12px; }
+    .form-group.full { grid-column: 1 / -1; }
+    .form-group label { display: block; font-size: 0.8rem; margin-bottom: 4px; color: var(--text-secondary); }
+    .form-group input { width: 100%; padding: 10px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-primary); color: var(--text-primary); font-size: 0.9rem; }
+    .form-group input:focus { outline: none; border-color: var(--accent-primary); }
+    .terms { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px; }
+    .terms a { color: var(--accent-primary); }
+    .auth-btn { width: 100%; padding: 10px; background: var(--accent-primary); color: white; border: none; border-radius: 6px; font-size: 0.9rem; font-weight: 500; cursor: pointer; }
+    .auth-btn:hover { opacity: 0.9; }
+    .auth-footer { text-align: center; margin-top: 20px; font-size: 0.85rem; color: var(--text-muted); }
+    .auth-footer a { color: var(--accent-primary); text-decoration: none; }
+</style>
+
+<div class="auth-page">
+    <div class="auth-header">
+        <h1>Create Account</h1>
+        <p>Join Car Store today</p>
+    </div>
+    
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-row">
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" name="name" required>
+            </div>
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" name="username" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" name="email" required>
+        </div>
+        <div class="form-group">
+            <label>Phone</label>
+            <input type="tel" name="phone" placeholder="+91" required>
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" name="password" required>
+        </div>
+        <div class="terms">
+            <input type="checkbox" id="terms" required>
+            <label for="terms">I agree to the <a href="#">Terms</a></label>
+        </div>
+        <button type="submit" class="auth-btn">Register</button>
+    </form>
+    
+    <div class="auth-footer">
+        Already have an account? <a href="{% url 'login' %}">Login</a>
+    </div>
+</div>
+{% endblock %}
