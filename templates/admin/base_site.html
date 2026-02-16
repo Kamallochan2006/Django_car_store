@@ -1,0 +1,60 @@
+{% extends "admin/base.html" %}
+
+{% block extrastyle %}
+{{ block.super }}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+    .dashboard-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+        color: white !important;
+        text-decoration: none !important;
+        border-radius: 10px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-left: 15px;
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .dashboard-link:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5);
+        background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+    }
+    
+    .dashboard-link i {
+        font-size: 1rem;
+    }
+    
+    .dashboard-link::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.5s ease;
+    }
+    
+    .dashboard-link:hover::before {
+        left: 100%;
+    }
+</style>
+{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+    <a href="{% url 'admin:index' %}">{{ site_header|default:_('Django administration') }}</a>
+</h1>
+<a href="{% url 'admin:dashboard' %}" class="dashboard-link">
+    <i class="fas fa-chart-line"></i> Dashboard
+</a>
+{% endblock %}

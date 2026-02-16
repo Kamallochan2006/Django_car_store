@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block content %}
+<style>
+    .edit-page { max-width: 500px; margin: 30px auto; padding: 20px; }
+    .edit-header { margin-bottom: 25px; }
+    .edit-header h1 { font-size: 1.3rem; font-weight: 600; margin-bottom: 5px; }
+    .edit-header p { font-size: 0.85rem; color: var(--text-muted); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-group { margin-bottom: 15px; }
+    .form-group.full { grid-column: 1 / -1; }
+    .form-group label { display: block; font-size: 0.8rem; margin-bottom: 4px; color: var(--text-secondary); }
+    .form-group input, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-primary); color: var(--text-primary); font-size: 0.9rem; }
+    .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--accent-primary); }
+    .form-group textarea { resize: none; }
+    .btn-row { display: flex; gap: 10px; margin-top: 20px; }
+    .btn-save { flex: 1; padding: 10px; background: var(--accent-primary); color: white; border: none; border-radius: 6px; font-size: 0.9rem; cursor: pointer; }
+    .btn-cancel { flex: 1; padding: 10px; background: var(--bg-tertiary); color: var(--text-secondary); border: none; border-radius: 6px; font-size: 0.9rem; text-decoration: none; text-align: center; }
+</style>
+
+<div class="edit-page">
+    <div class="edit-header">
+        <h1>Edit Profile</h1>
+        <p>Update your account information</p>
+    </div>
+
+    {% if messages %}
+    <div style="margin-bottom: 15px;">
+        {% for message in messages %}
+        <div style="padding: 10px; background: {% if message.tags == 'error' %}rgba(239,68,68,0.1){% else %}rgba(16,185,129,0.1){% endif %}; border-radius: 6px; font-size: 0.85rem; color: {% if message.tags == 'error' %}#ef4444{% else %}#10b981{% endif %};">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-row">
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" name="name" value="{{ customer.name|default:user.username }}" required>
+            </div>
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" name="username" value="{{ user.username }}" required>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" name="email" value="{{ customer.email|default:user.email }}" required>
+            </div>
+            <div class="form-group">
+                <label>Phone</label>
+                <input type="tel" name="phone" value="{{ customer.phone|default:'' }}" placeholder="+91" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Address</label>
+            <textarea name="address" rows="2" required>{{ customer.address|default:'' }}</textarea>
+        </div>
+        <div class="btn-row">
+            <button type="submit" class="btn-save">Save Changes</button>
+            <a href="{% url 'profile' %}" class="btn-cancel">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

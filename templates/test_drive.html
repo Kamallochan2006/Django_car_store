@@ -1,0 +1,905 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}Book Test Drive - {{ car.brand }} {{ car.name }}{% endblock %}
+
+{% block content %}
+<style>
+    .test-drive-page {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 30px 20px;
+    }
+    
+    /* Progress Steps */
+    .booking-steps {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 40px;
+        gap: 0;
+    }
+    
+    .step {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .step-number {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+    }
+    
+    .step.active .step-number {
+        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        color: #1a1a2e;
+        box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4);
+    }
+    
+    .step.completed .step-number {
+        background: #22c55e;
+        color: white;
+    }
+    
+    .step.pending .step-number {
+        background: var(--bg-tertiary);
+        color: var(--text-muted);
+        border: 2px solid var(--border-color);
+    }
+    
+    .step-label {
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: var(--text-muted);
+    }
+    
+    .step.active .step-label {
+        color: #fbbf24;
+    }
+    
+    .step.completed .step-label {
+        color: #22c55e;
+    }
+    
+    .step-connector {
+        width: 80px;
+        height: 3px;
+        background: var(--border-color);
+        margin: 0 15px;
+        border-radius: 2px;
+    }
+    
+    .step-connector.done {
+        background: linear-gradient(90deg, #22c55e, #fbbf24);
+    }
+    
+    /* Main Container */
+    .test-drive-container {
+        display: grid;
+        grid-template-columns: 380px 1fr;
+        gap: 30px;
+    }
+    
+    /* Car Summary Card */
+    .car-summary {
+        background: rgba(17, 24, 39, 0.7);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(251, 191, 36, 0.2);
+        border-radius: 20px;
+        overflow: hidden;
+        height: fit-content;
+        position: sticky;
+        top: 90px;
+    }
+    
+    [data-theme="light"] .car-summary {
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(245, 158, 11, 0.25);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    }
+    
+    .car-image-wrapper {
+        position: relative;
+        height: 220px;
+        overflow: hidden;
+    }
+    
+    .car-image-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .car-badge {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        color: #1a1a2e;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .car-details {
+        padding: 24px;
+    }
+    
+    .car-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 4px;
+    }
+    
+    .car-subtitle {
+        color: #fbbf24;
+        font-size: 0.9rem;
+        font-weight: 500;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .car-subtitle span {
+        width: 4px;
+        height: 4px;
+        background: #fbbf24;
+        border-radius: 50%;
+    }
+    
+    .specs-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+    
+    .spec-item {
+        background: rgba(251, 191, 36, 0.08);
+        border: 1px solid rgba(251, 191, 36, 0.15);
+        border-radius: 12px;
+        padding: 12px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .spec-item i {
+        color: #fbbf24;
+        font-size: 1rem;
+        width: 20px;
+        text-align: center;
+    }
+    
+    .spec-item .spec-text {
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+    }
+    
+    .price-box {
+        background: linear-gradient(135deg, rgba(251, 191, 36, 0.15) 0%, rgba(245, 158, 11, 0.08) 100%);
+        border: 2px solid rgba(251, 191, 36, 0.3);
+        border-radius: 14px;
+        padding: 18px;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    
+    .price-label {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 4px;
+    }
+    
+    .price-value {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #fbbf24;
+    }
+    
+    .benefits-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .benefit-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 14px;
+        background: rgba(34, 197, 94, 0.08);
+        border: 1px solid rgba(34, 197, 94, 0.2);
+        border-radius: 10px;
+    }
+    
+    .benefit-item i {
+        color: #22c55e;
+        font-size: 0.85rem;
+    }
+    
+    .benefit-item span {
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+    }
+    
+    /* Booking Form */
+    .booking-form {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        overflow: hidden;
+    }
+    
+    .form-section {
+        padding: 28px;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .form-section:last-of-type {
+        border-bottom: none;
+    }
+    
+    .section-header {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 24px;
+    }
+    
+    .section-icon {
+        width: 48px;
+        height: 48px;
+        background: linear-gradient(135deg, rgba(251, 191, 36, 0.2) 0%, rgba(245, 158, 11, 0.1) 100%);
+        border: 2px solid rgba(251, 191, 36, 0.3);
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .section-icon i {
+        color: #fbbf24;
+        font-size: 1.2rem;
+    }
+    
+    .section-info h3 {
+        font-size: 1.05rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin: 0 0 4px 0;
+    }
+    
+    .section-info p {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        margin: 0;
+    }
+    
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+    }
+    
+    .form-group {
+        position: relative;
+    }
+    
+    .form-group.full-width {
+        grid-column: 1 / -1;
+    }
+    
+    .input-label {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--text-secondary);
+        margin-bottom: 8px;
+    }
+    
+    .input-label i {
+        color: var(--text-muted);
+        font-size: 0.75rem;
+    }
+    
+    .input-label .required {
+        color: #ef4444;
+        margin-left: 2px;
+    }
+    
+    .form-input {
+        width: 100%;
+        padding: 14px 16px;
+        background: var(--input-bg);
+        border: 2px solid var(--border-color);
+        border-radius: 12px;
+        color: var(--text-primary);
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+    }
+    
+    /* Dark mode date picker */
+    [data-theme="dark"] input[type="date"].form-input {
+        color-scheme: dark;
+        background: var(--input-bg);
+        color: var(--text-primary);
+    }
+    
+    /* Light mode date picker */
+    [data-theme="light"] input[type="date"].form-input {
+        color-scheme: light;
+    }
+    
+    .form-input:focus {
+        outline: none;
+        border-color: #fbbf24;
+        box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.12);
+    }
+    
+    .form-input::placeholder {
+        color: var(--text-muted);
+    }
+
+    .input-hint {
+        font-size: 0.7rem;
+        color: var(--text-muted);
+        margin-top: 6px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    .input-hint i {
+        color: #fbbf24;
+        font-size: 0.65rem;
+    }
+    
+    textarea.form-input {
+        min-height: 100px;
+        resize: vertical;
+    }
+    
+    /* Date & Time Selection */
+    .schedule-grid {
+        display: grid;
+        grid-template-columns: 1fr 1.5fr;
+        gap: 24px;
+    }
+    
+    .date-picker-wrapper {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .time-picker-wrapper h4 {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--text-secondary);
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    
+    .time-picker-wrapper h4 i {
+        color: var(--text-muted);
+    }
+    
+    .time-picker-wrapper h4 .required {
+        color: #ef4444;
+        margin-left: 2px;
+    }
+    
+    .time-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+    }
+    
+    .time-option {
+        position: relative;
+    }
+    
+    .time-option input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+    }
+    
+    .time-option label {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 14px 8px;
+        background: var(--bg-tertiary);
+        border: 2px solid var(--border-color);
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .time-option label .time-value {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+    
+    .time-option label .time-label {
+        font-size: 0.65rem;
+        color: var(--text-muted);
+        margin-top: 2px;
+    }
+    
+    .time-option input:checked + label {
+        background: rgba(251, 191, 36, 0.15);
+        border-color: #fbbf24;
+        box-shadow: 0 4px 12px rgba(251, 191, 36, 0.2);
+    }
+    
+    .time-option input:checked + label .time-value {
+        color: #fbbf24;
+    }
+    
+    .time-option label:hover {
+        border-color: rgba(251, 191, 36, 0.5);
+        transform: translateY(-2px);
+    }
+    
+    /* Info Boxes */
+    .info-box {
+        background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(34, 197, 94, 0.05) 100%);
+        border: 1px solid rgba(34, 197, 94, 0.25);
+        border-radius: 14px;
+        padding: 18px;
+        display: flex;
+        gap: 14px;
+        margin-top: 20px;
+    }
+    
+    .info-box.tip {
+        background: linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(251, 191, 36, 0.05) 100%);
+        border-color: rgba(251, 191, 36, 0.25);
+    }
+    
+    .info-box-icon {
+        width: 40px;
+        height: 40px;
+        background: rgba(34, 197, 94, 0.15);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+    
+    .info-box.tip .info-box-icon {
+        background: rgba(251, 191, 36, 0.15);
+    }
+    
+    .info-box-icon i {
+        color: #22c55e;
+        font-size: 1rem;
+    }
+    
+    .info-box.tip .info-box-icon i {
+        color: #fbbf24;
+    }
+    
+    .info-box-content h4 {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin: 0 0 4px 0;
+    }
+    
+    .info-box-content p {
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        margin: 0;
+        line-height: 1.6;
+    }
+    
+    /* Submit Section */
+    .submit-section {
+        padding: 24px 28px;
+        background: var(--bg-tertiary);
+        display: flex;
+        gap: 16px;
+        align-items: center;
+    }
+    
+    .btn-back {
+        padding: 14px 24px;
+        background: transparent;
+        color: var(--text-secondary);
+        border: 2px solid var(--border-color);
+        border-radius: 12px;
+        font-weight: 500;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .btn-back:hover {
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        border-color: var(--text-muted);
+    }
+    
+    .btn-submit {
+        flex: 1;
+        padding: 16px 32px;
+        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        color: #1a1a2e;
+        border: none;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+    
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(251, 191, 36, 0.4);
+    }
+    
+    @media (max-width: 900px) {
+        .test-drive-container {
+            grid-template-columns: 1fr;
+        }
+        
+        .car-summary {
+            position: static;
+        }
+        
+        .test-drive-page {
+            padding: 20px 15px;
+        }
+        
+        .booking-steps {
+            display: flex;
+            flex-wrap: nowrap;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 0;
+            margin-bottom: 28px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 18px 12px 14px;
+        }
+        
+        .step {
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .step-number {
+            width: 34px;
+            height: 34px;
+            font-size: 0.8rem;
+            position: relative;
+            z-index: 2;
+            flex-shrink: 0;
+        }
+        
+        .step-label {
+            font-size: 0.7rem;
+            text-align: center;
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+        
+        .step-connector {
+            display: flex !important;
+            width: auto;
+            flex: 1;
+            max-width: 60px;
+            height: 3px;
+            margin: 0;
+            align-self: center;
+            margin-top: -10px;
+        }
+    }
+    
+    @media (max-width: 650px) {
+        .form-grid, .schedule-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .time-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .submit-section {
+            flex-direction: column;
+        }
+        
+        .btn-back {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+<div class="test-drive-page">
+    <!-- Progress Steps -->
+    <div class="booking-steps">
+        <div class="step completed">
+            <div class="step-number"><i class="fas fa-check"></i></div>
+            <span class="step-label">Select Car</span>
+        </div>
+        <div class="step-connector done"></div>
+        <div class="step active">
+            <div class="step-number">2</div>
+            <span class="step-label">Book Test Drive</span>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step pending">
+            <div class="step-number">3</div>
+            <span class="step-label">Confirmation</span>
+        </div>
+    </div>
+    
+    <div class="test-drive-container">
+        <!-- Car Summary Card -->
+        <div class="car-summary">
+            <div class="car-image-wrapper">
+                {% if car_color and car_color.images.first %}
+                    <img src="{{ car_color.images.first.image_url }}" alt="{{ car.name }} {{ car_color.name }}">
+                {% elif car.image_src %}
+                    <img src="{{ car.image_src }}" alt="{{ car.name }}">
+                {% else %}
+                    <img src="https://via.placeholder.com/400x220?text={{ car.brand }}+{{ car.name }}" alt="{{ car.name }}">
+                {% endif %}
+                <span class="car-badge"><i class="fas fa-steering-wheel me-1"></i> Test Drive</span>
+            </div>
+            
+            <div class="car-details">
+                <h3 class="car-title">{{ car.name }}</h3>
+                <p class="car-subtitle">{{ car.brand }} <span></span> {{ car.model_year }}</p>
+                {% if car_color %}
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 20px; margin-top: -15px;">
+                    <span style="width: 16px; height: 16px; border-radius: 50%; background: {{ car_color.hex_code }}; border: 2px solid var(--border-color); box-shadow: 0 1px 3px rgba(0,0,0,0.2);"></span>
+                    <span style="font-size: 0.9rem; color: var(--text-secondary);">{{ car_color.name }}</span>
+                </div>
+                {% endif %}
+                
+                <div class="specs-grid">
+                    <div class="spec-item">
+                        <i class="fas fa-gas-pump"></i>
+                        <span class="spec-text">{{ car.fuel_type|title }}</span>
+                    </div>
+                    <div class="spec-item">
+                        <i class="fas fa-cogs"></i>
+                        <span class="spec-text">{{ car.transmission|title }}</span>
+                    </div>
+                    <div class="spec-item">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span class="spec-text">{{ car.mileage }}</span>
+                    </div>
+                    <div class="spec-item">
+                        <i class="fas fa-cog"></i>
+                        <span class="spec-text">{{ car.engine }}</span>
+                    </div>
+                </div>
+                
+                <div class="price-box">
+                    <p class="price-label">Car Price</p>
+                    <p class="price-value">{{ car.price_display }}</p>
+                </div>
+                
+                <div class="benefits-list">
+                    <div class="benefit-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Completely Free Test Drive</span>
+                    </div>
+                    <div class="benefit-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>No Purchase Obligation</span>
+                    </div>
+                    <div class="benefit-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Expert Assistance Included</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Booking Form -->
+        <form method="post" class="booking-form">
+            {% csrf_token %}
+            <input type="hidden" name="color" value="{{ car_color.id|default:'' }}">
+            
+            <!-- Personal Information -->
+            <div class="form-section">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="section-info">
+                        <h3>Personal Information</h3>
+                        <p>Please provide your contact details</p>
+                    </div>
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="input-label">
+                            <i class="fas fa-user"></i>
+                            Full Name <span class="required">*</span>
+                        </label>
+                        <input type="text" name="full_name" class="form-input" 
+                               value="{% if user.first_name or user.last_name %}{{ user.first_name }} {{ user.last_name }}{% elif customer and customer.name %}{{ customer.name }}{% endif %}" required 
+                               placeholder="Enter your full name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="input-label">
+                            <i class="fas fa-envelope"></i>
+                            Email Address <span class="required">*</span>
+                        </label>
+                        <input type="email" name="email" class="form-input" 
+                               value="{{ user.email }}" required 
+                               placeholder="your@email.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="input-label">
+                            <i class="fas fa-phone"></i>
+                            Phone Number <span class="required">*</span>
+                        </label>
+                        <input type="tel" name="phone" class="form-input" required 
+                               value="{% if customer and customer.phone %}{{ customer.phone }}{% elif user_profile and user_profile.phone %}{{ user_profile.phone }}{% endif %}"
+                               placeholder="10-digit mobile number"
+                               pattern="[0-9]{10}" title="Please enter 10 digit number">
+                        <p class="input-hint"><i class="fas fa-info-circle"></i> We'll call to confirm your booking</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="input-label">
+                            <i class="fas fa-id-card"></i>
+                            Driving License No. <span class="required">*</span>
+                        </label>
+                        <input type="text" name="driving_license" class="form-input" required 
+                               placeholder="e.g., DL-1234567890">
+                        <p class="input-hint"><i class="fas fa-info-circle"></i> Bring original during test drive</p>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label class="input-label">
+                            <i class="fas fa-map-marker-alt"></i>
+                            Your Address <span class="required">*</span>
+                        </label>
+                        <textarea name="address" class="form-input" required 
+                                  placeholder="Enter your complete address">{% if customer and customer.address %}{{ customer.address }}{% endif %}</textarea>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Schedule Section -->
+            <div class="form-section">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="section-info">
+                        <h3>Schedule Your Visit</h3>
+                        <p>Pick a convenient date and time slot</p>
+                    </div>
+                </div>
+                
+                <div class="schedule-grid">
+                    <div class="date-picker-wrapper">
+                        <label class="input-label">
+                            <i class="fas fa-calendar"></i>
+                            Preferred Date <span class="required">*</span>
+                        </label>
+                        <input type="date" name="preferred_date" class="form-input" 
+                               min="{{ min_date }}" max="{{ max_date }}" required>
+                        <p class="input-hint"><i class="fas fa-info-circle"></i> Book within next 30 days</p>
+                    </div>
+                    
+                    <div class="time-picker-wrapper">
+                        <h4><i class="fas fa-clock"></i> Time Slot <span class="required">*</span></h4>
+                        <div class="time-grid">
+                            {% for value, label in time_slots %}
+                            <div class="time-option">
+                                <input type="radio" name="preferred_time" id="time_{{ value }}" 
+                                       value="{{ value }}" {% if forloop.first %}checked{% endif %} required>
+                                <label for="time_{{ value }}">
+                                    <span class="time-value">{{ value }}</span>
+                                    <span class="time-label">{% if value < "12:00" %}Morning{% elif value < "14:00" %}Noon{% else %}Evening{% endif %}</span>
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Additional Notes -->
+            <div class="form-section">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i class="fas fa-comment-dots"></i>
+                    </div>
+                    <div class="section-info">
+                        <h3>Additional Notes</h3>
+                        <p>Any questions or special requests? (Optional)</p>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <textarea name="message" class="form-input" 
+                              placeholder="Tell us if you have any specific requirements..."></textarea>
+                </div>
+                
+                <div class="info-box tip">
+                    <div class="info-box-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <div class="info-box-content">
+                        <h4>What to Bring</h4>
+                        <p>Please bring your original driving license and a valid ID proof. Test drives typically last 15-20 minutes.</p>
+                    </div>
+                </div>
+                
+                <div class="info-box" style="margin-top: 12px;">
+                    <div class="info-box-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="info-box-content">
+                        <h4>Quick Confirmation</h4>
+                        <p>Our team will call you within 2 hours to confirm your test drive. The test drive is free with no obligation to buy.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Submit Section -->
+            <div class="submit-section">
+                <a href="{% url 'car_detail' car.id %}" class="btn-back">
+                    <svg class="arrow-svg arrow-left" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Back
+                </a>
+                <button type="submit" class="btn-submit">
+                    <i class="fas fa-calendar-check"></i>
+                    Confirm Test Drive Booking
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,219 @@
+﻿Maker,Model,Variant,Year,Color,Color_hex_code,Ex-Showroom_Price,Selling_Price,Fuel_Type,Displacement,Cylinders,Power,Torque,City_Mileage,Highway_Mileage,ARAI_Certified_Mileage,Body_Type,Drivetrain,Fuel_System
+Tata,Nano Genx,Xt,2023,Damson Purple,#4A3B56,"Rs. 2,92,667",,Petrol,624 cc,2,38PS@5500rpm,51Nm@4000rpm,23.6 km/litre,,23.6 km/litre,Hatchback,RWD,Injection
+Tata,Nano Genx,Xt,2023,Sangria Red,#7E282E,"Rs. 2,92,667",,Petrol,624 cc,2,38PS@5500rpm,51Nm@4000rpm,23.6 km/litre,,23.6 km/litre,Hatchback,RWD,Injection
+Datsun,Redi-Go,T,2022,Vivid Blue,#0055A4,"Rs. 3,51,832",,Petrol,799 cc,3,54PS@5678rpm,72Nm@4386rpm,21.38 km/litre,24 km/litre,25.17 km/litre,Hatchback,FWD,Injection
+Datsun,Redi-Go,T,2022,Sandstone Brown,#967117,"Rs. 3,51,832",,Petrol,799 cc,3,54PS@5678rpm,72Nm@4386rpm,21.38 km/litre,24 km/litre,25.17 km/litre,Hatchback,FWD,Injection
+Renault,Kwid,Climber 1.0 Mt,2021,Moonlight Silver,#C0C0C0,"Rs. 4,54,490",,Petrol,999 cc,3,68PS@5500rpm,91Nm@4250RPM,25.17 km/litre,,23.01 km/litre,Hatchback,FWD,Injection
+Renault,Kwid,Climber 1.0 Mt,2021,Fiery Red,#FF4500,"Rs. 4,54,490",,Petrol,999 cc,3,68PS@5500rpm,91Nm@4250RPM,25.17 km/litre,,23.01 km/litre,Hatchback,FWD,Injection
+Maruti Suzuki,Eeco,5 Str,2018,Solid White,#FFFFFF,"Rs. 3,52,136",,Petrol,1196 cc,4,73PS@6000rpm,101Nm@3000rpm,12 km/litre,15 km/litre,15 km/litre,MPV,RWD,Injection
+Maruti Suzuki,Eeco,5 Str,2018,Metallic Silky Silver,#D3D3D3,"Rs. 3,52,136",,Petrol,1196 cc,4,73PS@6000rpm,101Nm@3000rpm,12 km/litre,15 km/litre,15 km/litre,MPV,RWD,Injection
+Maruti Suzuki,Alto K10,Vxi,2015,Solid White,#FFFFFF,"Rs. 3,94,036",,Petrol,998 cc,3,68PS@6200rpm,90Nm@3500rpm,14 km/litre,17 km/litre,24.07 km/litre,Hatchback,FWD,Injection
+Maruti Suzuki,Alto K10,Vxi,2015,Metallic Silky Silver,#D3D3D3,"Rs. 3,94,036",,Petrol,998 cc,3,68PS@6200rpm,90Nm@3500rpm,14 km/litre,17 km/litre,24.07 km/litre,Hatchback,FWD,Injection
+Datsun,Go,T,2023,Amber Orange,#FFBF00,"Rs. 4,68,229",,Petrol,1198 cc,3,68PS@5000rpm,104Nm@4000rpm,,,20.1 km/litre,Hatchback,FWD,Injection
+Datsun,Go,T,2023,Ruby Red,#E0115F,"Rs. 4,68,229",,Petrol,1198 cc,3,68PS@5000rpm,104Nm@4000rpm,,,20.1 km/litre,Hatchback,FWD,Injection
+Hyundai,Santro,Magna Mt,2022,Titan Grey,#505050,"Rs. 5,03,990",,Petrol,1086 cc,4,69PS@5500rpm,99.04nm@4500RPM,,,20.3 km/litre,Hatchback,FWD,Injection
+Hyundai,Santro,Magna Mt,2022,Fiery Red,#FF4040,"Rs. 5,03,990",,Petrol,1086 cc,4,69PS@5500rpm,99.04nm@4500RPM,,,20.3 km/litre,Hatchback,FWD,Injection
+Tata,Tiago,Revotron Xz Plus,2023,Tornado Blue,#6495ED,"Rs. 5,99,000",,Petrol,1199 cc,3,86PS@6000rpm,114NM@3300rpm,23.84 km/litre,23 km/litre,23 km/litre,Hatchback,FWD,Injection
+Tata,Tiago,Revotron Xz Plus,2023,Supernova Copper,#B87333,"Rs. 5,99,000",,Petrol,1199 cc,3,86PS@6000rpm,114NM@3300rpm,23.84 km/litre,23 km/litre,23 km/litre,Hatchback,FWD,Injection
+Maruti Suzuki,Celerio X,Zxi (O),2022,Arctic White,#F2F3F4,"Rs. 5,40,350",,Petrol,998 cc,3,68PS@6000rpm,90Nm@3500rpm,23 km/litre,22 km/litre,23.1 km/litre,Hatchback,FWD,Injection
+Maruti Suzuki,Celerio X,Zxi (O),2022,Glistening Grey,#71797E,"Rs. 5,40,350",,Petrol,998 cc,3,68PS@6000rpm,90Nm@3500rpm,23 km/litre,22 km/litre,23.1 km/litre,Hatchback,FWD,Injection
+Maruti Suzuki,Ignis,Alpha 1.2 Mt,2018,Nexa Blue,#003366,"Rs. 6,66,898",,Petrol,1197 cc,4,83PS@6000rpm,113Nm@4200RPM,20.89 km/litre,,20.89 km/litre,Hatchback,FWD,Injection
+Maruti Suzuki,Ignis,Alpha 1.2 Mt,2018,Turquoise Blue,#00F5FF,"Rs. 6,66,898",,Petrol,1197 cc,4,83PS@6000rpm,113Nm@4200RPM,20.89 km/litre,,20.89 km/litre,Hatchback,FWD,Injection
+Renault,Triber,Rxz,2022,Zanskar Blue,#6CA0DC,"Rs. 6,63,000",,Petrol,999 cc,3,72PS@62050rpm,96Nm@3500rpm,,,20.5 km/litre,MUV,FWD,Injection
+Renault,Triber,Rxz,2022,Shadow Grey,#707070,"Rs. 6,63,000",,Petrol,999 cc,3,72PS@62050rpm,96Nm@3500rpm,,,20.5 km/litre,MUV,FWD,Injection
+Toyota,Etios Liva,Vx,2022,Vermilion Red,#E34234,"Rs. 6,30,000",,Petrol,1197 cc,4,80PS@5600rpm,104Nm@3100rpm,15.1 km/litre,17.71 km/litre,18.16 km/litre,Hatchback,FWD,Injection
+Toyota,Etios Liva,Vx,2022,Classic grey,#8D918D,"Rs. 6,30,000",,Petrol,1197 cc,4,80PS@5600rpm,104Nm@3100rpm,15.1 km/litre,17.71 km/litre,18.16 km/litre,Hatchback,FWD,Injection
+Nissan,Micra Active,Xv,2020,Turquoise Blue,#00F5FF,"Rs. 5,99,950",,Petrol,1198 cc,3,68PS@5000rpm,104Nm@4000rpm,19.49 km/litre,,19.49 km/litre,Hatchback,FWD,Injection
+Nissan,Micra Active,Xv,2020,Brick Red,#CB4154,"Rs. 5,99,950",,Petrol,1198 cc,3,68PS@5000rpm,104Nm@4000rpm,19.49 km/litre,,19.49 km/litre,Hatchback,FWD,Injection
+Tata,Bolt,Xt Petrol,2018,Venetian Red,#C80815,"Rs. 6,74,960",,Petrol,1193 cc,4,90PS@5000rpm,140Nm@1500-4000rpm,"17,57 km/litre",,17.57 km/litre,Hatchback,FWD,Injection
+Tata,Bolt,Xt Petrol,2018,Pristine White,#FDFDFD,"Rs. 6,74,960",,Petrol,1193 cc,4,90PS@5000rpm,140Nm@1500-4000rpm,"17,57 km/litre",,17.57 km/litre,Hatchback,FWD,Injection
+Hyundai,Xcent,T+ Crdi,2017,Alpha Blue,#00008B,"Rs. 6,39,616",,Diesel,1197 cc,4,70bhp@4000RPM,114Nm@6000rpm,,,20.14 km/litre,Sedan,FWD,Injection
+Hyundai,Xcent,T+ Crdi,2017,Titan Grey,#505050,"Rs. 6,39,616",,Diesel,1197 cc,4,70bhp@4000RPM,114Nm@6000rpm,,,20.14 km/litre,Sedan,FWD,Injection
+Maruti Suzuki,Dzire,Ldi,2015,Bluish Black,#0E0E10,"Rs. 6,53,523",,Diesel,1248 cc,4,75PS@4000rpm,190Nm@2000rpm,14.6 km/litre,19.8 km/litre,28.4 km/litre,Sedan,FWD,Injection
+Maruti Suzuki,Dzire,Ldi,2015,Arctic White,#F2F3F4,"Rs. 6,53,523",,Diesel,1248 cc,4,75PS@4000rpm,190Nm@2000rpm,14.6 km/litre,19.8 km/litre,28.4 km/litre,Sedan,FWD,Injection
+Hyundai,I20,Asta (O) 1.2,2019,Amazon Grey,#63666A,"Rs. 8,08,993",,Petrol,1197 cc,4,84PS@6000rpm,114Nm@4000rpm,13.3 km/litre,18.5 km/litre,18.15 km/litre,Hatchback,FWD,Injection
+Hyundai,I20,Asta (O) 1.2,2019,Starry Night,#2C3E50,"Rs. 8,08,993",,Petrol,1197 cc,4,84PS@6000rpm,114Nm@4000rpm,13.3 km/litre,18.5 km/litre,18.15 km/litre,Hatchback,FWD,Injection
+Hyundai,Aura,Sx (O) 1.2 Petrol,2021,Starry Night,#2C3E50,"Rs. 7,85,900",,Petrol,1197 cc,,83PS@6000rpm,114Nm@4000rpm,,,20.5 km/litre,Sedan,FWD,Injection
+Hyundai,Aura,Sx (O) 1.2 Petrol,2021,Fiery Red,#FF4040,"Rs. 7,85,900",,Petrol,1197 cc,,83PS@6000rpm,114Nm@4000rpm,,,20.5 km/litre,Sedan,FWD,Injection
+Volkswagen,Polo,Gt Tsi,2021,Flash Red,#E30022,"Rs. 9,76,000",,Petrol,1197 cc,4,105PS@5000rpm,175Nm@1500-4100rpm,17 km/litre,17 km/litre,17.21 km/litre,Hatchback,FWD,Injection
+Volkswagen,Polo,Gt Tsi,2021,Carbon Steel,#2A2A2A,"Rs. 9,76,000",,Petrol,1197 cc,4,105PS@5000rpm,175Nm@1500-4100rpm,17 km/litre,17 km/litre,17.21 km/litre,Hatchback,FWD,Injection
+Maruti Suzuki,Dzire,Zxi Plus,2023,Splendid Silver,#A8A9AD,"Rs. 8,21,613",,Petrol,1197 cc,4,84.3PS@6000rpm,115Nm@4000rpm,16.3 km/litre,,22 km/litre,Sedan,FWD,Injection
+Maruti Suzuki,Dzire,Zxi Plus,2023,Bluish Black,#0E0E10,"Rs. 8,21,613",,Petrol,1197 cc,4,84.3PS@6000rpm,115Nm@4000rpm,16.3 km/litre,,22 km/litre,Sedan,FWD,Injection
+Ford,Freestyle,1.5L Tdci Titanium Plus,2016,Canyon Ridge,#C07C56,"Rs. 8,36,400",,Diesel,1498 cc,4,100PS@3750RPM,215Nm@1750-3000RPM,,,24.4 km/litre,Hatchback,FWD,Injection
+Ford,Freestyle,1.5L Tdci Titanium Plus,2016,Smoke Grey,#708090,"Rs. 8,36,400",,Diesel,1498 cc,4,100PS@3750RPM,215Nm@1750-3000RPM,,,24.4 km/litre,Hatchback,FWD,Injection
+Volkswagen,Ameo,Highline Plus 1.5L Tdi,2018,Toffee Brown,#CD5700,"Rs. 9,25,500",,Diesel,1498 cc,,110PS@4400rpm,250Nm@1500-2500rpm,15.3 km/litre,21.66 km/litre,21.66 km/litre,Sedan,FWD,Injection
+Volkswagen,Ameo,Highline Plus 1.5L Tdi,2018,Reflex Silver,#E0E0E0,"Rs. 9,25,500",,Diesel,1498 cc,,110PS@4400rpm,250Nm@1500-2500rpm,15.3 km/litre,21.66 km/litre,21.66 km/litre,Sedan,FWD,Injection
+Ford,Aspire,1.5 Tdci Titanium Plus,2019,White Gold,#C5B358,"Rs. 8,62,400",,Diesel,1498 cc,4,100PS@3700RPM,215Nm@1750-3000RPM,,,26.1 km/litre,Sedan,FWD,Injection
+Ford,Aspire,1.5 Tdci Titanium Plus,2019,Moondust Silver,#B0C4DE,"Rs. 8,62,400",,Diesel,1498 cc,4,100PS@3700RPM,215Nm@1750-3000RPM,,,26.1 km/litre,Sedan,FWD,Injection
+Toyota,Platinum Etios,Vx,2015,Pearl white with crystal shine,#F0F8FF,"Rs. 7,78,400",,Petrol,1496 cc,4,90PS@5600rpm,132Nm@3000rpm,"13,6 km/litre",16.3 km/litre,16.78 km/litre,Sedan,FWD,Injection
+Toyota,Platinum Etios,Vx,2015,Silver Mica Metallic,#8A9A5B,"Rs. 7,78,400",,Petrol,1496 cc,4,90PS@5600rpm,132Nm@3000rpm,"13,6 km/litre",16.3 km/litre,16.78 km/litre,Sedan,FWD,Injection
+Toyota,Etios Cross,Vd,2021,Inferno Orange,#FF4500,"Rs. 7,97,500",,Diesel,1364 cc,4,68PS@3800rpm,170Nm@1800-2400rpm,18.1 km/litre,22.5 km/litre,23.59 km/litre,Hatchback,FWD,Injection
+Toyota,Etios Cross,Vd,2021,Silver Mica Metallic,#8A9A5B,"Rs. 7,97,500",,Diesel,1364 cc,4,68PS@3800rpm,170Nm@1800-2400rpm,18.1 km/litre,22.5 km/litre,23.59 km/litre,Hatchback,FWD,Injection
+Mahindra,Verito Vibe,D6,2021,Dolphin Grey,#808080,"Rs. 7,50,428",,Diesel,1461 cc,4,65PS@4000rpm,160Nm@2000rpm,18 km/litre,20.08 km/litre,20.08 km/litre,Hatchback,FWD,Injection
+Mahindra,Verito Vibe,D6,2021,Diamond White,#FBFCF8,"Rs. 7,50,428",,Diesel,1461 cc,4,65PS@4000rpm,160Nm@2000rpm,18 km/litre,20.08 km/litre,20.08 km/litre,Hatchback,FWD,Injection
+Fiat,Urban Cross,1.3 Multijet Emotion,2018,Bronzo Tan,#CD7F32,"Rs. 8,10,211",,Diesel,1248 cc,4,93PS@4000RPM,209Nm@2000rpm,20 km/litre,,20 km/litre,Crossover,FWD,Injection
+Fiat,Urban Cross,1.3 Multijet Emotion,2018,Hip Hop Black,#000000,"Rs. 8,10,211",,Diesel,1248 cc,4,93PS@4000RPM,209Nm@2000rpm,20 km/litre,,20 km/litre,Crossover,FWD,Injection
+Toyota,Glanza,V,2015,Sportin Red,#FF0000,"Rs. 7,58,200",,Petrol,1197 cc,4,82PS@6000 rpm,113Nm@4200 rpm,,,21.01 km/litre,Hatchback,FWD,Injection
+Toyota,Glanza,V,2015,Insta Blue,#0000FF,"Rs. 7,58,200",,Petrol,1197 cc,4,82PS@6000 rpm,113Nm@4200 rpm,,,21.01 km/litre,Hatchback,FWD,Injection
+Fiat,Avventura,Multijet Emotion,2021,Exotica Red,#FF2400,"Rs. 8,76,341",,Diesel,1248 cc,4,93PS@4000RPM,209Nm@2000rpm,11.2 km/litre,20.5 km/litre,20.5 km/litre,Crossover,FWD,Injection
+Fiat,Avventura,Multijet Emotion,2021,Hip Hop Black,#000000,"Rs. 8,76,341",,Diesel,1248 cc,4,93PS@4000RPM,209Nm@2000rpm,11.2 km/litre,20.5 km/litre,20.5 km/litre,Crossover,FWD,Injection
+Honda,Jazz,Vx Petrol,2017,Golden Brown Metallic,#966F33,"Rs. 7,89,000",,Petrol,1199 cc,4,90PS@6000rpm,110Nm@4800rpm,11.3 km/litre,,18.2 km/litre,Hatchback,FWD,Injection
+Honda,Jazz,Vx Petrol,2017,Meteoroid Grey Metallic,#757C88,"Rs. 7,89,000",,Petrol,1199 cc,4,90PS@6000rpm,110Nm@4800rpm,11.3 km/litre,,18.2 km/litre,Hatchback,FWD,Injection
+Jeep,Compass,2.0 Trailhawk (O) 4X4 At,2020,Brilliant Black,#000000,"Rs. 27,60,000",,Diesel,1956 cc,4,173PS@3750rpm,350Nm@1750-2500rpm,,,16.3 km/litre,SUV,AWD,Injection
+Jeep,Compass,2.0 Trailhawk (O) 4X4 At,2020,Exotica Red,#FF2400,"Rs. 27,60,000",,Diesel,1956 cc,4,173PS@3750rpm,350Nm@1750-2500rpm,,,16.3 km/litre,SUV,AWD,Injection
+Isuzu,Mu-X,4X4,2016,Silky White Pearl,#F0F0F0,"Rs. 29,31,534",,Diesel,2999 cc,4,177PS@3600rpm,380Nm@1800-2800rpm,13.8 km/litre,13.8 km/litre,13.8 km/litre,SUV,AWD,Injection
+Isuzu,Mu-X,4X4,2016,Nautilus Blue,#2F519F,"Rs. 29,31,534",,Diesel,2999 cc,4,177PS@3600rpm,380Nm@1800-2800rpm,13.8 km/litre,13.8 km/litre,13.8 km/litre,SUV,AWD,Injection
+Mahindra,Alturas G4,4Wd At,2016,Napoli Black,#1C1C1C,"Rs. 30,70,150",,Diesel,2157 cc,4,178Bhp @ 4000,420Nm @1600-2600,,,12.05 km/litre,SUV,4WD,Injection
+Mahindra,Alturas G4,4Wd At,2016,Regal Blue,#0047AB,"Rs. 30,70,150",,Diesel,2157 cc,4,178Bhp @ 4000,420Nm @1600-2600,,,12.05 km/litre,SUV,4WD,Injection
+Volkswagen,Tiguan,Highline 2.0L Tdi Amt,2021,Nightshade Blue,#191970,"Rs. 31,53,500",,Diesel,1968 cc,4,141PS@4000rpm,340Nm@1750-2750rpm,,,17.06 km/litre,SUV,AWD,Injection
+Volkswagen,Tiguan,Highline 2.0L Tdi Amt,2021,Pure White,#F5F5F5,"Rs. 31,53,500",,Diesel,1968 cc,4,141PS@4000rpm,340Nm@1750-2750rpm,,,17.06 km/litre,SUV,AWD,Injection
+Honda,Cr-V,Awd Diesel At,2015,Golden Brown Metallic,#8B5A2B,"Rs. 32,77,001",,Diesel,1597 cc,,120PS@4000RPM,300NM@2000rpm,,,18.3 km/litre,SUV,AWD,Injection
+Honda,Cr-V,Awd Diesel At,2015,White Orchid Pearl,#FFFDF8,"Rs. 32,77,001",,Diesel,1597 cc,,120PS@4000RPM,300NM@2000rpm,,,18.3 km/litre,SUV,AWD,Injection
+Skoda,Superb Sportline,Sportline 2.0L Tdi At,2017,Magnetic Brown,#6F4E37,"Rs. 31,49,599",,Diesel,1968 cc,4,177PS@4000RPM,350Nm@1500-3500rpm,15.1 km/litre,18.19 km/litre,18.19 km/litre,Sedan,FWD,Injection
+Skoda,Superb Sportline,Sportline 2.0L Tdi At,2017,Brilliant Silver,#D3D3D3,"Rs. 31,49,599",,Diesel,1968 cc,4,177PS@4000RPM,350Nm@1500-3500rpm,15.1 km/litre,18.19 km/litre,18.19 km/litre,Sedan,FWD,Injection
+Audi,A3,35 Tdi Technology,2023,Brilliant Black,#000000,"Rs. 32,21,200",,Diesel,1968 cc,4,143PS@4000rpm,320Nm@1750-3000rpm,18 km/litre,18 km/litre,20.38 km/litre,Sedan,FWD,Injection
+Audi,A3,35 Tdi Technology,2023,Ibis white,#F8F9FA,"Rs. 32,21,200",,Diesel,1968 cc,4,143PS@4000rpm,320Nm@1750-3000rpm,18 km/litre,18 km/litre,20.38 km/litre,Sedan,FWD,Injection
+Mercedes-Benz,Cla,200 D Sport,2020,Polar White,#FAFAFA,"Rs. 36,99,000",,Diesel,2143 cc,4,136PS@4400RPM,300Nm@1600-3000rpm,13.9 km/litre,17.9 km/litre,17.9 km/litre,Sedan,FWD,Injection
+Mercedes-Benz,Cla,200 D Sport,2020,Jupiter Red,#CF1020,"Rs. 36,99,000",,Diesel,2143 cc,4,136PS@4400RPM,300Nm@1600-3000rpm,13.9 km/litre,17.9 km/litre,17.9 km/litre,Sedan,FWD,Injection
+Skoda,Kodiaq,Style 2.0 Tdi 4X4 At,2020,Velvet Red Metallic,#900C3F,"Rs. 32,99,599",,Diesel,1968 cc,4,177PS@4000RPM,350Nm@1500-3500rpm,15.1 km/litre,18.19 km/litre,18.19 km/litre,SUV,FWD,Injection
+Skoda,Kodiaq,Style 2.0 Tdi 4X4 At,2020,Moon White Metallic,#F4F4F4,"Rs. 32,99,599",,Diesel,1968 cc,4,177PS@4000RPM,350Nm@1500-3500rpm,15.1 km/litre,18.19 km/litre,18.19 km/litre,SUV,FWD,Injection
+Dc,Avanti,Standard,2016,Red,#FF0000,"Rs. 34,07,407",,Petrol,2000 cc,4,250PS@5500RPM,340NM@2750-5000rpm,8 km/litre,10 km/litre,10 km/litre,Coupe,RWD,Injection
+Dc,Avanti,Standard,2016,White,#FFFFFF,"Rs. 34,07,407",,Petrol,2000 cc,4,250PS@5500RPM,340NM@2750-5000rpm,8 km/litre,10 km/litre,10 km/litre,Coupe,RWD,Injection
+Audi,Q3,35 Tdi Quattro Premium Plus,2018,Nano Grey Metallic,#646B63,"Rs. 39,92,200",,Diesel,1968 cc,4,177PS@4200rpm,380Nm@1750-2500rpm,12 km/litre,,15.73 km/litre,SUV,AWD,Injection
+Audi,Q3,35 Tdi Quattro Premium Plus,2018,Glacier White Metallic,#F0F8FF,"Rs. 39,92,200",,Diesel,1968 cc,4,177PS@4200rpm,380Nm@1750-2500rpm,12 km/litre,,15.73 km/litre,SUV,AWD,Injection
+Mini,Cooper,Cooper D,2019,Ocean Wave Green,#2E8B57,"Rs. 36,00,000",,Petrol,1496 cc,3,116PS@4000rpm,270Nm@1750-2250rpm,10.3 km/litre,,21.15 km/litre,Hatchback,FWD,Injection
+Mini,Cooper,Cooper D,2019,British Racing Green,#004225,"Rs. 36,00,000",,Petrol,1496 cc,3,116PS@4000rpm,270Nm@1750-2250rpm,10.3 km/litre,,21.15 km/litre,Hatchback,FWD,Injection
+Mini,Cooper Convertible,Cooper S,2021,Chilli Red,#C21807,"Rs. 38,30,000",,Petrol,1998 cc,4,192PS@5000-6000rpm,280NM@1250-4600rpm,,,14.59 km/litre,Convertible,FWD,Injection
+Mini,Cooper Convertible,Cooper S,2021,Rooftop Grey,#A9A9A9,"Rs. 38,30,000",,Petrol,1998 cc,4,192PS@5000-6000rpm,280NM@1250-4600rpm,,,14.59 km/litre,Convertible,FWD,Injection
+Volvo,Xc40,D4 R-Design,2021,Crystal White,#F5F5F5,"Rs. 43,90,000",,Diesel,1969 cc,5,190bhp,400Nm,,,,SUV,AWD,Injection
+Volvo,Xc40,D4 R-Design,2021,Fusion Red,#FF2400,"Rs. 43,90,000",,Diesel,1969 cc,5,190bhp,400Nm,,,,SUV,AWD,Injection
+Mini,Clubman,Cooper S,2015,White Silver,#EBEBEB,"Rs. 41,20,000",,Petrol,1998 cc,4,192PS@6200RPM,280NM@1250rpm,12.3 km/litre,13.8 km/litre,13.8 km/litre,Hatchback,,Injection
+Mini,Clubman,Cooper S,2015,Melting Silver,#C0C0C0,"Rs. 41,20,000",,Petrol,1998 cc,4,192PS@6200RPM,280NM@1250rpm,12.3 km/litre,13.8 km/litre,13.8 km/litre,Hatchback,,Injection
+Audi,A4,Technology 35 Tfsi,2018,Glacier White,#F0F8FF,"Rs. 45,07,000",,Petrol,1395 cc,4,150PS@5000-6000rpm,250Nm@1500-3500,,,,Sedan,FWD,Injection
+Audi,A4,Technology 35 Tfsi,2018,Mythos Black Metallic,#0A0A0A,"Rs. 45,07,000",,Petrol,1395 cc,4,150PS@5000-6000rpm,250Nm@1500-3500,,,,Sedan,FWD,Injection
+Jaguar,Xe,S Diesel,2016,Firenze Red Metallic,#AF002A,"Rs. 44,98,000",,Diesel,1999 cc,4,180PS@4000rpm,430NM@1750-2500rpm,,,11 km/litre,Sedan,RWD,Injection
+Jaguar,Xe,S Diesel,2016,Portofino Blue Metallic,#000080,"Rs. 44,98,000",,Diesel,1999 cc,4,180PS@4000rpm,430NM@1750-2500rpm,,,11 km/litre,Sedan,RWD,Injection
+Jaguar,Xf,2.0 Prestige,2019,Fuji White,#F9F9F9,"Rs. 54,36,329",,Petrol,1999 cc,4,247PS@5500rpm,340Nm@1750-2000RPM,5.7 km/litre,13.12 km/litre,13.12 km/litre,Sedan,RWD,Injection
+Jaguar,Xf,2.0 Prestige,2019,Santorini Black Metallic,#0B0B0B,"Rs. 54,36,329",,Petrol,1999 cc,4,247PS@5500rpm,340Nm@1750-2000RPM,5.7 km/litre,13.12 km/litre,13.12 km/litre,Sedan,RWD,Injection
+Audi,A3 Cabriolet,40 Tfsi,2020,Vegas Yellow,#F6E037,"Rs. 50,38,000",,Petrol,1395 cc,4,148 bhp @ 5100 rpm,250 Nm @ 1250 RPM,19.2 km/litre,,19.2 km/litre,Convertible,FWD,Injection
+Audi,A3 Cabriolet,40 Tfsi,2020,Mythos Black,#000000,"Rs. 50,38,000",,Petrol,1395 cc,4,148 bhp @ 5100 rpm,250 Nm @ 1250 RPM,19.2 km/litre,,19.2 km/litre,Convertible,FWD,Injection
+Audi,A6,Technology 45 Tfsi,2018,Firmament Blue Metallic,#283048,"Rs. 59,42,200",,Petrol,1984 cc,4,245PS@5000-6500rpm,370Nm@1600-4500rpm,,,14.11 km/litre,Sedan,FWD,Injection
+Audi,A6,Technology 45 Tfsi,2018,Manhattan Grey Metallic,#707070,"Rs. 59,42,200",,Petrol,1984 cc,4,245PS@5000-6500rpm,370Nm@1600-4500rpm,,,14.11 km/litre,Sedan,FWD,Injection
+Bmw,X3,Xdrive 30I Luxury Line,2018,Alpine White,#FFFFFF,"Rs. 58,80,000",,Petrol,1998 cc,4,248 bhp @ 5200 rpm,350 Nm @ 1450 rpm,16 km/litre,18.56 km/litre,18.56 km/litre,SUV,4WD,Injection
+Bmw,X3,Xdrive 30I Luxury Line,2018,Black Sapphire,#0F0F0F,"Rs. 58,80,000",,Petrol,1998 cc,4,248 bhp @ 5200 rpm,350 Nm @ 1450 rpm,16 km/litre,18.56 km/litre,18.56 km/litre,SUV,4WD,Injection
+Land Rover,Discovery Sport,R-Dynamic Se,2022,Firenze Red Metallic,#AF002A,"Rs. 60,89,000",,Diesel,1999 cc,4,179PS@4000rpm,430NM@1750rpm,,,,SUV,4WD,Injection
+Land Rover,Discovery Sport,R-Dynamic Se,2022,Fuji White,#F9F9F9,"Rs. 60,89,000",,Diesel,1999 cc,4,179PS@4000rpm,430NM@1750rpm,,,,SUV,4WD,Injection
+Volvo,S90,D4 Inscription,2015,Denim Blue,#2F519F,"Rs. 58,90,000",,Diesel,1969 cc,4,190PS@4250rpm,400NM@1750rpm,"11,44 km/litre",,,Sedan,FWD,Injection
+Volvo,S90,D4 Inscription,2015,Crystal White,#F5F5F5,"Rs. 58,90,000",,Diesel,1969 cc,4,190PS@4250rpm,400NM@1750rpm,"11,44 km/litre",,,Sedan,FWD,Injection
+Audi,S5 Sportback,,2023,Tango Red Metallic,#DC143C,"Rs. 72,43,000",,Petrol,2995 cc,6,333PS@5400-6400RPM,500Nm@1370-4500rpm,,,13.57 km/litre,Sedan,AWD,Injection
+Audi,S5 Sportback,,2023,Mythos Black Metallic,#0A0A0A,"Rs. 72,43,000",,Petrol,2995 cc,6,333PS@5400-6400RPM,500Nm@1370-4500rpm,,,13.57 km/litre,Sedan,AWD,Injection
+Bmw,X5,Xdrive30D Sport,2016,Mineral White Metallic,#F0F8FF,"Rs. 73,30,000",,Diesel,2993 cc,6,265HP@4000rpm,620Nm@1500-2500rpm,,,13.38 km/litre,SUV,AWD,Injection
+Bmw,X5,Xdrive30D Sport,2016,Carbon Black Metallic,#1A1110,"Rs. 73,30,000",,Diesel,2993 cc,6,265HP@4000rpm,620Nm@1500-2500rpm,,,13.38 km/litre,SUV,AWD,Injection
+Ford,Mustang,Fastback V8,2022,Race Red,#BA0000,"Rs. 74,62,000",,Petrol,4951 cc,8,401PS@6550RPM,515Nm@4250-4300RPM,10 km/litre,13 km/litre,13 km/litre,"Sedan, Coupe",RWD,Injection
+Ford,Mustang,Fastback V8,2022,Absolute Black,#000000,"Rs. 74,62,000",,Petrol,4951 cc,8,401PS@6550RPM,515Nm@4250-4300RPM,10 km/litre,13 km/litre,13 km/litre,"Sedan, Coupe",RWD,Injection
+Jeep,Grand Cherokee,Summit Petrol,2018,Velvet Red,#900C3F,"Rs. 75,15,000",,Petrol,3604 cc,6,286PS@6350rpm,347Nm@4300rpm,,,8.61 km/litre,SUV,AWD,Injection
+Jeep,Grand Cherokee,Summit Petrol,2018,Diamond Black Crystal,#000000,"Rs. 75,15,000",,Petrol,3604 cc,6,286PS@6350rpm,347Nm@4300rpm,,,8.61 km/litre,SUV,AWD,Injection
+Bmw,M2,Coupe,2023,M Portimao Blue metallic,#0047AB,"Rs. 81,80,000",,Petrol,2979 cc,6,410hp@5230-7000RPM,550Nm@2350-5230rpm,12.5-12.7 km/litre,8.3-8.4 km/litre,9.8-10.0 km/litre,Coupe,RWD,Injection
+Bmw,M2,Coupe,2023,Black saphire metallic,#0F0F0F,"Rs. 81,80,000",,Petrol,2979 cc,6,410hp@5230-7000RPM,550Nm@2350-5230rpm,12.5-12.7 km/litre,8.3-8.4 km/litre,9.8-10.0 km/litre,Coupe,RWD,Injection
+Porsche,718,Boxster,2015,Gentian Blue Metallic,#0E2F44,"Rs. 89,95,000",,Petrol,1988 cc,4,300PS@6500rpm,380Nm@1950-4500RPM,9 km/litre,7.4 km/litre,7.4 km/litre,Convertible,RWD,Injection
+Porsche,718,Boxster,2015,Guards Red,#D40000,"Rs. 89,95,000",,Petrol,1988 cc,4,300PS@6500rpm,380Nm@1950-4500RPM,9 km/litre,7.4 km/litre,7.4 km/litre,Convertible,RWD,Injection
+Mercedes-Benz,Gls,350 Cdi,2016,Polar White,#FAFAFA,"Rs. 88,20,000",,Diesel,2987 cc,6,258PS@3600rpm,619Nm@1600-2400RPM,6.5 km/litre,10.5 km/litre,11.6 km/litre,SUV,AWD,Injection
+Mercedes-Benz,Gls,350 Cdi,2016,Obsidian Black,#363636,"Rs. 88,20,000",,Diesel,2987 cc,6,258PS@3600rpm,619Nm@1600-2400RPM,6.5 km/litre,10.5 km/litre,11.6 km/litre,SUV,AWD,Injection
+Toyota,Land Cruiser Prado,Vx L,2019,Silver Metallic,#C0C0C0,"Rs. 96,30,000",,Diesel,2982 cc,4,173PS@3400rpm,410Nm@1600-2800rpm,7 km/litre,11 km/litre,11.13 km/litre,SUV,4WD,Injection
+Toyota,Land Cruiser Prado,Vx L,2019,Gray Metallic,#808080,"Rs. 96,30,000",,Diesel,2982 cc,4,173PS@3400rpm,410Nm@1600-2800rpm,7 km/litre,11 km/litre,11.13 km/litre,SUV,4WD,Injection
+Lexus,Rx,450Hl Luxury,2018,Sonic Quartz,#F0F8FF,"Rs. 99,00,000",,Petrol,3456 cc,6,262PS@6000rpm,335Nm@4600rpm,18.8 km/litre,,18 km/litre,SUV,AWD,Injection
+Lexus,Rx,450Hl Luxury,2018,Sonic Chrome,#7C7C7C,"Rs. 99,00,000",,Petrol,3456 cc,6,262PS@6000rpm,335Nm@4600rpm,18.8 km/litre,,18 km/litre,SUV,AWD,Injection
+Audi,Rs5,Coupe,2020,Nardo Gray,#6D6E71,"Rs. 1,11,41,200",,Petrol,2894 cc,8,450PS@5700-6700rpm,600Nm@1900-5000rpm,,,10.8 km/litre,Coupe,AWD,Injection
+Audi,Rs5,Coupe,2020,Tango Red,#DC143C,"Rs. 1,11,41,200",,Petrol,2894 cc,8,450PS@5700-6700rpm,600Nm@1900-5000rpm,,,10.8 km/litre,Coupe,AWD,Injection
+Bmw,7-Series,730Ld Design Pure Excellence,2018,Black Sapphire Metallic,#0F0F0F,"Rs. 1,22,90,000",,Diesel,2993 cc,6,265PS@4000RPM,620Nm@2000-2500RPM,13.5 km/litre,16.46 km/litre,17.66 km/litre,Sedan,AWD,Injection
+Bmw,7-Series,730Ld Design Pure Excellence,2018,Individual Dravit Grey Metallic,#3C3C3C,"Rs. 1,22,90,000",,Diesel,2993 cc,6,265PS@4000RPM,620Nm@2000-2500RPM,13.5 km/litre,16.46 km/litre,17.66 km/litre,Sedan,AWD,Injection
+Audi,Q8,55 Tfsi Quattro Tiptronic,2018,Glacier White Metallic,#F0F8FF,"Rs. 1,33,59,500",,Petrol,2995 cc,4,340PS@5000rpm,500Nm@1370rpm,,,,SUV,AWD,Injection
+Audi,Q8,55 Tfsi Quattro Tiptronic,2018,Mythos Black Metallic,#0A0A0A,"Rs. 1,33,59,500",,Petrol,2995 cc,4,340PS@5000rpm,500Nm@1370rpm,,,,SUV,AWD,Injection
+Mercedes-Benz,S-Class,S 350 D,2020,Diamond White Bright,#FBFCF8,"Rs. 1,35,58,438",,Diesel,2987 cc,6,258PS@3600rpm,620Nm@1600-2400rpm,9 km/litre,13.5 km/litre,13.5 km/litre,Sedan,RWD,Injection
+Mercedes-Benz,S-Class,S 350 D,2020,Onyx Black,#0F0F0F,"Rs. 1,35,58,438",,Diesel,2987 cc,6,258PS@3600rpm,620Nm@1600-2400rpm,9 km/litre,13.5 km/litre,13.5 km/litre,Sedan,RWD,Injection
+Maserati,Levante,Diesel,2020,Blu Passione,#00008B,"Rs. 1,45,12,054",,Diesel,2987 cc,6,275PS@4000rpm,600Nm@2000-2600rpm,5.2 km/litre,6.2 km/litre,7.9 km/litre,SUV,AWD,Injection
+Maserati,Levante,Diesel,2020,Bianco Alpi,#EFEFEF,"Rs. 1,45,12,054",,Diesel,2987 cc,6,275PS@4000rpm,600Nm@2000-2600rpm,5.2 km/litre,6.2 km/litre,7.9 km/litre,SUV,AWD,Injection
+Mercedes-Benz,G-Class,Amg G 63,2019,Obsidian Black Metallic,#363636,"Rs. 2,18,75,136",,Petrol,3982 cc,8,585hp@6000rpm,850Nm@2500-3500rpm,,,,SUV,AWD,Injection
+Mercedes-Benz,G-Class,Amg G 63,2019,Opalite White Bright,#F0FFFF,"Rs. 2,18,75,136",,Petrol,3982 cc,8,585hp@6000rpm,850Nm@2500-3500rpm,,,,SUV,AWD,Injection
+Audi,A8 L,55 Tfsi Quattro,2015,Terra Grey Metallic,#636363,"Rs. 1,56,00,000",,Petrol,2995 cc,8,340PS@5000rpm,500Nm@1370rpm,,,,Sedan,AWD,Injection
+Audi,A8 L,55 Tfsi Quattro,2015,Vesuvius Grey,#404040,"Rs. 1,56,00,000",,Petrol,2995 cc,8,340PS@5000rpm,500Nm@1370rpm,,,,Sedan,AWD,Injection
+Porsche,Panamera,Turbo,2019,White,#FFFFFF,"Rs. 2,12,63,000",,Petrol,3996 cc,8,550PS@6000RPM,770Nm@1960 - 4500rpm,7.1 km/litre,7.8 km/litre,10.63 km/litre,Sedan,AWD,Injection
+Porsche,Panamera,Turbo,2019,Jet Black Metallic,#0A0A0A,"Rs. 2,12,63,000",,Petrol,3996 cc,8,550PS@6000RPM,770Nm@1960 - 4500rpm,7.1 km/litre,7.8 km/litre,10.63 km/litre,Sedan,AWD,Injection
+Bentley,Continental Gt,Coupe,2022,Sequin Blue,#0047AB,"Rs. 3,37,91,059",,Petrol,5998 cc,12,590PS@6000rpm,720Nm@1800rpm,5.3 km/litre,8.6 km/litre,8.6 km/litre,Coupe,AWD,Injection
+Bentley,Continental Gt,Coupe,2022,Anthracite Satin,#3C3C3C,"Rs. 3,37,91,059",,Petrol,5998 cc,12,590PS@6000rpm,720Nm@1800rpm,5.3 km/litre,8.6 km/litre,8.6 km/litre,Coupe,AWD,Injection
+Ferrari,Portofino,V8 Convertible,2019,Rosso Corsa,#CC0000,"Rs. 3,50,00,000",,Petrol,3855 cc,8,560PS@7500rpm,755NM@4750rpm,6 km/litre,9 km/litre,9 km/litre,Convertible,AWD,Injection
+Ferrari,Portofino,V8 Convertible,2019,Giallo Modena,#FFEA00,"Rs. 3,50,00,000",,Petrol,3855 cc,8,560PS@7500rpm,755NM@4750rpm,6 km/litre,9 km/litre,9 km/litre,Convertible,AWD,Injection
+Maruti Suzuki,S-Presso,Vxi,2023,Solid Fire Red,#FF4500,"Rs. 4,32,500",,Petrol,998 cc,3,67PS@5500rpm,90Nm@3500rpm,,,21.7 km/litre,Hatchback,FWD,Injection
+Maruti Suzuki,S-Presso,Vxi,2023,Solid Sizzle Orange,#FF7518,"Rs. 4,32,500",,Petrol,998 cc,3,67PS@5500rpm,90Nm@3500rpm,,,21.7 km/litre,Hatchback,FWD,Injection
+Hyundai,Grand I10 Nios,Sportz 1.2 Vtvt,2022,Fiery Red,#FF4040,"Rs. 6,43,350",,Petrol,1197 cc,4,83PS@6000rpm,114Nm@4000rpm,,,20.7 km/litre,Hatchback,FWD,Injection
+Hyundai,Grand I10 Nios,Sportz 1.2 Vtvt,2022,Titan Grey,#505050,"Rs. 6,43,350",,Petrol,1197 cc,4,83PS@6000rpm,114Nm@4000rpm,,,20.7 km/litre,Hatchback,FWD,Injection
+Mahindra,Kuv100 Nxt,K8 6Str,2017,Fiery Orange,#FF7518,"Rs. 6,93,550",,Petrol,1198 cc,3,82PS@5500RPM,115NM@3500-3600RPM,15.5 km/litre,18.15 km/litre,18.15 km/litre,Hatchback,FWD,Injection
+Mahindra,Kuv100 Nxt,K8 6Str,2017,Midnight Black,#2B2B2B,"Rs. 6,93,550",,Petrol,1198 cc,3,82PS@5500RPM,115NM@3500-3600RPM,15.5 km/litre,18.15 km/litre,18.15 km/litre,Hatchback,FWD,Injection
+Maruti Suzuki,Swift,Zxi Plus,2023,Sizzling Red Metallic,#D73B3E,"Rs. 7,58,000",,Petrol,1197 cc,4,83PS@6000rpm,113Nm@4200RPM,,,20.4 km/litre,Hatchback,FWD,Injection
+Maruti Suzuki,Swift,Zxi Plus,2023,Luster Blue,#4169E1,"Rs. 7,58,000",,Petrol,1197 cc,4,83PS@6000rpm,113Nm@4200RPM,,,20.4 km/litre,Hatchback,FWD,Injection
+Tata,Altroz,Xz Petrol,2015,Dune Glow,#EEDC82,"Rs. 7,44,000",,Petrol,1199 cc,3,86PS@6000rpm,113Nm@3300rpm,,18 km/litre,,Hatchback,FWD,Injection
+Tata,Altroz,Xz Petrol,2015,Ember Glow,#CC5500,"Rs. 7,44,000",,Petrol,1199 cc,3,86PS@6000rpm,113Nm@3300rpm,,18 km/litre,,Hatchback,FWD,Injection
+Tata,Tigor,Revotron Xz,2022,Meteor Bronze,#966F33,"Rs. 6,50,000",,Petrol,1199 cc,3,86PS@6000rpm,113Nm@3300rpm,24.12 km/litre,23 km/litre,23 km/litre,Sedan,FWD,Injection
+Tata,Tigor,Revotron Xz,2022,Arizona Blue,#2C3E50,"Rs. 6,50,000",,Petrol,1199 cc,3,86PS@6000rpm,113Nm@3300rpm,24.12 km/litre,23 km/litre,23 km/litre,Sedan,FWD,Injection
+Tata,Zest,Xt Diesel,2019,Buzz Blue,#0066CC,"Rs. 8,55,362",,Diesel,1248 cc,4,90PS@4000rpm,200NM@1750-3000rpm,19.2 km/litre,23 km/litre,23 km/litre,Sedan,FWD,Injection
+Tata,Zest,Xt Diesel,2019,Pristine White,#FDFDFD,"Rs. 8,55,362",,Diesel,1248 cc,4,90PS@4000rpm,200NM@1750-3000rpm,19.2 km/litre,23 km/litre,23 km/litre,Sedan,FWD,Injection
+Honda,Amaze,Vx Cvt Petrol,2021,Radiant Red Metallic,#AD1F2D,"Rs. 8,64,000",,Petrol,1199 cc,4,90PS@6000rpm,110Nm@4800rpm,,,19.5 km/litre,Sedan,FWD,Injection
+Honda,Amaze,Vx Cvt Petrol,2021,Lunar Silver Metallic,#B6B6B4,"Rs. 8,64,000",,Petrol,1199 cc,4,90PS@6000rpm,110Nm@4800rpm,,,19.5 km/litre,Sedan,FWD,Injection
+Hyundai,Venue,1.0 Turbo Gdi Mt Sx,2016,Dragon Red,#D2042D,"Rs. 9,59,000",,Petrol,998 cc,4,117bhp@6000rpm,172Nm@1500-4000rpm,,,18.27 km/litre,SUV,FWD,Injection
+Hyundai,Venue,1.0 Turbo Gdi Mt Sx,2016,Abyss Black,#1B1B1B,"Rs. 9,59,000",,Petrol,998 cc,4,117bhp@6000rpm,172Nm@1500-4000rpm,,,18.27 km/litre,SUV,FWD,Injection
+Tata,Nexon,Xz Plus,2023,Pure Grey,#808080,"Rs. 9,50,000",,Petrol,1198 cc,3,110PS@5000rpm,170Nm@1500-2750rpm,,,17.6 km/litre,SUV,FWD,Injection
+Tata,Nexon,Xz Plus,2023,Daytona Grey,#4A4A4A,"Rs. 9,50,000",,Petrol,1198 cc,3,110PS@5000rpm,170Nm@1500-2750rpm,,,17.6 km/litre,SUV,FWD,Injection
+Fiat,Linea,T-Jet Emotion,2021,Bronzo Tan,#CD7F32,"Rs. 9,97,763",,Petrol,1368 cc,4,114PS@5000rpm,207Nm@2200rpm,"11,3 km/litre",15.7 km/litre,15.7 km/litre,Sedan,FWD,Injection
+Fiat,Linea,T-Jet Emotion,2021,Magnesio Grey,#595959,"Rs. 9,97,763",,Petrol,1368 cc,4,114PS@5000rpm,207Nm@2200rpm,"11,3 km/litre",15.7 km/litre,15.7 km/litre,Sedan,FWD,Injection
+Mahindra,Bolero Power Plus,Zlx,2019,Mist Silver,#C0C0C0,"Rs. 8,86,398",,Diesel,1493 cc,4,70ps@3600rpm,195Nm@1400-2200rpm,12.4 km/litre,,16.5 km/litre,SUV,FWD,Injection
+Mahindra,Bolero Power Plus,Zlx,2019,Diamond White,#FBFCF8,"Rs. 8,86,398",,Diesel,1493 cc,4,70ps@3600rpm,195Nm@1400-2200rpm,12.4 km/litre,,16.5 km/litre,SUV,FWD,Injection
+Maruti Suzuki,Brezza,Zdi+,2016,Sizzling Red,#D73B3E,"Rs. 9,87,743",,Diesel,1248 cc,4,90PS@4000rpm,200Nm@1750rpm,20 km/litre,24.3 km/litre,24.3 km/litre,SUV,FWD,Injection
+Maruti Suzuki,Brezza,Zdi+,2016,Brave Khaki,#F0E68C,"Rs. 9,87,743",,Diesel,1248 cc,4,90PS@4000rpm,200Nm@1750rpm,20 km/litre,24.3 km/litre,24.3 km/litre,SUV,FWD,Injection
+Hyundai,I20 Active,1.2 Sx,2015,Polar White,#2F519F,"Rs. 8,58,536",,Petrol,1197 cc,4,83PS@6000rpm,114Nm@4000rpm,15 km/litre,17.19 km/litre,17.19 km/litre,Hatchback,FWD,Injection
+Hyundai,I20 Active,1.2 Sx,2015,Fiery Red,#FF4040,"Rs. 8,58,536",,Petrol,1197 cc,4,83PS@6000rpm,114Nm@4000rpm,15 km/litre,17.19 km/litre,17.19 km/litre,Hatchback,FWD,Injection
+Ford,Ecosport,1.5L Ti-Vct Titanium,2018,Canyon Ridge,#B5651D,"Rs. 9,50,000",,Petrol,1497 cc,3,123PS@6500rpm,150Nm@4500rpm,,,17 km/litre,SUV,FWD,Injection
+Ford,Ecosport,1.5L Ti-Vct Titanium,2018,Lightning Blue,#1974D2,"Rs. 9,50,000",,Petrol,1497 cc,3,123PS@6500rpm,150Nm@4500rpm,,,17 km/litre,SUV,FWD,Injection
+Hyundai,Verna,1.6 Vtvt Sx(O) At,2016,Fiery Red,#FF4040,"Rs. 12,87,999",,Petrol,1591 cc,4,123PS@6400rpm,155Nm@4850rpm,,,17.7 km/litre,Sedan,FWD,Injection
+Hyundai,Verna,1.6 Vtvt Sx(O) At,2016,Starry Night,#2C3E50,"Rs. 12,87,999",,Petrol,1591 cc,4,123PS@6400rpm,155Nm@4850rpm,,,17.7 km/litre,Sedan,FWD,Injection
+Mahindra,Xuv300,1.5 W8 (O) Amt,2023,Dark Grey,#505050,"Rs. 12,69,131",,Diesel,1497 cc,,115bhp@3750rpm,300Nm@1500rpm,,,20 km/litre,SUV,RWD,Injection
+Mahindra,Xuv300,1.5 W8 (O) Amt,2023,Pearl White with Black Roof,#F5F5F0,"Rs. 12,69,131",,Diesel,1497 cc,,115bhp@3750rpm,300Nm@1500rpm,,,20 km/litre,SUV,RWD,Injection
+Renault,Lodgy,Stepway Rxz 110Ps 8-Seater,2022,Royal Orchid,#9932CC,"Rs. 12,11,599",,Diesel,1461 cc,4,110PS@4000rpm,245Nm@1750rpm,21.04 km/litre,,19.98 km/litre,MUV,FWD,Injection
+Renault,Lodgy,Stepway Rxz 110Ps 8-Seater,2022,Moonlight Silver,#C0C0C0,"Rs. 12,11,599",,Diesel,1461 cc,4,110PS@4000rpm,245Nm@1750rpm,21.04 km/litre,,19.98 km/litre,MUV,FWD,Injection
+Volkswagen,Vento,Highline 1.5 (D) Dsg,2020,Toffee Brown,#CD5700,"Rs. 13,36,500",,Diesel,1498 cc,4,105PS@4400rpm,250Nm@1500-2500rpm,,,21.5 km/litre,Sedan,FWD,Injection
+Volkswagen,Vento,Highline 1.5 (D) Dsg,2020,Reflex Silver,#E0E0E0,"Rs. 13,36,500",,Diesel,1498 cc,4,105PS@4400rpm,250Nm@1500-2500rpm,,,21.5 km/litre,Sedan,FWD,Injection
+Mahindra,Marazzo,M8 7 Str,2021,Iceberg White,#F0F8FF,"Rs. 14,68,440",,Diesel,1497 cc,4,121Bhp@3500rpm,300Nm@1750-2500rpm,,,17.3 km/litre,MPV,FWD,Injection
+Mahindra,Marazzo,M8 7 Str,2021,Oceanic Black,#2C3539,"Rs. 14,68,440",,Diesel,1497 cc,4,121Bhp@3500rpm,300Nm@1750-2500rpm,,,17.3 km/litre,MPV,FWD,Injection
+Mahindra,Scorpio,S11 2Wd,2023,Everest White,#FFFFFF,"Rs. 15,40,081",,Diesel,2179 cc,4,140PS@3750rpm,320Nm@1500-2800rpm,11.5 km/litre,15.4 km/litre,15.4 km/litre,SUV,FWD,Injection
+Mahindra,Scorpio,S11 2Wd,2023,Molten Red Rage,#D73B3E,"Rs. 15,40,081",,Diesel,2179 cc,4,140PS@3750rpm,320Nm@1500-2800rpm,11.5 km/litre,15.4 km/litre,15.4 km/litre,SUV,FWD,Injection
+Mahindra,Xuv500,W11 (O) Awd At,2022,Mystic Copper,#7B3F00,"Rs. 19,73,664",,Diesel,2179 cc,4,155PS@3750rpm,330Nm@1750-2800rpm,16 km/litre,,16 km/litre,SUV,AWD,Injection
+Mahindra,Xuv500,W11 (O) Awd At,2022,Volcano Black,#100C08,"Rs. 19,73,664",,Diesel,2179 cc,4,155PS@3750rpm,330Nm@1750-2800rpm,16 km/litre,,16 km/litre,SUV,AWD,Injection
+Tata,Hexa,Xt 4X4,2015,Arizona Blue,#2C3E50,"Rs. 19,29,417",,Diesel,2179 cc,,156PS@4000rpm,320Nm@1700-2700rpm,14 km/litre,17.6 km/litre,17.6 km/litre,SUV,RWD,Injection
+Tata,Hexa,Xt 4X4,2015,Tungsten Silver,#A9A9A9,"Rs. 19,29,417",,Diesel,2179 cc,,156PS@4000rpm,320Nm@1700-2700rpm,14 km/litre,17.6 km/litre,17.6 km/litre,SUV,RWD,Injection
+Toyota,Innova Crysta,2.4 Zx 7 Str,2020,Platinum White Pearl,#F5F5F0,"Rs. 21,13,000",,Diesel,2393 cc,4,150PS@3400rpm,343Nm@1400-2800rpm,12 km/litre,,15.1 km/litre,MUV,RWD,Injection
+Toyota,Innova Crysta,2.4 Zx 7 Str,2020,Superwhite,#FFFFFF,"Rs. 21,13,000",,Diesel,2393 cc,4,150PS@3400rpm,343Nm@1400-2800rpm,12 km/litre,,15.1 km/litre,MUV,RWD,Injection
+Toyota,Corolla Altis,Vl At Petrol,2021,Phantom Brown,#4B3621,"Rs. 20,19,000",,Petrol,1798 cc,4,140PS@6400rpm,173Nm@4000rpm,9.5 km/litre,,16.7 km/litre,Sedan,FWD,Injection
+Toyota,Corolla Altis,Vl At Petrol,2021,White Pearl Crystal Shine,#F5F5F0,"Rs. 20,19,000",,Petrol,1798 cc,4,140PS@6400rpm,173Nm@4000rpm,9.5 km/litre,,16.7 km/litre,Sedan,FWD,Injection
+Honda,Civic,1.8 Zx Cvt,2022,Radiant Red Metallic,#9E1B32,"Rs. 21,24,900",,Petrol,1799 cc,4,141PS@6500rpm,174Nm@4300rpm,,,16.8 km/litre,Sedan,FWD,Injection
+Honda,Civic,1.8 Zx Cvt,2022,Modern Steel Metallic,#71797E,"Rs. 21,24,900",,Petrol,1799 cc,4,141PS@6500rpm,174Nm@4300rpm,,,16.8 km/litre,Sedan,FWD,Injection
+Mg,Zs Ev,Exclusive,2016,Glaze Red,#D2042D,"Rs. 23,58,000",,Electric,,,142.76PS@3500rpm,353Nm@5000rpm,,,,SUV,RWD,Injection
+Mg,Zs Ev,Exclusive,2016,Aurora Silver,#C0C0C0,"Rs. 23,58,000",,Electric,,,142.76PS@3500rpm,353Nm@5000rpm,,,,SUV,RWD,Injection
+Kia,Carnival,Limousine 7 Str,2019,Fusion Black,#1A1110,"Rs. 33,95,000",,Diesel,2199 cc,4,200PS@3800rpm,440Nm@1750-2750rpm,,,,MUV,FWD,Injection
+Kia,Carnival,Limousine 7 Str,2019,Glacier white Pearl,#F5F5F0,"Rs. 33,95,000",,Diesel,2199 cc,4,200PS@3800rpm,440Nm@1750-2750rpm,,,,MUV,FWD,Injection
+Toyota,Fortuner,2.8 4X4 At,2018,Sparkling Black Cystal Shine,#2F2F2F,"Rs. 33,95,000",,Diesel,2755 cc,4,177PS@3400rpm,450Nm@1600-2400rpm,"12,55 km/litre",12.9 km/litre,12.9 km/litre,SUV,4WD,Injection
+Toyota,Fortuner,2.8 4X4 At,2018,Attitude Black,#2F2F2F,"Rs. 33,95,000",,Diesel,2755 cc,4,177PS@3400rpm,450Nm@1600-2400rpm,"12,55 km/litre",12.9 km/litre,12.9 km/litre,SUV,4WD,Injection
+Ford,Endeavour,3.2L 4X4 At Titanium Plus,2020,Diffused Silver,#B0C4DE,"Rs. 34,70,000",,Diesel,3198 cc,5,200PS@3000rpm,470Nm@1750-2500rpm,7.7 km/litre,10.91 km/litre,10.91 km/litre,SUV,AWD,Injection
+Ford,Endeavour,3.2L 4X4 At Titanium Plus,2020,Absolute Black,#000000,"Rs. 34,70,000",,Diesel,3198 cc,5,200PS@3000rpm,470Nm@1750-2500rpm,7.7 km/litre,10.91 km/litre,10.91 km/litre,SUV,AWD,Injection
+Bmw,X1,Sdrive20D M Sport,2021,Alpine White,#FFFFFF,"Rs. 42,40,000",,Diesel,1995 cc,4,187bhp@4000rpm,400Nm@1750-2500rpm,,,17.05 km/litre,SUV,RWD,Injection
+Bmw,X1,Sdrive20D M Sport,2021,Storm Bay Metallic,#606E70,"Rs. 42,40,000",,Diesel,1995 cc,4,187bhp@4000rpm,400Nm@1750-2500rpm,,,17.05 km/litre,SUV,RWD,Injection
+Volvo,S60,Polestar,2021,Crystal White Pearl,#F5F5F5,"Rs. 56,02,000",,Petrol,1969 cc,4,372Ps@5700rpm,470Nm@2100-4800rpm,13.2 km/litre,18.5 km/litre,,Sedan,FWD,Injection
+Volvo,S60,Polestar,2021,Onyx Black,#0F0F0F,"Rs. 56,02,000",,Petrol,1969 cc,4,372Ps@5700rpm,470Nm@2100-4800rpm,13.2 km/litre,18.5 km/litre,,Sedan,FWD,Injection
+Audi,Q5,Technology 45 Tfsi,2018,Navarra Blue Metallic,#000080,"Rs. 56,21,200",,Petrol,1984 cc,6,248 bhp @ 5000-6000 rpm,370 Nm @ 1600-4500 rpm,,,12.44 km/litre,SUV,AWD,Injection
+Audi,Q5,Technology 45 Tfsi,2018,Glacier White,#F0F8FF,"Rs. 56,21,200",,Petrol,1984 cc,6,248 bhp @ 5000-6000 rpm,370 Nm @ 1600-4500 rpm,,,12.44 km/litre,SUV,AWD,Injection
+Land Rover,Range Rover Evoque,Se R-Dynamic Petrol,2017,Tribeca Blue,#0047AB,"Rs. 59,85,000",,Petrol,1997 cc,4,245PS@5500rpm,365Nm@1500-4500rpm,,,,SUV,AWD,Injection
+Land Rover,Range Rover Evoque,Se R-Dynamic Petrol,2017,Fuji White,#F9F9F9,"Rs. 59,85,000",,Petrol,1997 cc,4,245PS@5500rpm,365Nm@1500-4500rpm,,,,SUV,AWD,Injection
+Mercedes-Benz,E-Class,E220D Exclusive,2019,High Tech Silver,#C0C0C0,"Rs. 62,50,000",,Diesel,2987 cc,6,268.7PS@3800rpm,620Nm@1600rpm,,,142 km/litre,Sedan,RWD,Injection
+Mercedes-Benz,E-Class,E220D Exclusive,2019,Graphite Grey,#4B4E53,"Rs. 62,50,000",,Diesel,2987 cc,6,268.7PS@3800rpm,620Nm@1600rpm,,,142 km/litre,Sedan,RWD,Injection
+Volvo,Xc60,Inscription D5,2022,Crystal White,#F5F5F5,"Rs. 59,90,000",,Diesel,1969 cc,5,233PS@4250rpm,480Nm@1750rpm,11.7 km/litre,18.8 km/litre,18.8 km/litre,SUV,AWD,Injection
+Volvo,Xc60,Inscription D5,2022,Denim Blue,#2F519F,"Rs. 59,90,000",,Diesel,1969 cc,5,233PS@4250rpm,480Nm@1750rpm,11.7 km/litre,18.8 km/litre,18.8 km/litre,SUV,AWD,Injection
+Bmw,X4,Xdrive30D M Sport X,2020,Black Sapphire,#0F0F0F,"Rs. 65,90,000",,Diesel,2993 cc,6,265PS@4000RPM,620Nm@2000-2500RPM,,,16.4 km/litre,SUV,AWD,Injection
+Bmw,X4,Xdrive30D M Sport X,2020,Brooklyn Grey,#808080,"Rs. 65,90,000",,Diesel,2993 cc,6,265PS@4000RPM,620Nm@2000-2500RPM,,,16.4 km/litre,SUV,AWD,Injection

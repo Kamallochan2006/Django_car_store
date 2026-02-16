@@ -1,0 +1,2391 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% load static %} 
+
+{% block title %}Car Store - Premium Cars{% endblock %}
+
+{% block content %}
+<style>
+.hero-modern {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
+    min-height: auto;
+    position: relative;
+    overflow: visible; 
+    padding: 80px 0 100px;
+}
+
+/* Interactive Background Canvas */
+.interactive-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.6;
+}
+
+.hero-modern > .container {
+    position: relative;
+    z-index: 2;
+}
+
+.hero-modern::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 60%;
+    height: 100%;
+    background: radial-gradient(ellipse at 70% 50%, rgba(251, 191, 36, 0.08) 0%, transparent 60%);
+    pointer-events: none;
+}
+
+.hero-modern::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 120px;
+    background: linear-gradient(to top, var(--bg-primary) 0%, transparent 100%);
+    pointer-events: none;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.hero-tagline {
+    color: #fbbf24;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.hero-tagline::before {
+    content: '';
+    width: 30px;
+    height: 2px;
+    background: #fbbf24;
+}
+
+.hero-title {
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.1;
+    margin-bottom: 24px;
+}
+
+.hero-title span {
+    color: #fbbf24;
+}
+
+.hero-subtitle {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.1rem;
+    line-height: 1.7;
+    max-width: 480px;
+    margin-bottom: 32px;
+}
+
+/* Button Styles */
+.btn-hero-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 32px;
+    background: #fbbf24;
+    color: #1a1a2e;
+    border: none;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 24px rgba(251, 191, 36, 0.3);
+}
+
+.btn-hero-primary:hover {
+    background: #f59e0b;
+    color: #1a1a2e;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(251, 191, 36, 0.4);
+}
+
+.btn-hero-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 32px;
+    background: transparent;
+    color: #ffffff;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.btn-hero-secondary:hover {
+    border-color: #ffffff;
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* --- POP-OUT CAR STYLES --- */
+.hero-car-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.hero-composition {
+    position: relative;
+    width: 100%;
+    max-width: 650px;
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Attractive Background Behind Car - Dots Design */
+.hero-composition::before {
+    content: '';
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    background: 
+        radial-gradient(circle at 30% 40%, rgba(251, 191, 36, 0.4) 0%, transparent 50%),
+        radial-gradient(circle at 70% 60%, rgba(245, 158, 11, 0.3) 0%, transparent 50%),
+        radial-gradient(circle, rgba(251, 191, 36, 0.15) 0%, transparent 70%);
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+    animation: glowPulse 4s ease-in-out infinite;
+    filter: blur(30px);
+}
+
+/* Floating dots - Layer 1 */
+.hero-composition::after {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: #fbbf24;
+    border-radius: 50%;
+    top: 20%;
+    left: 30%;
+    z-index: 0;
+    box-shadow: 
+        150px 80px 0 6px rgba(251, 191, 36, 0.8),
+        280px 40px 0 4px rgba(251, 191, 36, 0.6),
+        50px 200px 0 8px rgba(251, 191, 36, 0.7),
+        320px 150px 0 5px rgba(251, 191, 36, 0.5),
+        180px 250px 0 7px rgba(251, 191, 36, 0.6);
+    animation: particleFloat 5s ease-in-out infinite;
+}
+
+/* Floating dots - Layer 2 */
+.hero-car-container::before {
+    content: '';
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: rgba(251, 191, 36, 0.9);
+    border-radius: 50%;
+    top: 40%;
+    left: 10%;
+    z-index: 0;
+    box-shadow: 
+        100px -30px 0 4px rgba(251, 191, 36, 0.5),
+        350px 60px 0 3px rgba(251, 191, 36, 0.4),
+        220px 180px 0 5px rgba(251, 191, 36, 0.6),
+        400px 120px 0 4px rgba(251, 191, 36, 0.3),
+        70px 280px 0 6px rgba(251, 191, 36, 0.5);
+    animation: particleFloat2 7s ease-in-out infinite;
+}
+
+/* Floating dots - Layer 3 */
+.hero-car-container::after {
+    content: '';
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: #fbbf24;
+    border-radius: 50%;
+    top: 60%;
+    left: 50%;
+    z-index: 0;
+    box-shadow: 
+        -80px -100px 0 3px rgba(251, 191, 36, 0.7),
+        60px -50px 0 5px rgba(251, 191, 36, 0.5),
+        -120px 80px 0 4px rgba(251, 191, 36, 0.6),
+        140px 30px 0 6px rgba(251, 191, 36, 0.4),
+        -40px 120px 0 3px rgba(251, 191, 36, 0.5);
+    animation: particleFloat3 6s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+    0%, 100% { opacity: 0.7; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 1; transform: translate(-50%, -50%) scale(1.15); }
+}
+
+@keyframes particleFloat {
+    0%, 100% { transform: translateY(0); opacity: 0.6; }
+    50% { transform: translateY(-20px); opacity: 1; }
+}
+
+@keyframes particleFloat2 {
+    0%, 100% { transform: translateY(0) translateX(0); opacity: 0.5; }
+    50% { transform: translateY(-15px) translateX(10px); opacity: 0.9; }
+}
+
+@keyframes particleFloat3 {
+    0%, 100% { transform: translateY(0) translateX(0); opacity: 0.7; }
+    50% { transform: translateY(-12px) translateX(-8px); opacity: 1; }
+}
+
+/* Layer 2: The Pop-Out Car */
+.hero-car-pop {
+    position: absolute;
+    width: 150%;
+    max-width: 950px;
+    bottom: -130px;
+    right: -150px;
+    z-index: 2;
+    filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.6));
+    pointer-events: none; 
+    transition: all 0.5s ease;
+}
+
+/* Floating Badges */
+/* Floating Badges - Liquid Glass UI */
+.floating-badge {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding: 14px 20px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    z-index: 3;
+    animation: floatBadge 3s infinite ease-in-out;
+}
+
+.badge-left {
+    left: -20px;
+    top: 40%;
+    animation-delay: 0s;
+}
+
+.badge-right {
+    right: -50px;
+    top: 20%;
+    text-align: left;
+    animation-delay: 0.5s;
+}
+
+@keyframes floatBadge {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+.badge-title { 
+    font-size: 0.7rem; 
+    color: rgba(255, 255, 255, 0.8); 
+    font-weight: 600; 
+    text-transform: uppercase; 
+    letter-spacing: 0.5px; 
+    margin-bottom: 4px;
+}
+
+.badge-value { 
+    font-size: 1rem; 
+    color: #ffffff; 
+    font-weight: 700;
+}
+
+.star-rating-hero .star {
+    font-size: 0.9rem;
+}
+
+/* Light mode adjustments for glass badges */
+[data-theme="light"] .floating-badge {
+    background: rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .badge-title {
+    color: rgba(0, 0, 0, 0.6);
+}
+
+[data-theme="light"] .badge-value {
+    color: #1e293b;
+}
+
+
+/* ... [Rest of your CSS: bottom-hero, search bar, etc.] ... */
+.hero-bottom {
+    position: relative;
+    z-index: 3;
+    margin-top: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+
+.hero-bottom-left h3 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.3;
+    margin-bottom: 0;
+}
+
+.hero-bottom-right {
+    max-width: 350px;
+}
+
+.hero-bottom-right p {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 16px;
+}
+
+.btn-read-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: transparent;
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.btn-read-more:hover {
+    background: #ffffff;
+    color: #1a1a2e;
+    border-color: #ffffff;
+}
+
+/* Search Bar Modern - Sticky with Glassmorphism Overlay */
+.search-bar-container {
+    position: sticky;
+    top: 80px;
+    z-index: 100;
+    margin-top: -50px;
+    padding: 0 15px;
+    max-width: 1320px;
+    margin-left: auto;
+    margin-right: auto;
+    transition: all 0.3s ease;
+}
+
+.search-modern {
+    background: rgba(17, 24, 39, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+[data-theme="light"] .search-modern {
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+}
+
+.search-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr auto;
+    gap: 16px;
+    align-items: center;
+}
+
+/* Desktop grid display override */
+@media (min-width: 768px) {
+    .d-md-grid {
+        display: grid !important;
+    }
+}
+
+@media (max-width: 992px) {
+    .search-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.search-field label {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+.search-field input,
+.search-field select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    background: var(--input-bg);
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.search-field input:focus,
+.search-field select:focus {
+    outline: none;
+    border-color: #fbbf24;
+    box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.15);
+}
+
+.btn-search {
+    padding: 14px 28px;
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    color: #1a1a2e;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 100%;
+    min-height: 48px;
+}
+
+.btn-search:hover {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(251, 191, 36, 0.3);
+}
+
+/* ===== MOBILE SEARCH BAR - Compact & Attractive ===== */
+.search-mobile-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.search-mobile-input {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-mobile-icon {
+    position: absolute;
+    left: 12px;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.search-mobile-field {
+    width: 100%;
+    padding: 10px 12px 10px 36px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background: var(--input-bg);
+    color: var(--text-primary);
+    font-size: 0.88rem;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.search-mobile-field:focus {
+    border-color: #fbbf24;
+    box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.15);
+}
+
+.search-mobile-field::placeholder {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.search-filter-toggle {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    background: var(--input-bg);
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    font-size: 0.9rem;
+}
+
+.search-filter-toggle.active {
+    background: rgba(251, 191, 36, 0.15);
+    border-color: #fbbf24;
+    color: #fbbf24;
+}
+
+.btn-search-mobile {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    border: none;
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    color: #1a1a2e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 10px rgba(251, 191, 36, 0.3);
+}
+
+.btn-search-mobile:active {
+    transform: scale(0.95);
+}
+
+/* Collapsible Filters */
+.search-filters-mobile {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), 
+                margin-top 0.35s ease,
+                opacity 0.3s ease;
+    opacity: 0;
+    margin-top: 0;
+}
+
+.search-filters-mobile.open {
+    max-height: 200px;
+    opacity: 1;
+    margin-top: 10px;
+}
+
+.search-filters-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+}
+
+.search-field-mini label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 3px;
+    font-weight: 600;
+}
+
+.search-field-mini label i {
+    font-size: 0.6rem;
+    color: #fbbf24;
+}
+
+.search-field-mini select {
+    width: 100%;
+    padding: 7px 6px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--input-bg);
+    color: var(--text-primary);
+    font-size: 0.78rem;
+    transition: all 0.3s ease;
+    outline: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%2394a3b8' d='M5 6L0 0h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 6px center;
+    background-size: 8px;
+    padding-right: 20px;
+}
+
+.search-field-mini select:focus {
+    border-color: #fbbf24;
+    box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.12);
+}
+
+/* Light mode mobile search adjustments */
+[data-theme="light"] .search-filter-toggle {
+    background: #f1f5f9;
+    border-color: #e2e8f0;
+    color: #475569;
+}
+
+[data-theme="light"] .search-filter-toggle.active {
+    background: rgba(245, 158, 11, 0.12);
+    border-color: #f59e0b;
+    color: #d97706;
+}
+
+/* Very small phones - stack filters 2 cols */
+@media (max-width: 380px) {
+    .search-filters-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    .search-filters-mobile.open {
+        max-height: 250px;
+    }
+}
+
+/* Hide mobile search elements on desktop */
+@media (min-width: 768px) {
+    .search-mobile-row,
+    .search-filters-mobile {
+        display: none !important;
+    }
+}
+
+/* Hide desktop grid on mobile */
+@media (max-width: 767.98px) {
+    .search-grid.d-none.d-md-grid {
+        display: none !important;
+    }
+    .search-modern {
+        padding: 12px 14px;
+        border-radius: 14px;
+    }
+    .search-bar-container {
+        margin-top: -20px;
+        padding: 0 12px;
+        top: 68px;
+    }
+}
+
+/* Stats Modern */
+.stats-modern {
+    padding: 60px 0;
+}
+
+.stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 30px;
+    text-align: center;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #fbbf24, #f59e0b, #fbbf24);
+    background-size: 200% 100%;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+}
+
+.stat-card::after {
+    content: '';
+    position: absolute;
+    bottom: -100%;
+    left: 50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(251, 191, 36, 0.1) 0%, transparent 60%);
+    transform: translateX(-50%);
+    transition: bottom 0.5s ease;
+    pointer-events: none;
+}
+
+.stat-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 25px 50px rgba(251, 191, 36, 0.15), 0 0 30px rgba(251, 191, 36, 0.08);
+    border-color: rgba(251, 191, 36, 0.5);
+}
+
+.stat-card:hover::before {
+    transform: scaleX(1);
+    animation: shimmer 1.5s infinite linear;
+}
+
+.stat-card:hover::after {
+    bottom: -50%;
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+.stat-icon {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.15) 0%, rgba(245, 158, 11, 0.1) 100%);
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    font-size: 1.6rem;
+    color: #fbbf24;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+.stat-icon::before {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    opacity: 0;
+    z-index: -1;
+    transition: opacity 0.4s ease;
+}
+
+.stat-card:hover .stat-icon {
+    transform: scale(1.1) rotate(5deg);
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.25) 0%, rgba(245, 158, 11, 0.2) 100%);
+    box-shadow: 0 10px 25px rgba(251, 191, 36, 0.3);
+}
+
+.stat-card:hover .stat-icon::before {
+    opacity: 0.2;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+    transition: all 0.3s ease;
+    position: relative;
+    display: inline-block;
+}
+
+.stat-card:hover .stat-number {
+    color: #fbbf24;
+    transform: scale(1.05);
+    text-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
+}
+
+.stat-label {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover .stat-label {
+    color: var(--text-primary);
+    letter-spacing: 0.5px;
+}
+
+/* Featured Cars Modern */
+.featured-section {
+    padding: 60px 0 80px;
+    background: var(--bg-secondary);
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.section-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.section-subtitle {
+    color: var(--text-muted);
+    font-size: 1rem;
+}
+
+.btn-see-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: transparent;
+    color: var(--text-primary);
+    border: 2px solid var(--border-color);
+    border-radius: 50px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.btn-see-all:hover {
+    background: #fbbf24;
+    border-color: #fbbf24;
+    color: #1a1a2e;
+}
+
+/* Brands Modern */
+.brands-section {
+    padding: 60px 0;
+}
+
+.brand-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 24px 16px;
+    text-align: center;
+    text-decoration: none;
+    color: var(--text-primary);
+    font-weight: 700;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    min-height: 120px;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.brand-card::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: radial-gradient(circle, rgba(251, 191, 36, 0.3) 0%, transparent 70%);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.5s ease, height 0.5s ease;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.brand-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    padding: 2px;
+    background: linear-gradient(135deg, transparent, transparent);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.4s ease, background 0.4s ease;
+    pointer-events: none;
+}
+
+.brand-card img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    filter: grayscale(100%) opacity(0.8);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    background: #ffffff;
+    border-radius: 50%;
+    padding: 12px;
+    position: relative;
+    z-index: 1;
+}
+
+.brand-card span {
+    position: relative;
+    z-index: 1;
+    transition: transform 0.3s ease, letter-spacing 0.3s ease;
+}
+
+.brand-card:hover {
+    background: rgba(251, 191, 36, 0.08);
+    color: #fbbf24;
+    transform: translateY(-8px) scale(1.03);
+    box-shadow: 0 20px 40px rgba(251, 191, 36, 0.2), 0 0 30px rgba(251, 191, 36, 0.1);
+    border-color: transparent;
+}
+
+.brand-card:hover::before {
+    width: 250%;
+    height: 250%;
+}
+
+.brand-card:hover::after {
+    opacity: 1;
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #fbbf24 100%);
+}
+
+.brand-card:hover img {
+    filter: grayscale(0%) opacity(1);
+    transform: scale(1.15) rotate(5deg);
+    box-shadow: 0 8px 20px rgba(251, 191, 36, 0.3);
+}
+
+.brand-card:hover span {
+    transform: translateY(-2px);
+    letter-spacing: 1px;
+}
+
+/* Staggered animation for brand cards */
+.brand-card {
+    animation: brandPulse 3s ease-in-out infinite;
+    animation-play-state: paused;
+}
+
+.brand-card:hover {
+    animation-play-state: running;
+}
+
+@keyframes brandPulse {
+    0%, 100% { box-shadow: 0 20px 40px rgba(251, 191, 36, 0.2), 0 0 30px rgba(251, 191, 36, 0.1); }
+    50% { box-shadow: 0 20px 40px rgba(251, 191, 36, 0.3), 0 0 50px rgba(251, 191, 36, 0.2); }
+}
+
+/* CTA Modern */
+.cta-modern {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border-radius: 24px;
+    padding: 60px 40px;
+    margin: 40px 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.cta-modern .cta-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s ease, background 0.15s ease;
+}
+
+.cta-modern:hover .cta-glow {
+    opacity: 1;
+}
+
+.cta-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.cta-title {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 12px;
+}
+
+.cta-text {
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 24px;
+}
+
+.cta-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Animations */
+@keyframes bulkSlideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+.stat-card,
+.brand-card {
+    opacity: 0;
+    animation: bulkSlideUp 0.5s ease-out forwards;
+}
+
+/* Animate the wrappers for cars to allow inner hover effects to handle transform smoothly */
+#carGrid > div {
+    opacity: 0;
+    animation: bulkSlideUp 0.5s ease-out forwards;
+}
+
+.stat-card:nth-child(1) { animation-delay: 0.1s; }
+.stat-card:nth-child(2) { animation-delay: 0.15s; }
+.stat-card:nth-child(3) { animation-delay: 0.2s; }
+.stat-card:nth-child(4) { animation-delay: 0.25s; }
+
+#carGrid > div:nth-child(1) { animation-delay: 0.1s; }
+#carGrid > div:nth-child(2) { animation-delay: 0.15s; }
+#carGrid > div:nth-child(3) { animation-delay: 0.2s; }
+#carGrid > div:nth-child(4) { animation-delay: 0.25s; }
+#carGrid > div:nth-child(5) { animation-delay: 0.3s; }
+#carGrid > div:nth-child(6) { animation-delay: 0.35s; }
+
+/* ============================================
+   MOBILE RESPONSIVE OVERRIDES
+   ============================================ */
+
+/* Tablet (max-width: 992px) */
+@media (max-width: 992px) {
+    .hero-modern {
+        padding: 40px 0 60px;
+        min-height: auto;
+    }
+
+    .hero-car-container {
+        margin-top: 30px;
+    }
+
+    .hero-composition {
+        height: 300px;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .hero-car-pop {
+        width: 130%;
+        max-width: 650px;
+        bottom: -80px;
+        right: -80px;
+    }
+
+    .hero-composition::before {
+        width: 350px;
+        height: 350px;
+    }
+
+    .floating-badge {
+        padding: 10px 14px;
+        border-radius: 12px;
+    }
+
+    .badge-left {
+        left: 0;
+        top: 30%;
+    }
+
+    .badge-right {
+        right: -10px;
+        top: 10%;
+    }
+
+    .badge-value {
+        font-size: 0.9rem;
+    }
+
+    .hero-bottom {
+        margin-top: 30px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .hero-bottom-right {
+        max-width: 100%;
+    }
+
+    .search-bar-container {
+        margin-top: -30px;
+    }
+
+    .search-modern {
+        padding: 18px;
+        border-radius: 16px;
+    }
+
+    .stat-card {
+        padding: 24px 16px;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+    }
+
+    .stat-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 14px;
+        font-size: 1.3rem;
+    }
+
+    .cta-modern {
+        padding: 50px 30px;
+        border-radius: 20px;
+        margin: 30px 0;
+    }
+
+    .section-header {
+        margin-bottom: 30px;
+    }
+
+    .section-title {
+        font-size: 1.6rem;
+    }
+}
+
+/* Small Tablets / Large Phones (max-width: 768px) */
+@media (max-width: 768px) {
+    .hero-modern {
+        padding: 32px 0 50px;
+    }
+
+    .hero-content {
+        text-align: center;
+    }
+
+    .hero-tagline {
+        justify-content: center;
+        font-size: 0.8rem;
+    }
+
+    .hero-title {
+        font-size: 2.2rem;
+    }
+
+    .hero-subtitle {
+        max-width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        font-size: 1rem;
+    }
+
+    .hero-content .d-flex {
+        justify-content: center;
+    }
+
+    .hero-composition {
+        height: 260px;
+        max-width: 420px;
+    }
+
+    .hero-car-pop {
+        width: 120%;
+        max-width: 520px;
+        bottom: -60px;
+        right: -50px;
+    }
+
+    /* Hide floating dots on tablets */
+    .hero-composition::after,
+    .hero-car-container::before,
+    .hero-car-container::after {
+        display: none;
+    }
+
+    .hero-composition::before {
+        width: 280px;
+        height: 280px;
+    }
+
+    .floating-badge {
+        padding: 8px 12px;
+        border-radius: 10px;
+    }
+
+    .badge-title {
+        font-size: 0.6rem;
+    }
+
+    .badge-value {
+        font-size: 0.85rem;
+    }
+
+    .badge-left {
+        left: -5px;
+        top: 25%;
+    }
+
+    .badge-right {
+        right: -5px;
+        top: 5%;
+    }
+
+    .hero-bottom {
+        background: rgba(255, 255, 255, 0.06);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        padding: 20px;
+        text-align: center;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+
+    [data-theme="light"] .hero-bottom {
+        background: rgba(0, 0, 0, 0.04);
+        border: 1px solid rgba(0, 0, 0, 0.06);
+    }
+
+    .hero-bottom-left h3 {
+        font-size: 1.3rem;
+        text-align: center;
+        line-height: 1.35;
+    }
+
+    .hero-bottom-left h3 br {
+        display: none;
+    }
+
+    .hero-bottom-right {
+        max-width: 100%;
+        text-align: center;
+    }
+
+    .hero-bottom-right p {
+        font-size: 0.85rem;
+        margin-bottom: 12px;
+    }
+
+    .hero-bottom-right .btn-read-more {
+        display: inline-flex;
+        margin: 0 auto;
+    }
+
+    .brands-section .brand-card img {
+        width: 60px;
+        height: 60px;
+        padding: 8px;
+    }
+
+    .brand-card {
+        min-height: 100px;
+        padding: 16px 12px;
+        border-radius: 12px;
+        gap: 8px;
+    }
+
+    .brand-card span {
+        font-size: 0.8rem;
+    }
+
+    .featured-section {
+        padding: 40px 0 60px;
+    }
+
+    .brands-section {
+        padding: 40px 0;
+    }
+
+    .stats-modern {
+        padding: 40px 0;
+    }
+}
+
+/* Phones (max-width: 576px) */
+@media (max-width: 576px) {
+    .hero-modern {
+        padding: 24px 0 40px;
+    }
+
+    .hero-modern::after {
+        height: 60px;
+    }
+
+    .hero-tagline {
+        font-size: 0.75rem;
+        letter-spacing: 1.5px;
+        margin-bottom: 10px;
+    }
+
+    .hero-title {
+        font-size: 1.8rem;
+        margin-bottom: 16px;
+    }
+
+    .hero-subtitle {
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin-bottom: 24px;
+    }
+
+    .btn-hero-primary,
+    .btn-hero-secondary {
+        padding: 12px 24px;
+        font-size: 0.9rem;
+        border-radius: 50px;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .hero-content .d-flex {
+        flex-direction: column;
+        gap: 10px !important;
+        width: 100%;
+    }
+
+    .hero-composition {
+        height: 220px;
+        max-width: 340px;
+    }
+
+    .hero-car-pop {
+        width: 115%;
+        max-width: 400px;
+        bottom: -40px;
+        right: -30px;
+        filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.5));
+    }
+
+    .hero-composition::before {
+        width: 220px;
+        height: 220px;
+        filter: blur(20px);
+    }
+
+    /* Hide floating dots on mobile */
+    .hero-composition::after,
+    .hero-car-container::before,
+    .hero-car-container::after {
+        display: none;
+    }
+
+    .floating-badge {
+        padding: 6px 10px;
+        border-radius: 8px;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+    }
+
+    .badge-left {
+        left: 0;
+        top: 15%;
+    }
+
+    .badge-right {
+        right: 0;
+        top: 0;
+    }
+
+    .badge-title {
+        font-size: 0.55rem;
+        letter-spacing: 0.3px;
+        margin-bottom: 2px;
+    }
+
+    .badge-value {
+        font-size: 0.75rem;
+    }
+
+    .star-rating-hero .star {
+        font-size: 0.7rem;
+    }
+
+    .hero-bottom {
+        margin-top: 16px;
+        gap: 8px;
+        padding: 16px;
+        border-radius: 14px;
+    }
+
+    .hero-bottom-left h3 {
+        font-size: 1.1rem;
+    }
+
+    .hero-bottom-right p {
+        font-size: 0.8rem;
+        line-height: 1.5;
+        margin-bottom: 10px;
+    }
+
+    .btn-read-more {
+        padding: 8px 18px;
+        font-size: 0.8rem;
+        border-radius: 8px;
+    }
+
+    /* Search Bar Mobile - handled by dedicated mobile styles above */
+
+    /* Stats Mobile - 2x2 compact grid */
+    .stats-modern {
+        padding: 24px 0;
+    }
+
+    .stat-card {
+        padding: 16px 10px;
+        border-radius: 14px;
+    }
+
+    .stat-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        font-size: 0.95rem;
+        margin-bottom: 8px;
+    }
+
+    .stat-number {
+        font-size: 1.4rem;
+        margin-bottom: 2px;
+    }
+
+    .stat-label {
+        font-size: 0.7rem;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-3px) scale(1.01);
+    }
+
+    /* Featured Section Mobile */
+    .featured-section {
+        padding: 30px 0 50px;
+    }
+
+    .section-header {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .section-title {
+        font-size: 1.3rem;
+        margin-bottom: 2px;
+    }
+
+    .section-subtitle {
+        font-size: 0.8rem;
+    }
+
+    .btn-see-all {
+        padding: 8px 16px;
+        font-size: 0.78rem;
+        border-width: 1.5px;
+        border-radius: 40px;
+        gap: 5px;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+    /* Brands Mobile */
+    .brands-section {
+        padding: 30px 0;
+    }
+
+    .brands-section .text-center.mb-5 {
+        margin-bottom: 1.5rem !important;
+    }
+
+    .brand-card {
+        min-height: 90px;
+        padding: 14px 8px;
+        border-radius: 12px;
+        gap: 6px;
+    }
+
+    .brand-card img {
+        width: 48px;
+        height: 48px;
+        padding: 6px;
+    }
+
+    .brand-card span {
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .brand-card:hover {
+        transform: translateY(-4px) scale(1.02);
+    }
+
+    /* CTA Mobile */
+    .cta-modern {
+        padding: 32px 20px;
+        border-radius: 16px;
+        margin: 20px 0;
+    }
+
+    .cta-title {
+        font-size: 1.4rem;
+        margin-bottom: 10px;
+    }
+
+    .cta-text {
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+    }
+
+    .cta-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .cta-buttons .btn-hero-primary,
+    .cta-buttons .btn-hero-secondary {
+        width: 100%;
+        justify-content: center;
+        padding: 14px 24px;
+    }
+
+    /* Transition Mobile */
+    .transition-car {
+        font-size: 2rem;
+    }
+}
+
+/* Very Small Phones (max-width: 380px) */
+@media (max-width: 380px) {
+    .hero-title {
+        font-size: 1.55rem;
+    }
+
+    .hero-subtitle {
+        font-size: 0.85rem;
+    }
+
+    .hero-composition {
+        height: 180px;
+        max-width: 280px;
+    }
+
+    .hero-car-pop {
+        width: 110%;
+        max-width: 320px;
+        bottom: -30px;
+        right: -20px;
+    }
+
+    .floating-badge {
+        padding: 5px 8px;
+    }
+
+    .badge-title {
+        font-size: 0.5rem;
+    }
+
+    .badge-value {
+        font-size: 0.65rem;
+    }
+
+    .stat-number {
+        font-size: 1.25rem;
+    }
+
+    .stat-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 0.85rem;
+    }
+
+    .stat-label {
+        font-size: 0.65rem;
+    }
+
+    .section-title {
+        font-size: 1.25rem;
+    }
+
+    .cta-title {
+        font-size: 1.2rem;
+    }
+
+    .brand-card img {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+/* Light Mode Hero Styles */
+[data-theme="light"] .hero-modern {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
+}
+
+[data-theme="light"] .hero-modern::before {
+    background: radial-gradient(ellipse at 70% 50%, rgba(251, 191, 36, 0.15) 0%, transparent 60%);
+}
+
+[data-theme="light"] .hero-modern::after {
+    background: linear-gradient(to top, var(--bg-primary) 0%, transparent 100%);
+}
+
+[data-theme="light"] .hero-title {
+    color: #1e293b;
+}
+
+[data-theme="light"] .hero-subtitle {
+    color: #64748b;
+}
+
+[data-theme="light"] .btn-hero-secondary {
+    color: #1e293b;
+    border-color: rgba(30, 41, 59, 0.3);
+}
+
+[data-theme="light"] .btn-hero-secondary:hover {
+    border-color: #1e293b;
+    color: #1e293b;
+    background: rgba(30, 41, 59, 0.1);
+}
+
+[data-theme="light"] .hero-bottom-left h3 {
+    color: #1e293b;
+}
+
+[data-theme="light"] .hero-bottom-right p {
+    color: #64748b;
+}
+
+[data-theme="light"] .btn-read-more {
+    color: #1e293b;
+    border-color: rgba(30, 41, 59, 0.4);
+}
+
+[data-theme="light"] .btn-read-more:hover {
+    background: #1e293b;
+    color: #ffffff;
+    border-color: #1e293b;
+}
+
+[data-theme="light"] .cta-modern {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+}
+
+[data-theme="light"] .cta-modern .btn-hero-secondary {
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+[data-theme="light"] .cta-modern .btn-hero-secondary:hover {
+    border-color: #ffffff;
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="light"] .cta-title {
+    color: #ffffff;
+}
+
+[data-theme="light"] .cta-text {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+</style>
+
+<section class="hero-modern">
+    <canvas id="interactiveBg" class="interactive-bg"></canvas>
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-5 hero-content">
+                <div class="hero-tagline">Premium Cars</div>
+                <h1 class="hero-title">Choose your <span>dream car</span></h1>
+                <p class="hero-subtitle">Browse the latest launches, compare trims, and secure transparent EMI plans in minutes. Your perfect ride awaits.</p>
+                <div class="d-flex gap-3 flex-wrap">
+                    <a href="{% url 'car_list' %}" class="btn-hero-primary">
+                        <i class="fas fa-car"></i> BOOK NOW
+                    </a>
+                    <a href="{% url 'contact' %}" class="btn-hero-secondary">
+                        <i class="fas fa-phone"></i> Contact Us
+                    </a>
+                </div>
+            </div>
+            
+            <div class="col-lg-7">
+                <div class="hero-car-container">
+                    <div class="hero-composition">
+                        
+                        <img src="{% static 'images/hero_car.png' %}" class="hero-car-pop" alt="Pop Out Car">
+                        
+                        <div class="floating-badge badge-left">
+                            <div class="badge-title">Featured Model</div>
+                            <div class="star-rating-hero mt-1">
+                                <span class="star" style="color: #fbbf24;">★</span>
+                                <span class="star" style="color: #fbbf24;">★</span>
+                                <span class="star" style="color: #fbbf24;">★</span>
+                                <span class="star" style="color: #fbbf24;">★</span>
+                                <span class="star" style="color: #d1d5db;">★</span>
+                            </div>
+                        </div>
+
+                        <div class="floating-badge badge-right">
+                            <div class="badge-title">Brands</div>
+                            <div class="badge-value">{{ total_brands }}+ Available</div>
+                            <div class="badge-title mt-2">Cars</div>
+                            <div class="badge-value">{{ total_cars }}+ Models</div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="hero-bottom">
+            <div class="hero-bottom-left">
+                <h3>We are the leaders<br>in automotive industry</h3>
+            </div>
+            <div class="hero-bottom-right">
+                <p>At our store, we strive to excel in every service we provide, adding value for our customers wherever possible.</p>
+                <a href="{% url 'about' %}" class="btn-read-more">
+                    Read more <svg class="arrow-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="search-bar-container">
+    <form class="search-modern" method="get" action="{% url 'car_list' %}" id="quickFilterForm">
+        <!-- Mobile: Compact search row with filter toggle -->
+        <div class="search-mobile-row d-md-none">
+            <div class="search-mobile-input">
+                <i class="fas fa-search search-mobile-icon"></i>
+                <input type="text" name="q" placeholder="Search brand, model..." class="search-mobile-field">
+            </div>
+            <button type="button" class="search-filter-toggle" id="filterToggle" aria-label="Toggle filters">
+                <i class="fas fa-sliders-h"></i>
+            </button>
+            <button type="submit" class="btn-search-mobile">
+                <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+
+        <!-- Mobile: Collapsible filters -->
+        <div class="search-filters-mobile d-md-none" id="filtersCollapse">
+            <div class="search-filters-grid">
+                <div class="search-field-mini">
+                    <label><i class="fas fa-tag"></i> Brand</label>
+                    <select name="brand">
+                        <option value="">All Brands</option>
+                        {% for brand in brands %}
+                        <option value="{{ brand }}">{{ brand }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="search-field-mini">
+                    <label><i class="fas fa-wallet"></i> Budget</label>
+                    <select name="max_price">
+                        <option value="">Any Budget</option>
+                        <option value="1000000">Up to ₹10L</option>
+                        <option value="1500000">Up to ₹15L</option>
+                        <option value="2500000">Up to ₹25L</option>
+                        <option value="4000000">Up to ₹40L</option>
+                    </select>
+                </div>
+                <div class="search-field-mini">
+                    <label><i class="fas fa-gas-pump"></i> Fuel</label>
+                    <select name="fuel_type">
+                        <option value="">All Types</option>
+                        <option value="petrol">Petrol</option>
+                        <option value="diesel">Diesel</option>
+                        <option value="electric">Electric</option>
+                        <option value="cng">CNG</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Desktop: Original grid layout -->
+        <div class="search-grid d-none d-md-grid">
+            <div class="search-field">
+                <label>Search</label>
+                <input type="text" name="q" placeholder="Search by brand, model...">
+            </div>
+            <div class="search-field">
+                <label>Brand</label>
+                <select name="brand">
+                    <option value="">All Brands</option>
+                    {% for brand in brands %}
+                    <option value="{{ brand }}">{{ brand }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="search-field">
+                <label>Budget</label>
+                <select name="max_price">
+                    <option value="">Any Budget</option>
+                    <option value="1000000">Up to ₹10 Lakh</option>
+                    <option value="1500000">Up to ₹15 Lakh</option>
+                    <option value="2500000">Up to ₹25 Lakh</option>
+                    <option value="4000000">Up to ₹40 Lakh</option>
+                </select>
+            </div>
+            <div class="search-field">
+                <label>Fuel Type</label>
+                <select name="fuel_type">
+                    <option value="">All Types</option>
+                    <option value="petrol">Petrol</option>
+                    <option value="diesel">Diesel</option>
+                    <option value="electric">Electric</option>
+                    <option value="cng">CNG</option>
+                </select>
+            </div>
+            <button type="submit" class="btn-search">
+                <i class="fas fa-search"></i> Search
+            </button>
+        </div>
+    </form>
+</div>
+
+<section class="stats-modern">
+    <div class="container">
+        <div class="row g-3 g-md-4">
+            <div class="col-6 col-lg-3">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-car"></i></div>
+                    <div class="stat-number">{{ total_cars }}+</div>
+                    <div class="stat-label">Cars Available</div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-tags"></i></div>
+                    <div class="stat-number">{{ total_brands }}+</div>
+                    <div class="stat-label">Brands Supported</div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-star"></i></div>
+                    <div class="stat-number">{% if avg_rating %}{{ avg_rating }}{% else %}N/A{% endif %}</div>
+                    <div class="stat-label">Buyer Rating</div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-users"></i></div>
+                    <div class="stat-number">{{ total_customers }}+</div>
+                    <div class="stat-label">Happy Owners</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="featured-section">
+    <div class="container">
+        <div class="section-header">
+            <div>
+                <h2 class="section-title">Featured Cars</h2>
+                <p class="section-subtitle">Fresh arrivals curated for you</p>
+            </div>
+            <a href="{% url 'car_list' %}" class="btn-see-all">
+                See all <svg class="arrow-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+        </div>
+        <div class="row" id="carGrid">
+            {% for item in cars %}
+            {% include 'includes/car_card.html' with item=item %}                        
+
+            {% empty %}
+            <div class="col-12 text-center">
+                <p class="text-muted">No cars available at the moment.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="brands-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">Popular Brands</h2>
+            <p class="section-subtitle">Click a brand to view all cars</p>
+        </div>
+        <div class="row g-3 justify-content-center">
+            <div class="col-6 col-md-2">
+                <a href="{% url 'car_list' %}?brand=Tata" class="brand-card">
+                    <img src="https://www.carlogos.org/car-logos/tata-logo.png" alt="Tata Motors">
+                    <span>Tata</span>
+                </a>
+            </div>
+            <div class="col-6 col-md-2">
+                <a href="{% url 'car_list' %}?brand=Mahindra" class="brand-card">
+                    <img src="https://www.carlogos.org/car-logos/mahindra-logo.png" alt="Mahindra">
+                    <span>Mahindra</span>
+                </a>
+            </div>
+            <div class="col-6 col-md-2">
+                <a href="{% url 'car_list' %}?brand=Hyundai" class="brand-card">
+                    <img src="https://www.carlogos.org/car-logos/hyundai-logo-2011.png" alt="Hyundai">
+                    <span>Hyundai</span>
+                </a>
+            </div>
+            <div class="col-6 col-md-2">
+                <a href="{% url 'car_list' %}?brand=Honda" class="brand-card">
+                    <img src="https://www.carlogos.org/car-logos/honda-logo-2000.png" alt="Honda">
+                    <span>Honda</span>
+                </a>
+            </div>
+            <div class="col-6 col-md-2">
+                <a href="{% url 'car_list' %}?brand=Toyota" class="brand-card">
+                    <img src="https://www.carlogos.org/car-logos/toyota-logo-2020-europe-download.png" alt="Toyota">
+                    <span>Toyota</span>
+                </a>
+            </div>
+            <div class="col-6 col-md-2">
+                <a href="{% url 'car_list' %}?brand=Volkswagen" class="brand-card">
+                    <img src="https://www.carlogos.org/car-logos/volkswagen-logo.png" alt="Volkswagen">
+                    <span>Volkswagen</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="container">
+    <div class="cta-modern" id="ctaModern">
+        <div class="cta-glow" id="ctaGlow"></div>
+        <div class="cta-content">
+            <h2 class="cta-title">Ready for a Test Drive?</h2>
+            <p class="cta-text">Visit our showroom or contact us to schedule your perfect test drive experience</p>
+            <div class="cta-buttons">
+                <a href="{% url 'car_list' %}" class="btn-hero-primary">
+                    <i class="fas fa-car"></i> Browse Cars
+                </a>
+                <a href="{% url 'contact' %}" class="btn-hero-secondary">
+                    <i class="fas fa-envelope"></i> Contact Us
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div id="pageTransition" class="page-transition">
+    <div class="transition-content">
+        <i class="fas fa-car-side transition-car"></i>
+        <p>Finding your perfect ride...</p>
+    </div>
+</div>
+
+<style>
+/* Page transition effect */
+.page-transition {
+    position: fixed;
+    inset: 0;
+    background: var(--bg-primary);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.page-transition.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.transition-content {
+    text-align: center;
+}
+
+.transition-car {
+    font-size: 3rem;
+    color: #fbbf24;
+    animation: driveCar 1s ease-in-out infinite;
+}
+
+@keyframes driveCar {
+    0%, 100% { transform: translateX(-20px); }
+    50% { transform: translateX(20px); }
+}
+
+.transition-content p {
+    margin-top: 1rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('quickFilterForm');
+    const pageTransition = document.getElementById('pageTransition');
+
+    // Mobile filter toggle
+    const filterToggle = document.getElementById('filterToggle');
+    const filtersCollapse = document.getElementById('filtersCollapse');
+    if (filterToggle && filtersCollapse) {
+        filterToggle.addEventListener('click', function() {
+            filtersCollapse.classList.toggle('open');
+            filterToggle.classList.toggle('active');
+        });
+    }
+
+    // Handle form submission with transition
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Build query string
+        const formData = new FormData(form);
+        const params = new URLSearchParams();
+        for (const [key, value] of formData) {
+            if (value) params.append(key, value);
+        }
+        
+        // Show page transition
+        pageTransition.classList.add('active');
+        
+        // Navigate after animation
+        setTimeout(() => {
+            const url = form.action + (params.toString() ? '?' + params.toString() : '');
+            window.location.href = url;
+        }, 400);
+    });
+});
+
+
+
+// ===== INTERACTIVE BACKGROUND ANIMATION =====
+(function() {
+    const canvas = document.getElementById('interactiveBg');
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    const heroSection = canvas.closest('.hero-modern');
+    let particles = [];
+    let mouseX = -9999;
+    let mouseY = -9999;
+    let targetMouseX = -9999;
+    let targetMouseY = -9999;
+    let smoothMouseX = -9999;
+    let smoothMouseY = -9999;
+    let animationId = null;
+    let lastFrameTime = 0;
+    let isInView = true;
+    let isPaused = false;
+    let canvasWidth = 0;
+    let canvasHeight = 0;
+    
+    const MAX_DPR = 1.5;
+    const TARGET_FPS = 60;
+    const frameInterval = 1000 / TARGET_FPS;
+    const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let prefersReducedMotion = reducedMotionQuery.matches;
+    
+    // Resize canvas to fill hero section (with capped DPR for performance)
+    function resizeCanvas() {
+        if (heroSection) {
+            canvasWidth = heroSection.offsetWidth;
+            canvasHeight = heroSection.offsetHeight;
+            const dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
+            canvas.style.width = `${canvasWidth}px`;
+            canvas.style.height = `${canvasHeight}px`;
+            canvas.width = Math.floor(canvasWidth * dpr);
+            canvas.height = Math.floor(canvasHeight * dpr);
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+    }
+    
+    // Particle class
+    class Particle {
+        constructor() {
+            this.x = Math.random() * canvasWidth;
+            this.y = Math.random() * canvasHeight;
+            this.size = Math.random() * 3 + 1;
+            this.baseX = this.x;
+            this.baseY = this.y;
+            this.density = (Math.random() * 30) + 10;
+            this.vx = Math.random() * 0.3 - 0.15;
+            this.vy = Math.random() * 0.3 - 0.15;
+        }
+        
+        update() {
+            // Gentle drift always happens
+            this.baseX += this.vx;
+            this.baseY += this.vy;
+            
+            // Wrap around edges
+            if (this.baseX < 0) this.baseX = canvasWidth;
+            if (this.baseX > canvasWidth) this.baseX = 0;
+            if (this.baseY < 0) this.baseY = canvasHeight;
+            if (this.baseY > canvasHeight) this.baseY = 0;
+            
+            // Mouse interaction
+            const dx = smoothMouseX - this.x;
+            const dy = smoothMouseY - this.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            const maxDistance = 150;
+            
+            if (distance < maxDistance) {
+                // Push away from mouse
+                const forceDirectionX = dx / distance;
+                const forceDirectionY = dy / distance;
+                const force = (maxDistance - distance) / maxDistance;
+                const pushX = forceDirectionX * force * this.density * 0.4;
+                const pushY = forceDirectionY * force * this.density * 0.4;
+                
+                this.x -= pushX;
+                this.y -= pushY;
+            }
+            
+            // Always drift toward base position smoothly
+            const toBaseX = this.baseX - this.x;
+            const toBaseY = this.baseY - this.y;
+            this.x += toBaseX * 0.04;
+            this.y += toBaseY * 0.04;
+        }
+        
+        draw() {
+            // Calculate distance from mouse for color effect
+            const dx = smoothMouseX - this.x;
+            const dy = smoothMouseY - this.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            // Color shifts based on distance to mouse
+            let hue = 45; // Golden yellow base
+            let alpha = 0.6;
+            
+            if (distance < 150) {
+                hue = 200 + (distance / 150) * 100; // Blue to golden
+                alpha = 0.9;
+            }
+            
+            ctx.fillStyle = `hsla(${hue}, 70%, 60%, ${alpha})`;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Glow effect
+            if (distance < 120) {
+                ctx.shadowBlur = 12;
+                ctx.shadowColor = `hsla(${hue}, 70%, 60%, 0.45)`;
+            } else {
+                ctx.shadowBlur = 0;
+            }
+        }
+    }
+    
+    // Connect particles with lines
+    function connectParticles() {
+        const maxDistance = 110;
+        const maxDistanceSq = maxDistance * maxDistance;
+        for (let i = 0; i < particles.length; i++) {
+            let connections = 0;
+            for (let j = i + 1; j < particles.length; j++) {
+                const dx = particles[i].x - particles[j].x;
+                const dy = particles[i].y - particles[j].y;
+                const distanceSq = dx * dx + dy * dy;
+                
+                if (distanceSq < maxDistanceSq) {
+                    const distance = Math.sqrt(distanceSq);
+                    ctx.strokeStyle = `rgba(251, 191, 36, ${0.12 * (1 - distance / maxDistance)})`;
+                    ctx.lineWidth = 0.5;
+                    ctx.beginPath();
+                    ctx.moveTo(particles[i].x, particles[i].y);
+                    ctx.lineTo(particles[j].x, particles[j].y);
+                    ctx.stroke();
+                    connections++;
+                    if (connections >= 4) break;
+                }
+            }
+        }
+    }
+    
+    function renderFrame(updateParticles) {
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+        // Smooth mouse movement for softer interactions
+        if (smoothMouseX !== -9999 && smoothMouseY !== -9999) {
+            smoothMouseX += (targetMouseX - smoothMouseX) * 0.12;
+            smoothMouseY += (targetMouseY - smoothMouseY) * 0.12;
+        }
+        
+        particles.forEach(particle => {
+            if (updateParticles) particle.update();
+            particle.draw();
+        });
+        
+        connectParticles();
+        ctx.shadowBlur = 0;
+    }
+    
+    // Animation loop (throttled)
+    function animate(timestamp) {
+        if (isPaused || !isInView || prefersReducedMotion) {
+            animationId = null;
+            return;
+        }
+        
+        if (timestamp - lastFrameTime < frameInterval) {
+            animationId = requestAnimationFrame(animate);
+            return;
+        }
+        lastFrameTime = timestamp;
+        renderFrame(true);
+        animationId = requestAnimationFrame(animate);
+    }
+    
+    function start() {
+        if (!animationId) {
+            animationId = requestAnimationFrame(animate);
+        }
+    }
+    
+    function stop() {
+        if (animationId) {
+            cancelAnimationFrame(animationId);
+            animationId = null;
+        }
+    }
+    
+    // Initialize particles
+    function init() {
+        particles = [];
+        const isMobile = canvasWidth < 768;
+        const maxParticles = isMobile ? 80 : 500;
+        const numberOfParticles = Math.min(Math.floor((canvasWidth * canvasHeight) / (isMobile ? 15000 : 10000)), maxParticles);
+        
+        for (let i = 0; i < numberOfParticles; i++) {
+            particles.push(new Particle());
+        }
+    }
+    
+    // Mouse move tracking
+    if (heroSection) {
+        heroSection.addEventListener('mousemove', function(e) {
+            const rect = canvas.getBoundingClientRect();
+            targetMouseX = e.clientX - rect.left;
+            targetMouseY = e.clientY - rect.top;
+            if (smoothMouseX === -9999 || smoothMouseY === -9999) {
+                smoothMouseX = targetMouseX;
+                smoothMouseY = targetMouseY;
+            }
+        }, { passive: true });
+        
+        heroSection.addEventListener('mouseleave', function() {
+            targetMouseX = -9999;
+            targetMouseY = -9999;
+            smoothMouseX = -9999;
+            smoothMouseY = -9999;
+        });
+    }
+    
+    // Initialize on load
+    resizeCanvas();
+    init();
+    if (prefersReducedMotion) {
+        renderFrame(false);
+    } else {
+        start();
+    }
+    
+    // Handle resize
+    let resizeTimeout;
+    window.addEventListener('resize', function() {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            resizeCanvas();
+            init();
+            if (prefersReducedMotion) {
+                renderFrame(false);
+            }
+        }, 250);
+    });
+    
+    // Pause when tab is hidden
+    document.addEventListener('visibilitychange', function() {
+        isPaused = document.hidden;
+        if (isPaused) {
+            stop();
+        } else if (!prefersReducedMotion && isInView) {
+            start();
+        }
+    });
+    
+    // Pause when hero is off-screen
+    if ('IntersectionObserver' in window && heroSection) {
+        const observer = new IntersectionObserver((entries) => {
+            const entry = entries[0];
+            isInView = entry.isIntersecting;
+            if (!isInView) {
+                stop();
+            } else if (!prefersReducedMotion && !isPaused) {
+                start();
+            }
+        }, { root: null, threshold: 0.1 });
+        observer.observe(heroSection);
+    }
+    
+    // Respect reduced motion changes
+    reducedMotionQuery.addEventListener('change', (e) => {
+        prefersReducedMotion = e.matches;
+        if (prefersReducedMotion) {
+            stop();
+            renderFrame(false);
+        } else if (!isPaused && isInView) {
+            start();
+        }
+    });
+    
+    // Cleanup on page unload
+    window.addEventListener('beforeunload', function() {
+        stop();
+    });
+})();
+
+// ===== CTA MOUSE-FOLLOWING GLOW =====
+(function() {
+    const ctaBox = document.getElementById('ctaModern');
+    const ctaGlow = document.getElementById('ctaGlow');
+    if (!ctaBox || !ctaGlow) return;
+
+    let lastX = 0, lastY = 0;
+
+    ctaBox.addEventListener('mousemove', function(e) {
+        const rect = ctaBox.getBoundingClientRect();
+        lastX = e.clientX - rect.left;
+        lastY = e.clientY - rect.top;
+        ctaGlow.style.background = `radial-gradient(600px circle at ${lastX}px ${lastY}px, rgba(251, 191, 36, 0.25), transparent 60%)`;
+    }, { passive: true });
+
+    ctaBox.addEventListener('mouseleave', function() {
+        // Spread the light outward from last position
+        ctaGlow.style.background = `radial-gradient(1200px circle at ${lastX}px ${lastY}px, rgba(251, 191, 36, 0.15), transparent 70%)`;
+    });
+})();
+</script>
+{% endblock %}

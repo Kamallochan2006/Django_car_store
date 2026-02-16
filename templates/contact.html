@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block title %}Contact Us{% endblock %}
+
+{% block content %}
+<style>
+    .contact-page { max-width: 700px; margin: 0 auto; padding: 30px 20px; }
+    .contact-header { text-align: center; margin-bottom: 30px; }
+    .contact-header h1 { font-size: 1.5rem; font-weight: 600; margin-bottom: 5px; }
+    .contact-header p { font-size: 0.9rem; color: var(--text-muted); }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px; }
+    .contact-form { grid-column: 1 / -1; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; font-size: 0.8rem; margin-bottom: 4px; color: var(--text-secondary); }
+    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 8px 10px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-primary); color: var(--text-primary); font-size: 0.85rem; }
+    .form-group textarea { resize: none; }
+    .send-btn { width: 100%; padding: 10px; background: var(--accent-primary); color: white; border: none; border-radius: 6px; font-size: 0.9rem; cursor: pointer; }
+    .send-btn:hover { opacity: 0.9; }
+    .info-section { margin-bottom: 25px; }
+    .info-section h2 { font-size: 1rem; font-weight: 600; margin-bottom: 12px; }
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    .info-card { background: var(--bg-secondary); padding: 12px; border-radius: 8px; }
+    .info-card h3 { font-size: 0.8rem; font-weight: 600; margin-bottom: 6px; color: var(--text-primary); }
+    .info-card p { font-size: 0.75rem; color: var(--text-muted); margin: 0; line-height: 1.5; }
+    .map-container { border-radius: 8px; overflow: hidden; height: 200px; }
+    .map-container iframe { width: 100%; height: 100%; border: 0; }
+    @media (max-width: 576px) { .form-row, .info-grid { grid-template-columns: 1fr; } }
+</style>
+
+<div class="contact-page">
+    <div class="contact-header">
+        <h1>Contact Us</h1>
+        <p>We'd love to hear from you</p>
+    </div>
+
+    <div class="info-section">
+        <h2>Get in Touch</h2>
+        <div class="info-grid">
+            <div class="info-card">
+                <h3>Address</h3>
+                <p>{{ contact_info.address|linebreaksbr }}</p>
+            </div>
+            <div class="info-card">
+                <h3>Phone</h3>
+                <p>
+                    {{ contact_info.phone_1 }}
+                    {% if contact_info.phone_2 %}<br>{{ contact_info.phone_2 }}{% endif %}
+                </p>
+            </div>
+            <div class="info-card">
+                <h3>Email</h3>
+                <p>
+                    {{ contact_info.email_1 }}
+                    {% if contact_info.email_2 %}<br>{{ contact_info.email_2 }}{% endif %}
+                </p>
+            </div>
+            <div class="info-card">
+                <h3>Hours</h3>
+                <p>{{ contact_info.working_hours|linebreaksbr }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="info-section">
+        <h2>Send a Message</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Phone</label>
+                    <input type="tel" name="phone" placeholder="+91">
+                </div>
+                <div class="form-group">
+                    <label>Subject</label>
+                    <select name="subject">
+                        <option>General Inquiry</option>
+                        <option>Car Purchase</option>
+                        <option>Test Drive</option>
+                        <option>Feedback</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Message</label>
+                <textarea name="message" rows="3" required></textarea>
+            </div>
+            <button type="submit" class="send-btn">Send Message</button>
+        </form>
+    </div>
+
+    <div class="map-container">
+        <iframe src="{{ contact_info.map_embed_url }}" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+    </div>
+</div>
+{% endblock %}

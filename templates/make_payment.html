@@ -1,0 +1,290 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% load static %}
+
+{% block title %}Payment - {{ car.name }}{% endblock %}
+
+{% block content %}
+<style>
+    .payment-page { max-width: 700px; margin: 0 auto; padding: 20px; }
+    .car-summary { display: flex; gap: 15px; padding: 15px; background: var(--bg-secondary); border-radius: 8px; margin-bottom: 20px; }
+    .car-summary img { width: 120px; height: 80px; object-fit: cover; border-radius: 6px; }
+    .car-summary-info h5 { margin: 0 0 5px 0; font-size: 1rem; }
+    .car-summary-info p { margin: 0; font-size: 0.85rem; color: var(--text-muted); }
+    .car-summary-info .price { font-size: 1.1rem; font-weight: 600; color: var(--accent-success); margin-top: 5px; }
+    .section-title { font-size: 0.9rem; font-weight: 600; margin: 20px 0 10px 0; color: var(--text-muted); text-transform: uppercase; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; font-size: 0.8rem; margin-bottom: 4px; color: var(--text-secondary); }
+    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 8px 10px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-primary); color: var(--text-primary); font-size: 0.9rem; }
+    .form-group textarea { resize: none; }
+    .payment-type-btns { display: flex; gap: 10px; margin-bottom: 15px; }
+    .payment-type-btn { flex: 1; padding: 12px; border: 2px solid var(--border-color); border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s; background: var(--bg-primary); }
+    .payment-type-btn:hover { border-color: var(--accent-primary); }
+    .payment-type-btn.active { border-color: var(--accent-primary); background: rgba(99, 102, 241, 0.1); }
+    .payment-type-btn strong { display: block; font-size: 0.9rem; }
+    .payment-type-btn small { color: var(--text-muted); font-size: 0.75rem; }
+    .emi-section { background: var(--bg-secondary); padding: 15px; border-radius: 8px; margin-bottom: 15px; display: none; }
+    .emi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+    .emi-box { padding: 10px; background: var(--bg-primary); border-radius: 6px; text-align: center; }
+    .emi-box small { display: block; font-size: 0.7rem; color: var(--text-muted); }
+    .emi-box strong { font-size: 0.95rem; }
+    .emi-highlight { background: var(--accent-primary); color: white; }
+    .emi-highlight small { color: rgba(255,255,255,0.8); }
+    .payment-methods { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 15px; }
+    .method-btn { padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer; text-align: center; font-size: 0.8rem; transition: all 0.2s; background: var(--bg-primary); }
+    .method-btn:hover, .method-btn.active { border-color: var(--accent-primary); background: rgba(99, 102, 241, 0.1); }
+    .summary-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 0.85rem; }
+    .summary-row.total { border-top: 1px solid var(--border-color); padding-top: 12px; margin-top: 8px; font-weight: 600; font-size: 1rem; }
+    .terms-check { display: flex; align-items: flex-start; gap: 8px; margin: 15px 0; font-size: 0.8rem; }
+    .terms-check input { margin-top: 2px; }
+    .pay-btn { width: 100%; padding: 12px; background: var(--accent-success); color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; }
+    .pay-btn:hover { opacity: 0.9; }
+    .back-link { display: block; text-align: center; margin-top: 12px; color: var(--text-muted); font-size: 0.85rem; text-decoration: none; }
+    .back-link:hover { color: var(--accent-primary); }
+    .payment-buttons { display: flex; flex-direction: column; gap: 12px; }
+    .payment-divider { display: flex; align-items: center; gap: 12px; color: var(--text-muted); font-size: 0.8rem; }
+    .payment-divider::before, .payment-divider::after { content: ''; flex: 1; height: 1px; background: var(--border-color); }
+    .stripe-btn { width: 100%; padding: 12px; background: linear-gradient(135deg, #635bff 0%, #7a73ff 100%); color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.2s; }
+    .stripe-btn:hover { background: linear-gradient(135deg, #5851e8 0%, #6963f0 100%); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(99, 91, 255, 0.3); }
+    .stripe-btn .stripe-logo { height: 20px; width: auto; filter: brightness(0) invert(1); }
+    @media (max-width: 576px) { .form-row, .emi-grid { grid-template-columns: 1fr; } .payment-methods { grid-template-columns: repeat(2, 1fr); } }
+</style>
+
+<div class="payment-page">
+    <!-- Car Summary -->
+    <div class="car-summary">
+        {% if car_color and car_color.images.first %}
+        <img src="{{ car_color.images.first.image_url }}" alt="{{ car.name }} {{ car_color.name }}">
+        {% elif car.image_src %}
+        <img src="{{ car.image_src }}" alt="{{ car.name }}">
+        {% else %}
+        <div style="width: 120px; height: 80px; background: #eee; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #999; font-size: 0.8rem; border: 1px solid var(--border-color);">No Image</div>
+        {% endif %}
+        <div class="car-summary-info">
+            <h5>{{ car.brand }} {{ car.name }}</h5>
+            <p>{{ car.model_year }} • {{ car.get_fuel_type_display }} • {{ car.get_transmission_display }}</p>
+            {% if car_color %}
+            <div style="display: flex; align-items: center; gap: 6px; margin-top: 5px;">
+                <span style="width: 12px; height: 12px; border-radius: 50%; background: {{ car_color.hex_code }}; border: 1px solid #ccc;"></span>
+                <span style="font-size: 0.85rem; color: var(--text-secondary);">{{ car_color.name }}</span>
+            </div>
+            {% endif %}
+            <div class="price">{{ car.price_display }}</div>
+        </div>
+    </div>
+
+    <form method="post" id="paymentForm">
+        {% csrf_token %}
+        <input type="hidden" name="color" value="{{ car_color.id|default:'' }}">
+        
+        <!-- Buyer Details -->
+        <div class="section-title">Buyer Details</div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" name="name" value="{{ customer.name|default:'' }}" required>
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" name="email" value="{{ user.email|default:'' }}" required>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Phone</label>
+                <input type="tel" name="phone" placeholder="+91" value="{{ customer.phone|default:'' }}" required>
+            </div>
+            <div class="form-group">
+                <label>Address</label>
+                <textarea name="address" rows="1" required>{{ customer.address|default:'' }}</textarea>
+            </div>
+        </div>
+
+        <!-- Payment Type -->
+        <div class="section-title">Payment Type</div>
+        <div class="payment-type-btns">
+            <div class="payment-type-btn active" onclick="setPaymentType('full', this)">
+                <input type="radio" name="payment_type" id="fullPayment" value="full" checked style="display:none;">
+                <strong>Full Payment</strong>
+                <small>Pay complete amount</small>
+            </div>
+            <div class="payment-type-btn" onclick="setPaymentType('emi', this)">
+                <input type="radio" name="payment_type" id="emiPayment" value="emi" style="display:none;">
+                <strong>EMI</strong>
+                <small>Monthly installments</small>
+            </div>
+        </div>
+
+        <!-- EMI Section -->
+        <div class="emi-section" id="emiSection">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Down Payment (Min: ₹{{ minimum_down_payment|intcomma }})</label>
+                    <input type="number" name="down_payment" id="downPayment" value="{{ recommended_down_payment|floatformat:0 }}" min="{{ minimum_down_payment|floatformat:0 }}" max="{{ car.price_value|floatformat:0 }}" onchange="calculateEMI()">
+                </div>
+                <div class="form-group">
+                    <label>Tenure</label>
+                    <select name="emi_tenure" id="emiTenure" onchange="calculateEMI()">
+                        <option value="12">12 Months</option>
+                        <option value="24">24 Months</option>
+                        <option value="36" selected>36 Months</option>
+                        <option value="48">48 Months</option>
+                        <option value="60">60 Months</option>
+                    </select>
+                </div>
+            </div>
+            <small style="color: var(--text-muted); font-size: 0.75rem;">Interest Rate: {{ interest_rate_default|floatformat:1 }}% p.a.</small>
+            <div class="emi-grid">
+                <div class="emi-box emi-highlight">
+                    <small>Monthly EMI</small>
+                    <strong id="emiAmountDisplay">₹0</strong>
+                </div>
+                <div class="emi-box">
+                    <small>Loan Amount</small>
+                    <strong id="loanAmountDisplay">₹0</strong>
+                </div>
+                <div class="emi-box">
+                    <small>Total Interest</small>
+                    <strong id="totalInterestDisplay">₹0</strong>
+                </div>
+                <div class="emi-box">
+                    <small>Total Payable</small>
+                    <strong id="totalPayableDisplay">₹0</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Method section removed -->
+
+        <!-- Hidden payment amount field -->
+        <input type="hidden" name="amount" id="paymentAmount" value="{{ car.price_value }}">
+
+        <!-- Summary -->
+        <div class="section-title">Summary</div>
+        <div class="summary-row">
+            <span>Car Price</span>
+            <span>{{ car.price_display }}</span>
+        </div>
+        <div class="summary-row">
+            <span>Registration & Taxes</span>
+            <span>Included</span>
+        </div>
+        <div id="emiSummaryRows" style="display: none;">
+            <div class="summary-row">
+                <span>Down Payment (Now)</span>
+                <span id="summaryDownPayment">₹0</span>
+            </div>
+            <div class="summary-row">
+                <span>Monthly EMI</span>
+                <span id="summaryMonthlyEmi">₹0/mo</span>
+            </div>
+        </div>
+        <div class="summary-row total">
+            <span id="totalLabel">Total</span>
+            <span id="totalAmountDisplay">{{ car.price_display }}</span>
+        </div>
+
+        <!-- Terms -->
+        <div class="terms-check">
+            <input type="checkbox" id="terms" required>
+            <label for="terms">This is a test payment. No actual payment will be made. <br><span style="color: red;">*Dont give your real card details.</span></label>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="stripe-btn" id="payBtn" formaction="{% url 'create_stripe_checkout' car.id %}">
+            <img src="{% static 'stripe_payment_logo.png' %}" class="stripe-logo" alt="Stripe">
+            <span id="payBtnText">Pay Securely</span>
+        </button>
+        
+        <a href="{% url 'car_detail' car.id %}" class="back-link">← Back to Car Details</a>
+    </form>
+</div>
+
+
+<script>
+    const carPrice = Number('{{ car.price_value|floatformat:0 }}');
+    const minDownPayment = Number('{{ minimum_down_payment|floatformat:0 }}');
+    const defaultInterestRate = Number('{{ interest_rate_default|floatformat:2 }}');
+
+    function setPaymentType(type, el) {
+        document.querySelectorAll('.payment-type-btn').forEach(btn => btn.classList.remove('active'));
+        el.classList.add('active');
+        el.querySelector('input').checked = true;
+        
+        const emiSection = document.getElementById('emiSection');
+        const emiSummaryRows = document.getElementById('emiSummaryRows');
+        const payBtnText = document.getElementById('payBtnText');
+        const totalLabel = document.getElementById('totalLabel');
+        
+        if (type === 'emi') {
+            emiSection.style.display = 'block';
+            emiSummaryRows.style.display = 'block';
+            payBtnText.textContent = 'Pay Down Payment';
+            totalLabel.textContent = 'Total Payable';
+            calculateEMI();
+        } else {
+            emiSection.style.display = 'none';
+            emiSummaryRows.style.display = 'none';
+            payBtnText.textContent = 'Pay Securely';
+            totalLabel.textContent = 'Total';
+            document.getElementById('paymentAmount').value = carPrice;
+            document.getElementById('totalAmountDisplay').textContent = '₹' + formatNumber(carPrice);
+        }
+    }
+
+    function calculateEMI() {
+        const downPayment = parseFloat(document.getElementById('downPayment').value) || 0;
+        const tenure = parseInt(document.getElementById('emiTenure').value) || 36;
+        
+        if (downPayment < minDownPayment) {
+            alert('Minimum down payment is ₹' + formatNumber(minDownPayment));
+            document.getElementById('downPayment').value = minDownPayment;
+            return calculateEMI();
+        }
+        
+        const loanAmount = carPrice - downPayment;
+        if (loanAmount <= 0) {
+            alert('Down payment cannot exceed car price');
+            document.getElementById('downPayment').value = minDownPayment;
+            return;
+        }
+        
+        const monthlyRate = defaultInterestRate / (12 * 100);
+        let emi = monthlyRate > 0 
+            ? loanAmount * monthlyRate * Math.pow(1 + monthlyRate, tenure) / (Math.pow(1 + monthlyRate, tenure) - 1)
+            : loanAmount / tenure;
+        
+        const totalAmount = emi * tenure;
+        const totalInterest = totalAmount - loanAmount;
+        const totalPayable = downPayment + totalAmount;
+        
+        document.getElementById('emiAmountDisplay').textContent = '₹' + formatNumber(emi);
+        document.getElementById('loanAmountDisplay').textContent = '₹' + formatNumber(loanAmount);
+        document.getElementById('totalInterestDisplay').textContent = '₹' + formatNumber(totalInterest);
+        document.getElementById('totalPayableDisplay').textContent = '₹' + formatNumber(totalPayable);
+        
+        document.getElementById('paymentAmount').value = downPayment;
+        document.getElementById('summaryDownPayment').textContent = '₹' + formatNumber(downPayment);
+        document.getElementById('summaryMonthlyEmi').textContent = '₹' + formatNumber(emi) + '/mo';
+        document.getElementById('totalAmountDisplay').textContent = '₹' + formatNumber(totalPayable);
+    }
+
+    function formatNumber(num) {
+        return new Intl.NumberFormat('en-IN').format(Math.round(num));
+    }
+
+    document.getElementById('paymentForm').addEventListener('submit', function(e) {
+        const type = document.querySelector('input[name="payment_type"]:checked').value;
+        if (type === 'emi') {
+            const downPayment = parseFloat(document.getElementById('downPayment').value) || 0;
+            if (downPayment < minDownPayment) {
+                e.preventDefault();
+                alert('Minimum down payment is ₹' + formatNumber(minDownPayment));
+                return false;
+            }
+        }
+        return true;
+    });
+</script>
+{% endblock %}

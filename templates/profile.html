@@ -1,0 +1,422 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<style>
+    .profile-page { max-width: 800px; margin: 0 auto; padding: 30px 20px; }
+    .profile-header { display: flex; align-items: center; gap: 15px; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid var(--border-color); }
+    .profile-avatar { width: 60px; height: 60px; background: var(--accent-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; font-weight: 600; }
+    .profile-info h1 { font-size: 1.2rem; font-weight: 600; margin: 0 0 4px 0; }
+    .profile-info p { font-size: 0.85rem; color: var(--text-muted); margin: 0; }
+    .profile-actions { margin-left: auto; display: flex; gap: 8px; }
+    .profile-actions a { padding: 8px 12px; font-size: 0.8rem; border-radius: 6px; text-decoration: none; }
+    .btn-edit { background: var(--accent-primary); color: white; }
+    .btn-logout { background: var(--bg-tertiary); color: var(--text-secondary); }
+    .section-title { font-size: 0.9rem; font-weight: 600; margin: 20px 0 12px 0; color: var(--text-muted); text-transform: uppercase; }
+    .info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .info-card { background: var(--bg-secondary); padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); }
+    .info-card label { display: block; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 4px; }
+    .info-card span { font-size: 0.9rem; color: var(--text-primary); }
+    .data-table { width: 100%; border-collapse: collapse; }
+    .data-table th, .data-table td { padding: 10px; text-align: left; border-bottom: 1px solid var(--border-color); font-size: 0.85rem; }
+    .data-table th { color: var(--text-muted); font-weight: 500; font-size: 0.75rem; text-transform: uppercase; position: sticky; top: 0; background: var(--bg-secondary); z-index: 2; }
+    .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 500; }
+    .badge-success { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+    .badge-warning { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+    .badge-danger { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+    .empty-state { text-align: center; padding: 20px; color: var(--text-muted); font-size: 0.85rem; }
+    .view-link { color: var(--accent-primary); text-decoration: none; font-size: 0.8rem; }
+    @media (max-width: 768px) {
+        .profile-page {
+            padding: 20px 14px;
+        }
+
+        .profile-header {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 10px;
+        }
+
+        .profile-avatar {
+            width: 72px;
+            height: 72px;
+            font-size: 1.8rem;
+        }
+
+        .profile-info h1 {
+            font-size: 1.1rem;
+        }
+
+        .profile-info p {
+            font-size: 0.8rem;
+        }
+
+        .profile-actions {
+            margin-left: 0;
+            width: auto;
+            justify-content: center;
+        }
+
+        .profile-actions a {
+            padding: 8px 16px;
+            font-size: 0.78rem;
+            border-radius: 8px;
+        }
+
+        .info-grid {
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+
+        .info-card {
+            padding: 10px 12px;
+            border-radius: 10px;
+        }
+
+        .info-card label {
+            font-size: 0.65rem;
+        }
+
+        .info-card span {
+            font-size: 0.85rem;
+        }
+
+        .section-title {
+            font-size: 0.78rem;
+            margin: 22px 0 10px;
+        }
+
+        /* Table → Card conversion on mobile */
+        .table-wrapper {
+            background: var(--bg-secondary) !important;
+            border: 1px solid var(--border-color) !important;
+            border-radius: 12px !important;
+            max-height: 320px !important;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            padding: 0 !important;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent-primary) transparent;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .table-wrapper::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .table-wrapper::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .table-wrapper::-webkit-scrollbar-thumb {
+            background: var(--accent-primary);
+            border-radius: 4px;
+        }
+
+        .data-table {
+            display: block;
+        }
+
+        .data-table thead {
+            display: none;
+        }
+
+        .data-table tbody {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .data-table tr {
+            display: flex;
+            align-items: center;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 14px;
+            gap: 10px;
+        }
+
+        .data-table tr:first-child {
+            border-radius: 10px 10px 0 0;
+        }
+
+        .data-table tr:last-child {
+            border-radius: 0 0 10px 10px;
+            border-bottom: none;
+        }
+
+        .data-table tr:only-child {
+            border-radius: 10px;
+        }
+
+        .data-table td {
+            display: none;
+            padding: 0;
+            border: none;
+            font-size: 0.82rem;
+        }
+
+        .data-table td::before {
+            display: none;
+        }
+
+        /* Show only car name, status/amount, and action */
+        .data-table td:first-child {
+            display: block;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            border: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .data-table td[data-label="Status"],
+        .data-table td[data-label="EMI"],
+        .data-table td[data-label="Amount"],
+        .data-table td[data-label="Price"] {
+            display: block;
+            flex-shrink: 0;
+        }
+
+        .data-table td:last-child {
+            display: block;
+            flex-shrink: 0;
+            padding: 0;
+            border: none;
+            margin: 0;
+            justify-content: flex-end;
+        }
+
+        .data-table td:last-child::before {
+            display: none;
+        }
+
+        .view-link {
+            font-size: 0.78rem;
+            padding: 6px 12px;
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid rgba(251, 191, 36, 0.2);
+            border-radius: 8px;
+        }
+
+        .badge {
+            padding: 4px 10px;
+            font-size: 0.68rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .profile-page {
+            padding: 16px 12px;
+        }
+
+        .profile-avatar {
+            width: 64px;
+            height: 64px;
+            font-size: 1.6rem;
+        }
+
+        .profile-info h1 {
+            font-size: 1rem;
+        }
+
+        .data-table td {
+            font-size: 0.78rem;
+        }
+
+        .data-table td:first-child {
+            font-size: 0.84rem;
+        }
+
+        .data-table td::before {
+            font-size: 0.62rem;
+            min-width: 65px;
+        }
+    }
+</style>
+
+<div class="profile-page">
+    <div class="profile-header">
+        <div class="profile-avatar">{{ user.username|slice:":1"|upper }}</div>
+        <div class="profile-info">
+            <h1>{{ user.username }}</h1>
+            <p>{{ user.email }}</p>
+        </div>
+        <div class="profile-actions">
+            <a href="{% url 'edit_profile' %}" class="btn-edit">Edit</a>
+            <a href="{% url 'logout' %}" class="btn-logout">Logout</a>
+        </div>
+    </div>
+
+    <div class="section-title">Personal Information</div>
+    <div class="info-grid">
+        <div class="info-card">
+            <label>Full Name</label>
+            <span>{{ customer.name|default:user.username }}</span>
+        </div>
+        <div class="info-card">
+            <label>Email</label>
+            <span>{{ customer.email|default:user.email }}</span>
+        </div>
+        <div class="info-card">
+            <label>Phone</label>
+            <span>{{ customer.phone|default:"Not provided" }}</span>
+        </div>
+        <div class="info-card">
+            <label>Address</label>
+            <span>{{ customer.address|default:"Not provided" }}</span>
+        </div>
+    </div>
+
+    {% if emi_plans %}
+    <div class="section-title">EMI Plans</div>
+    <div class="table-wrapper" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; max-height: 400px; overflow-y: auto;">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Car</th>
+                <th>EMI</th>
+                <th>Next Due</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for plan in emi_plans %}
+            <tr>
+                <td data-label="Car">{{ plan.car.brand }} {{ plan.car.name }}</td>
+                <td data-label="EMI">₹{{ plan.monthly_emi|intcomma }}</td>
+                <td data-label="Next Due">{{ plan.next_due_date|date:"d M Y"|default:"-" }}</td>
+                <td data-label="Status">
+                    {% if plan.plan_status == 'completed' %}<span class="badge badge-success">Completed</span>
+                    {% elif plan.plan_status == 'active' %}<span class="badge badge-warning">Active</span>
+                    {% else %}<span class="badge badge-danger">{{ plan.plan_status }}</span>{% endif %}
+                </td>
+                <td data-label="">
+                    <a href="{% url 'emi_plan_detail' plan.id %}" class="view-link">View</a>
+                    {% if plan.plan_status == 'active' %}
+                    <a href="{% url 'emi_plan_detail' plan.id %}" class="view-link" style="color: #10b981; margin-left: 10px;">
+                        <i class="fas fa-credit-card"></i> Pay
+                    </a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    {% endif %}
+
+    {% if payments %}
+    <div class="section-title">All Transactions</div>
+    <div class="table-wrapper" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; max-height: 400px; overflow-y: auto; overflow-x: auto;">
+        <table class="data-table">
+            <thead>
+                <tr>
+                        <th>Car</th>
+                        <th>Amount</th>
+                        <th>Method</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Receipt</th>
+                    </tr>
+            </thead>
+            <tbody>
+                {% for payment in payments %}
+                <tr>
+                    <td data-label="Car">{{ payment.car.brand }} {{ payment.car.name }}</td>
+                    <td data-label="Amount" style="font-weight: 600; color: #10b981;">₹{{ payment.amount|intcomma }}</td>
+                    <td data-label="Method">{{ payment.get_payment_method_display }}</td>
+                    <td data-label="Status">
+                        {% if payment.payment_status == 'completed' %}<span class="badge badge-success">Completed</span>
+                        {% elif payment.payment_status == 'pending' %}<span class="badge badge-warning">Pending</span>
+                        {% else %}<span class="badge badge-danger">Failed</span>{% endif %}
+                    </td>
+                    <td data-label="Date">{{ payment.payment_date|date:"d M Y, H:i" }}</td>
+                    <td data-label=""><a href="{% url 'payment_success' payment.id %}" class="view-link">View <svg class="arrow-svg" width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+    {% if test_drives %}
+    <div class="section-title">Test Drive Schedules</div>
+    <div class="table-wrapper" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; max-height: 400px; overflow-y: auto;">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Car</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for td in test_drives %}
+            <tr>
+                <td data-label="Car">{{ td.car.brand }} {{ td.car.name }}</td>
+                <td data-label="Date">{{ td.preferred_date|date:"d M Y" }}</td>
+                <td data-label="Time">{{ td.preferred_time }}</td>
+                <td data-label="Status">
+                    {% if td.status == 'confirmed' %}<span class="badge badge-success">Confirmed</span>
+                    {% elif td.status == 'pending' %}<span class="badge badge-warning">Pending</span>
+                    {% elif td.status == 'completed' %}<span class="badge badge-success">Completed</span>
+                    {% else %}<span class="badge badge-danger">Cancelled</span>{% endif %}
+                </td>
+                <td data-label=""><a href="{% url 'car_detail' td.car.id %}" class="view-link">View Car <svg class="arrow-svg" width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    {% endif %}
+
+    {% if sells %}
+    <div class="section-title">Cars Purchased</div>
+    <div class="table-wrapper" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; max-height: 400px; overflow-y: auto;">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Car</th>
+                <th>Sell Price</th>
+                <th>Purchase Date</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for sell in sells %}
+            <tr>
+                <td data-label="Car">{{ sell.car.brand }} {{ sell.car.name }}</td>
+                <td data-label="Price" style="font-weight: 600; color: #10b981;">₹{{ sell.sell_price|intcomma }}</td>
+                <td data-label="Date">{{ sell.sell_date|date:"d M Y, H:i" }}</td>
+                <td data-label=""><a href="{% url 'car_detail' sell.car.id %}" class="view-link">View Car <svg class="arrow-svg" width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    {% endif %}
+
+    {% if not emi_plans and not payments and not test_drives and not sells %}
+    <div class="empty-state">No transactions yet</div>
+    {% endif %}
+
+    {% if not user.is_staff %}
+    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border-color);">
+        <a href="{% url 'delete_account' %}" style="color: var(--accent-danger); font-size: 0.8rem;">Delete Account</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

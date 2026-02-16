@@ -1,0 +1,1864 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}{{ car.brand }} {{ car.name }} - Car Store{% endblock %}
+
+{% block content %}
+<style>
+    /* Modern Car Detail Page */
+    .detail-container { 
+        max-width: 1000px; 
+        margin: 0 auto; 
+        padding: 30px 20px; 
+    }
+    
+    /* Hero Car Header */
+    .car-header { 
+        background: var(--bg-card); 
+        border: 1px solid var(--border-color); 
+        border-radius: 20px; 
+        overflow: hidden;
+        margin-bottom: 25px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    }
+    
+    .car-image-container {
+        position: relative;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    }
+    
+    .car-image { 
+        width: 100%; 
+        height: 350px; 
+        object-fit: cover;
+        opacity: 0.95;
+    }
+    
+    .no-image-placeholder {
+        width: 100%;
+        height: 350px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+        color: var(--text-secondary);
+    }
+    
+    .car-info { 
+        padding: 25px 30px; 
+    }
+    
+    .car-title { 
+        font-size: 1.8rem; 
+        font-weight: 800; 
+        color: var(--text-primary); 
+        margin-bottom: 8px;
+        letter-spacing: -0.5px;
+    }
+    
+    .car-subtitle { 
+        font-size: 0.9rem; 
+        color: var(--text-muted); 
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .car-subtitle span {
+        background: var(--bg-tertiary);
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+    }
+    
+    .car-price { 
+        font-size: 2rem; 
+        font-weight: 800; 
+        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 20px;
+    }
+    
+    /* EMI Box - Compact Inline */
+    .emi-box { 
+        background: rgba(251, 191, 36, 0.08);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(251, 191, 36, 0.2);
+        border-radius: 10px; 
+        padding: 10px 14px; 
+        margin-bottom: 16px;
+        display: inline-flex;
+        gap: 12px;
+        align-items: center;
+    }
+    
+    [data-theme="light"] .emi-box {
+        background: rgba(251, 191, 36, 0.06);
+        border: 1px solid rgba(251, 191, 36, 0.25);
+    }
+    
+    .emi-info { 
+        display: flex;
+        align-items: baseline;
+        gap: 6px;
+    }
+    
+    .emi-info small { 
+        color: var(--text-muted); 
+        font-size: 0.7rem;
+    }
+    
+    .emi-info h4 {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--accent-primary);
+    }
+    
+    /* Action Buttons - Modern Pill Style */
+    .action-btns { 
+        display: flex; 
+        gap: 12px; 
+        margin-bottom: 0; 
+    }
+    
+    .action-btns .btn { 
+        flex: 1; 
+        padding: 14px 20px; 
+        border-radius: 50px; 
+        font-weight: 600; 
+        font-size: 0.9rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .action-btns .btn-accent {
+        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        border: none;
+        color: #1a1a2e;
+        box-shadow: 0 4px 15px rgba(251, 191, 36, 0.3);
+    }
+    
+    .action-btns .btn-accent:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(251, 191, 36, 0.4);
+    }
+    
+    .action-btns .btn-outline-warning { 
+        border: 2px solid #fbbf24; 
+        color: #fbbf24; 
+        background: transparent;
+    }
+    
+    .action-btns .btn-outline-warning:hover { 
+        background: #fbbf24; 
+        color: #1a1a2e; 
+    }
+    
+    .action-btns .btn-outline-secondary {
+        border: 2px solid var(--border-color);
+        color: var(--text-secondary);
+        background: transparent;
+    }
+    
+    .action-btns .btn-outline-secondary:hover {
+        background: var(--bg-tertiary);
+        border-color: var(--text-secondary);
+    }
+    
+    /* Section Cards - Glass Effect */
+    .section-card { 
+        background: var(--bg-card); 
+        border: 1px solid var(--border-color); 
+        border-radius: 16px; 
+        padding: 25px; 
+        margin-bottom: 25px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+    
+    .section-title { 
+        font-size: 1.1rem; 
+        font-weight: 700; 
+        color: var(--text-primary); 
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .section-title::before {
+        content: '';
+        width: 4px;
+        height: 20px;
+        background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%);
+        border-radius: 2px;
+    }
+    
+    /* Modern Info Grid */
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+    
+    .info-item {
+        background: var(--bg-tertiary);
+        border-radius: 12px;
+        padding: 15px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        transition: all 0.2s ease;
+    }
+    
+    .info-item:hover {
+        background: var(--bg-secondary);
+        transform: translateX(5px);
+    }
+    
+    .info-icon {
+        width: 40px;
+        height: 40px;
+        background: rgba(251, 191, 36, 0.15);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fbbf24;
+        font-size: 1rem;
+        flex-shrink: 0;
+    }
+    
+    .info-content label {
+        display: block;
+        font-size: 0.7rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 2px;
+    }
+    
+    .info-content span {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+    
+    .status-available { color: #22c55e; }
+    .status-sold { color: #ef4444; }
+    
+    .description { 
+        font-size: 0.9rem; 
+        color: var(--text-secondary); 
+        line-height: 1.7;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border-color);
+    }
+    
+    /* Section Navigation */
+    .section-nav {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 25px;
+        padding: 15px 20px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 50px;
+    }
+    
+    .section-nav a {
+        padding: 8px 18px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text-secondary);
+        text-decoration: none;
+        background: var(--bg-tertiary);
+        border-radius: 50px;
+        transition: all 0.3s ease;
+    }
+    
+    .section-nav a:hover {
+        color: #fbbf24;
+        background: rgba(251, 191, 36, 0.1);
+    }
+    
+    .section-nav a.active {
+        color: #1a1a2e;
+        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    }
+    
+    /* Review Styles */
+    .rating-input { display: flex; gap: 5px; margin-bottom: 15px; }
+    .rating-input input[type="radio"] { display: none; }
+    .rating-input label { 
+        cursor: pointer; 
+        font-size: 1.8rem; 
+        color: var(--border-color);
+        transition: all 0.2s;
+    }
+    .rating-input label:hover { transform: scale(1.1); }
+    .rating-input input:checked ~ label { color: var(--border-color); }
+    .rating-input label:hover, .rating-input label:hover ~ label,
+    .rating-input input:checked + label, 
+    .rating-input input:checked + label ~ label { color: #fbbf24; }
+    .rating-input { flex-direction: row-reverse; justify-content: flex-end; }
+    
+    .review-item { 
+        padding: 18px;
+        background: var(--bg-tertiary);
+        border-radius: 12px;
+        margin-bottom: 12px;
+    }
+    .review-item:last-child { margin-bottom: 0; }
+    
+    .review-header { 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center;
+        margin-bottom: 8px; 
+    }
+    
+    .review-user { 
+        font-weight: 700; 
+        font-size: 0.9rem; 
+        color: var(--text-primary);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .review-user::before {
+        content: '';
+        width: 32px;
+        height: 32px;
+        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .review-date { font-size: 0.75rem; color: var(--text-muted); }
+    .review-stars { color: #fbbf24; font-size: 0.9rem; margin-bottom: 8px; }
+    .review-text { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; }
+    
+    /* EMI Modal */
+    .emi-modal .modal-content { 
+        background: var(--bg-card); 
+        border: 1px solid var(--border-color); 
+        border-radius: 20px;
+    }
+    .emi-modal .modal-header { 
+        border-bottom: 1px solid var(--border-color); 
+        padding: 20px 25px; 
+    }
+    .emi-modal .modal-title { 
+        font-size: 1.1rem; 
+        font-weight: 700; 
+        color: var(--text-primary); 
+    }
+    .emi-modal .modal-body { padding: 25px; }
+    [data-theme="dark"] .emi-modal .btn-close { filter: invert(1); }
+    
+    .emi-result { 
+        background: linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(245, 158, 11, 0.05) 100%);
+        border: 1px solid rgba(251, 191, 36, 0.2);
+        border-radius: 16px; 
+        padding: 25px; 
+        text-align: center; 
+        margin-bottom: 25px;
+    }
+    .emi-result small { color: var(--text-muted); font-size: 0.75rem; }
+    .emi-result h3 { font-size: 2.2rem; font-weight: 800; color: #fbbf24; margin: 8px 0; }
+    
+    .slider-group { margin-bottom: 20px; }
+    .slider-header { display: flex; justify-content: space-between; margin-bottom: 8px; }
+    .slider-header span { font-size: 0.85rem; color: var(--text-secondary); }
+    .slider-header strong { font-size: 0.9rem; color: #fbbf24; }
+    
+    .summary-grid { 
+        display: grid; 
+        grid-template-columns: repeat(2, 1fr); 
+        gap: 12px; 
+        margin-bottom: 20px; 
+    }
+    .summary-item { 
+        background: var(--bg-tertiary); 
+        padding: 15px; 
+        border-radius: 12px; 
+        text-align: center;
+    }
+    .summary-item small { font-size: 0.7rem; color: var(--text-muted); }
+    .summary-item div { font-size: 0.9rem; font-weight: 700; color: var(--text-primary); margin-top: 4px; }
+    
+    /* Related Cars Slider */
+    .slider-container { position: relative; }
+    .slider-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .slider-header .section-title { margin-bottom: 0; }
+    
+    .slider-controls { display: flex; gap: 8px; }
+    .slider-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 2px solid var(--border-color);
+        background: var(--bg-card);
+        color: var(--text-primary);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+    .slider-btn:hover {
+        background: #fbbf24;
+        border-color: #fbbf24;
+        color: #1a1a2e;
+    }
+    .slider-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .slider-btn:disabled:hover { background: var(--bg-card); border-color: var(--border-color); color: var(--text-primary); }
+    
+    .slider-track { overflow: hidden; }
+    .slider-wrapper { display: flex; gap: 15px; transition: transform 0.4s ease; align-items: stretch; }
+    .slider-wrapper .car-card { flex: 0 0 calc(33.333% - 10px); min-width: calc(33.333% - 10px); }
+    .slider-wrapper .car-card .card-img-top { height: 160px; object-fit: cover; }
+    
+    /* Responsive */
+    @media (max-width: 992px) {
+        .info-grid { grid-template-columns: 1fr; }
+        .slider-wrapper .car-card { flex: 0 0 calc(50% - 7.5px); min-width: calc(50% - 7.5px); }
+    }
+    
+    @media (max-width: 768px) {
+        .car-header {
+            border-radius: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .car-image { height: 260px; }
+        
+        .car-info {
+            padding: 18px 16px;
+        }
+        
+        .car-title { 
+            font-size: 1.3rem;
+            margin-bottom: 4px;
+            line-height: 1.3;
+        }
+        
+        .car-title span {
+            display: block;
+            font-size: 0.82em;
+            margin-top: 2px;
+        }
+        
+        .car-subtitle {
+            font-size: 0.82rem;
+            margin-bottom: 10px;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        
+        .car-subtitle span {
+            padding: 3px 8px;
+            font-size: 0.75rem;
+        }
+        
+        .car-rating-detail {
+            margin-bottom: 10px !important;
+        }
+        
+        .car-rating-detail .fas,
+        .car-rating-detail .far {
+            font-size: 0.95rem !important;
+        }
+        
+        .car-rating-detail .ms-2 {
+            font-size: 0.8rem !important;
+        }
+        
+        /* Color selector compact */
+        .color-selector {
+            padding: 8px 0 !important;
+            margin-bottom: 6px !important;
+        }
+        
+        .color-selector-label {
+            font-size: 0.82rem;
+        }
+        
+        .color-swatch {
+            width: 28px;
+            height: 28px;
+        }
+        
+        /* Price & EMI - stack on mobile */
+        .car-price {
+            font-size: 1.5rem;
+        }
+        
+        .emi-box {
+            width: 100%;
+            justify-content: space-between;
+            padding: 8px 12px;
+            border-radius: 10px;
+        }
+        
+        .emi-info h4 {
+            font-size: 0.9rem;
+        }
+        
+        .emi-info small {
+            font-size: 0.65rem;
+        }
+        
+        /* Action buttons - stacked, compact */
+        .action-btns { 
+            flex-direction: column; 
+            gap: 8px;
+        }
+        
+        .action-btns .btn {
+            padding: 12px 16px;
+            font-size: 0.85rem;
+            border-radius: 12px;
+        }
+        
+        .section-nav { 
+            justify-content: center; 
+            border-radius: 16px;
+            padding: 10px 14px;
+            gap: 6px;
+        }
+        
+        .section-nav a {
+            padding: 6px 14px;
+            font-size: 0.8rem;
+        }
+        
+        .section-card {
+            padding: 18px 16px;
+            border-radius: 14px;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 1rem;
+            margin-bottom: 14px;
+        }
+        
+        .info-item {
+            padding: 12px;
+            gap: 10px;
+        }
+        
+        .info-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }
+        
+        .info-content label {
+            font-size: 0.62rem;
+        }
+        
+        .info-content span {
+            font-size: 0.82rem;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .slider-wrapper .car-card { flex: 0 0 100%; min-width: 100%; }
+        .detail-container { padding: 12px 10px; }
+        
+        .car-header {
+            border-radius: 14px;
+            margin-bottom: 12px;
+        }
+        
+        .car-info {
+            padding: 14px 12px;
+        }
+        
+        .car-title {
+            font-size: 1.15rem;
+        }
+        
+        .car-price {
+            font-size: 1.35rem;
+        }
+        
+        .action-btns .btn {
+            padding: 11px 14px;
+            font-size: 0.82rem;
+            border-radius: 10px;
+        }
+        
+        .section-nav {
+            padding: 8px 10px;
+            border-radius: 12px;
+        }
+        
+        .section-nav a {
+            padding: 5px 10px;
+            font-size: 0.75rem;
+        }
+    }
+    
+    /* Image Gallery Slider - Modern Design */
+    .car-gallery {
+        position: relative;
+        background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #0d1117 100%);
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+    
+    .gallery-main {
+        position: relative;
+        width: 100%;
+        height: 450px;
+        overflow: hidden;
+        background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.3) 100%);
+    }
+    
+    .gallery-main::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 120px;
+        background: linear-gradient(180deg, rgba(0, 0, 0, 0.4) 0%, transparent 100%);
+        z-index: 2;
+        pointer-events: none;
+    }
+    
+    .gallery-main::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 150px;
+        background: linear-gradient(0deg, rgba(0, 0, 0, 0.6) 0%, transparent 100%);
+        z-index: 2;
+        pointer-events: none;
+    }
+    
+    .gallery-main img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s ease;
+    }
+    
+    .gallery-main:hover img {
+        transform: scale(1.02);
+    }
+    
+    .gallery-nav {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 50px;
+        height: 50px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 16px;
+        color: #fff;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+    
+    .gallery-nav:hover {
+        background: rgba(251, 191, 36, 0.9);
+        color: #1a1a2e;
+        transform: translateY(-50%) scale(1.1);
+        box-shadow: 0 12px 40px rgba(251, 191, 36, 0.4);
+        border-color: rgba(251, 191, 36, 0.5);
+    }
+    
+    .gallery-nav.prev { left: 20px; }
+    .gallery-nav.next { right: 20px; }
+    
+    /* Gallery Dots Navigation - Overlay */
+    .gallery-dots {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        padding: 12px 20px;
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border-radius: 25px;
+        z-index: 10;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .gallery-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.4);
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .gallery-dot:hover {
+        background: rgba(255, 255, 255, 0.7);
+        transform: scale(1.3);
+    }
+    
+    .gallery-dot.active {
+        background: #fbbf24;
+        transform: scale(1.4);
+        box-shadow: 0 0 12px rgba(251, 191, 36, 0.6);
+    }
+    
+    .gallery-dot.hidden {
+        display: none;
+    }
+    
+    .gallery-counter {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        padding: 8px 14px;
+        border-radius: 20px;
+        color: #fff;
+        font-size: 0.8rem;
+        font-weight: 500;
+        z-index: 10;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    .gallery-counter span {
+        color: #fbbf24;
+        font-weight: 700;
+    }
+    
+    @media (max-width: 768px) {
+        .gallery-main { height: 300px; }
+        .gallery-nav { width: 42px; height: 42px; font-size: 1rem; border-radius: 12px; }
+        .gallery-nav.prev { left: 12px; }
+        .gallery-nav.next { right: 12px; }
+        .gallery-counter { bottom: 85px; right: 15px; padding: 8px 14px; font-size: 0.75rem; }
+    }
+    
+    /* Light Mode Gallery */
+    [data-theme="light"] .car-gallery {
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
+        box-shadow: 0 25px 80px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    }
+    
+    [data-theme="light"] .gallery-main {
+        background: linear-gradient(180deg, transparent 0%, rgba(255, 255, 255, 0.3) 100%);
+    }
+    
+    [data-theme="light"] .gallery-main::before {
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.6) 0%, transparent 100%);
+    }
+    
+    [data-theme="light"] .gallery-main::after {
+        background: linear-gradient(0deg, rgba(255, 255, 255, 0.7) 0%, transparent 100%);
+    }
+    
+    [data-theme="light"] .gallery-nav {
+        background: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        color: #374151;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+    
+    [data-theme="light"] .gallery-nav:hover {
+        background: #f59e0b;
+        color: #fff;
+        border-color: #f59e0b;
+        box-shadow: 0 12px 40px rgba(245, 158, 11, 0.4);
+    }
+    
+    [data-theme="light"] .gallery-dots {
+        background: rgba(255, 255, 255, 0.7);
+        border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+    
+    [data-theme="light"] .gallery-dot {
+        background: rgba(0, 0, 0, 0.25);
+    }
+    
+    [data-theme="light"] .gallery-dot:hover {
+        background: rgba(0, 0, 0, 0.5);
+    }
+    
+    [data-theme="light"] .gallery-dot.active {
+        background: #f59e0b;
+        box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+    }
+    
+    [data-theme="light"] .gallery-counter {
+        background: rgba(255, 255, 255, 0.9);
+        color: #374151;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+    
+    [data-theme="light"] .gallery-counter span {
+        color: #f59e0b;
+    }
+    
+    /* Color Selector */
+    .color-selector {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 15px 20px;
+        background: rgba(0, 0, 0, 0.2);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .color-selector-label {
+        color: #9ca3af;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+    
+    .color-swatches {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    
+    .color-swatch {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        cursor: pointer;
+        border: 3px solid transparent;
+        transition: all 0.3s ease;
+        position: relative;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+    
+    .color-swatch:hover {
+        transform: scale(1.15);
+    }
+    
+    .color-swatch.active {
+        border-color: #fbbf24;
+        box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.3);
+    }
+    
+    .color-swatch .color-name {
+        position: absolute;
+        bottom: -22px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 0.7rem;
+        color: #fff;
+        white-space: nowrap;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        background: rgba(0, 0, 0, 0.8);
+        padding: 2px 6px;
+        border-radius: 4px;
+    }
+    
+    .color-swatch:hover .color-name,
+    .color-swatch.active .color-name {
+        opacity: 1;
+    }
+</style>
+
+<div class="detail-container">
+    <!-- Car Header Card -->
+    <div class="car-header">
+        <!-- Image Gallery Slider -->
+        <div class="car-gallery">
+            
+            <div class="gallery-main">
+                {% with first_img=car.images.first %}
+                <img src="{% if first_img %}{{ first_img.image_url }}{% else %}{{ car.image_src }}{% endif %}" 
+                     alt="{{ car.name }}" 
+                     id="mainGalleryImage"
+                     onload="this.style.display='block'; document.getElementById('noImagePlaceholder').style.display='none';"
+                     onerror="this.style.display='none'; document.getElementById('noImagePlaceholder').style.display='flex';"
+                     style="display: none;">
+                <div id="noImagePlaceholder" class="no-image-placeholder" style="display: flex;">
+                    <i class="fas fa-image" style="font-size: 4rem; opacity: 0.3; margin-bottom: 1rem;"></i>
+                    <span style="font-size: 1.2rem; opacity: 0.6;">No Image Available</span>
+                </div>
+                {% endwith %}
+                {% if car.images.count > 1 %}
+                <button class="gallery-nav prev" onclick="prevImage()">
+                    <svg class="arrow-svg arrow-left" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <button class="gallery-nav next" onclick="nextImage()">
+                    <svg class="arrow-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <div class="gallery-counter"><span id="currentImageNum">1</span> / <span id="totalImages">{{ car.images.count }}</span></div>
+                {% endif %}
+                {% if car.images.count > 0 %}
+                <div class="gallery-dots" id="galleryDots">
+                    {% for img in car.images.all %}
+                    <div class="gallery-dot{% if forloop.first %} active{% endif %}" 
+                         data-color="{% if img.car_color %}{{ img.car_color.name }}{% else %}none{% endif %}"
+                         data-index="{{ forloop.counter0 }}"
+                         data-image-url="{{ img.image_url }}"
+                         onclick="showImage({{ forloop.counter0 }})"></div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="car-info">
+            <h1 class="car-title">{{ car.brand }} {{ car.name }} <span id="colorNameDisplay" style="font-weight: 300; opacity: 0.8; font-size: 0.9em;"></span></h1>
+            <p class="car-subtitle">{{ car.model_year }} • {{ car.get_fuel_type_display }} • {{ car.get_transmission_display }}</p>
+            <div class="car-rating-detail mb-2">
+                {% with rating=car.average_rating %}
+                {% for i in "12345" %}
+                    {% if forloop.counter <= rating %}
+                    <i class="fas fa-star" style="color: #fbbf24; font-size: 1.1rem;"></i>
+                    {% elif forloop.counter <= rating|add:"0.5" %}
+                    <i class="fas fa-star-half-alt" style="color: #fbbf24; font-size: 1.1rem;"></i>
+                    {% else %}
+                    <i class="far fa-star" style="color: #fbbf24; font-size: 1.1rem;"></i>
+                    {% endif %}
+                {% endfor %}
+                <span class="ms-2" style="color: var(--text-secondary); font-size: 0.9rem;">{{ rating }} ({{ car.review_count }} reviews)</span>
+                {% endwith %}
+            </div>
+            
+            <!-- Color Selector -->
+            {% if car.colors.count > 0 %}
+            <div class="color-selector" style="background: transparent; padding: 12px 0; border: none; margin-bottom: 10px;">
+                <span class="color-selector-label">Color:</span>
+                <div class="color-swatches">
+                    {% for color in car.colors.all %}
+                    <div class="color-swatch{% if forloop.first %} active{% endif %}{% if not color.is_available or color.stock == 0 %} out-of-stock{% endif %}" 
+                         style="background: {% if color.hex_code %}{{ color.hex_code }}{% else %}linear-gradient(135deg, #666 0%, #999 100%){% endif %};{% if not color.is_available or color.stock == 0 %} opacity: 0.5;{% endif %}" 
+                         data-color="{{ color.name }}"
+                         data-available="{{ color.is_available|yesno:'true,false' }}"
+                         data-stock="{{ color.stock }}"
+                         data-color-id="{{ color.id }}"
+                         onclick="filterByColor('{{ color.name }}')"
+                         title="{{ color.name }}{% if not color.is_available or color.stock == 0 %} (Out of Stock){% endif %}">
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Price and EMI on same line -->
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 16px;">
+                <div class="car-price" style="margin-bottom: 0;">{{ car.price_display }}</div>
+                
+                <!-- Compact EMI Box (inline with price) -->
+                <div class="emi-box" style="margin-bottom: 0;">
+                    <div class="emi-info">
+                        {% if sample_emi %}
+                        <small>EMI from</small>
+                        <h4>₹{{ sample_emi|intcomma }}/mo</h4>
+                        {% else %}
+                        <small>EMI</small>
+                        <h4>—</h4>
+                        {% endif %}
+                    </div>
+                    <button type="button" class="btn btn-sm" style="background: rgba(251, 191, 36, 0.15); border: 1px solid rgba(251, 191, 36, 0.3); color: var(--accent-primary); font-size: 0.75rem; padding: 4px 10px;" data-bs-toggle="modal" data-bs-target="#emiModal">
+                        <i class="fas fa-calculator"></i> Calculate
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            {% if car.is_available %}
+                {% if user.is_authenticated %}
+                <div class="action-btns">
+                    <a href="{% url 'make_payment' car.id %}" id="btnBuyNow" data-base-href="{% url 'make_payment' car.id %}" class="btn btn-accent">
+                        <i class="fas fa-credit-card me-2"></i>Buy Now
+                    </a>
+                    <a href="{% url 'test_drive' car.id %}" id="btnTestDrive" data-base-href="{% url 'test_drive' car.id %}" class="btn btn-outline-warning">
+                        <i class="fas fa-car me-2"></i>Test Drive
+                    </a>
+                    <a href="{% url 'inquiry' car.id %}" id="btnInquiry" data-base-href="{% url 'inquiry' car.id %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-envelope me-2"></i>Inquiry
+                    </a>
+                </div>
+                {% else %}
+                <div class="action-btns">
+                    <a href="{% url 'login' %}?next={% url 'make_payment' car.id %}" class="btn btn-accent">
+                        <i class="fas fa-sign-in-alt me-2"></i>Login to Buy
+                    </a>
+                    <a href="{% url 'login' %}?next={% url 'test_drive' car.id %}" class="btn btn-outline-warning">
+                        <i class="fas fa-car me-2"></i>Test Drive
+                    </a>
+                    <a href="{% url 'login' %}?next={% url 'inquiry' car.id %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-envelope me-2"></i>Inquiry
+                    </a>
+                </div>
+                {% endif %}
+            {% else %}
+            <div class="alert alert-danger" style="margin-bottom: 0;">
+                <i class="fas fa-times-circle me-2"></i>This car has been sold.
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Section Navigation -->
+    <nav class="section-nav">
+        <a href="#about">About</a>
+        <a href="#reviews">Reviews</a>
+        {% if related_cars %}<a href="#related">Related Cars</a>{% endif %}
+    </nav>
+
+    <!-- About This Car -->
+    <div class="section-card" id="about">
+        <h3 class="section-title">About This Car</h3>
+        <div class="info-grid">
+            <div class="info-item">
+                <div class="info-icon"><i class="fas fa-building"></i></div>
+                <div class="info-content">
+                    <label>Brand</label>
+                    <span>{{ car.brand }}</span>
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-icon"><i class="fas fa-car"></i></div>
+                <div class="info-content">
+                    <label>Model</label>
+                    <span>{{ car.name }}</span>
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-icon"><i class="fas fa-calendar"></i></div>
+                <div class="info-content">
+                    <label>Year</label>
+                    <span>{{ car.model_year }}</span>
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-icon"><i class="fas fa-gas-pump"></i></div>
+                <div class="info-content">
+                    <label>Fuel Type</label>
+                    <span>{{ car.get_fuel_type_display }}</span>
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-icon"><i class="fas fa-cogs"></i></div>
+                <div class="info-content">
+                    <label>Transmission</label>
+                    <span>{{ car.get_transmission_display }}</span>
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-icon"><i class="fas fa-tachometer-alt"></i></div>
+                <div class="info-content">
+                    <label>Mileage</label>
+                    <span>{{ car.mileage_display|default:'—' }}</span>
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-icon"><i class="fas fa-cog"></i></div>
+                <div class="info-content">
+                    <label>Engine</label>
+                    <span>{{ car.engine|default:'—' }}</span>
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-icon"><i class="fas fa-check-circle"></i></div>
+                <div class="info-content">
+                    <label>Status</label>
+                    <span class="{% if car.is_available %}status-available{% else %}status-sold{% endif %}">
+                        {% if car.is_available %}<i class="fas fa-check-circle me-1"></i>Available{% else %}<i class="fas fa-times-circle me-1"></i>Sold{% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+        {% if car.description %}
+        <p class="description"><strong><i class="fas fa-info-circle me-2" style="color: #fbbf24;"></i>Description:</strong><br>{{ car.description }}</p>
+        {% endif %}
+    </div>
+
+    <!-- Reviews Section -->
+    <div class="row g-3" id="reviews">
+        <!-- Write Review -->
+        <div class="col-lg-6">
+            <div class="section-card h-100">
+                <h3 class="section-title">Write a Review</h3>
+                {% if user.is_authenticated %}
+                <form method="post" action="{% url 'submit_review' car.id %}">
+                    {% csrf_token %}
+                    <div class="rating-input">
+                        {% for star in star_range reversed %}
+                        <input type="radio" name="rating" id="star{{ star }}" value="{{ star }}" {% if user_review and user_review.rating == star %}checked{% endif %}>
+                        <label for="star{{ star }}"><i class="fas fa-star"></i></label>
+                        {% endfor %}
+                    </div>
+                    <div class="mb-3">
+                        <input type="text" name="title" class="form-control" placeholder="Review title (optional)" value="{{ user_review.title|default:'' }}">
+                    </div>
+                    <div class="mb-3">
+                        <textarea name="comment" class="form-control" rows="3" placeholder="Share your experience...">{{ user_review.comment|default:'' }}</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-accent btn-sm">
+                        <i class="fas fa-paper-plane me-1"></i>Submit Review
+                    </button>
+                </form>
+                {% else %}
+                <p style="color: var(--text-muted); font-size: 0.9rem;">
+                    <a href="{% url 'login' %}?next={{ request.path }}">Login</a> to write a review.
+                </p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Recent Reviews -->
+        <div class="col-lg-6">
+            <div class="section-card h-100">
+                <h3 class="section-title">Recent Reviews</h3>
+                {% for review in reviews %}
+                <div class="review-item">
+                    <div class="review-header">
+                        <span class="review-user">{% if review.user.is_active %}{{ review.user.username }}{% else %}<em style="color: var(--text-muted);">Deleted User</em>{% endif %}</span>
+                        <span class="review-date">{{ review.created_at|date:"M d, Y" }}</span>
+                    </div>
+                    <div class="review-stars">
+                        {% for star in star_range %}
+                            {% if review.rating >= star %}<i class="fas fa-star"></i>{% else %}<i class="far fa-star"></i>{% endif %}
+                        {% endfor %}
+                    </div>
+                    {% if review.title %}<strong style="font-size: 0.85rem;">{{ review.title }}</strong><br>{% endif %}
+                    <span class="review-text">{{ review.comment|default:'No comment.' }}</span>
+                </div>
+                {% empty %}
+                <p style="color: var(--text-muted); font-size: 0.9rem;">No reviews yet. Be the first!</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Related Cars -->
+
+</div>
+
+<script>
+// Make car cards clickable with pop animation
+document.querySelectorAll('.car-card[data-href]').forEach(card => {
+    card.addEventListener('click', function(e) {
+        // Don't navigate if clicking on compare checkbox
+        if (e.target.closest('.compare-checkbox')) return;
+        
+        const href = this.dataset.href;
+        if (href) {
+            // Add pop animation
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = '';
+                window.location.href = href;
+            }, 100);
+        }
+    });
+});
+
+// Related Cars Slider
+(function() {
+    const slider = document.getElementById('relatedSlider');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    
+    if (!slider || !prevBtn || !nextBtn) return;
+    
+    let currentIndex = 0;
+    const cards = slider.querySelectorAll('.car-card');
+    const totalCards = cards.length;
+    
+    function getVisibleCards() {
+        const width = window.innerWidth;
+        if (width <= 480) return 1;
+        if (width <= 992) return 2;
+        return 3;
+    }
+    
+    function getCardWidth() {
+        const visibleCards = getVisibleCards();
+        const gap = 15;
+        return (slider.parentElement.offsetWidth + gap) / visibleCards;
+    }
+    
+    function updateSlider() {
+        const cardWidth = getCardWidth();
+        slider.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
+        updateButtons();
+    }
+    
+    function updateButtons() {
+        const visibleCards = getVisibleCards();
+        const maxIndex = Math.max(0, totalCards - visibleCards);
+        
+        prevBtn.disabled = currentIndex <= 0;
+        nextBtn.disabled = currentIndex >= maxIndex;
+    }
+    
+    prevBtn.addEventListener('click', () => {
+        if (currentIndex > 0) {
+            currentIndex--;
+            updateSlider();
+        }
+    });
+    
+    nextBtn.addEventListener('click', () => {
+        const visibleCards = getVisibleCards();
+        const maxIndex = Math.max(0, totalCards - visibleCards);
+        if (currentIndex < maxIndex) {
+            currentIndex++;
+            updateSlider();
+        }
+    });
+
+    // Mobile Swipe Support for Related Cars (1:1 Tracking)
+    let startX = 0;
+    let currentX = 0;
+    let isDragging = false;
+    let startTransform = 0;
+    
+    // Helper to get current translate X
+    function getTranslateX() {
+        const style = window.getComputedStyle(slider);
+        const matrix = new WebKitCSSMatrix(style.transform);
+        return matrix.m41;
+    }
+    
+    slider.parentElement.addEventListener('touchstart', e => {
+        startX = e.touches[0].clientX;
+        isDragging = true;
+        startTransform = getTranslateX();
+        slider.style.transition = 'none'; // Disable transition for direct control
+    }, {passive: true});
+    
+    slider.parentElement.addEventListener('touchmove', e => {
+        if (!isDragging) return;
+        currentX = e.touches[0].clientX;
+        const diff = currentX - startX;
+        // Move slider with finger
+        slider.style.transform = `translateX(${startTransform + diff}px)`;
+    }, {passive: true});
+    
+    slider.parentElement.addEventListener('touchend', e => {
+        if (!isDragging) return;
+        isDragging = false;
+        const diff = currentX - startX;
+        
+        // Re-enable transition
+        slider.style.transition = 'transform 0.4s ease';
+        
+        // Determine action based on drag distance
+        if (Math.abs(diff) > 50) {
+            if (diff < 0) {
+                // Dragged Left -> Next
+                nextBtn.click();
+            } else {
+                // Dragged Right -> Prev
+                prevBtn.click();
+            }
+        } else {
+            // Cancel drag (snap back)
+            updateSlider();
+        }
+        
+        // Reset vars
+        startX = 0;
+        currentX = 0;
+    }, {passive: true});
+    
+    // Handle resize
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            const visibleCards = getVisibleCards();
+            const maxIndex = Math.max(0, totalCards - visibleCards);
+            if (currentIndex > maxIndex) currentIndex = maxIndex;
+            updateSlider();
+        }, 100);
+    });
+    
+    // Initial state
+    updateButtons();
+})();
+</script>
+
+<!-- EMI Calculator Modal -->
+<div class="modal fade emi-modal" id="emiModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">EMI Calculator</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="emiForm" autocomplete="off">
+                    {% csrf_token %}
+                    <input type="hidden" id="carPrice" value="{{ car.price_value }}">
+                    
+                    <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
+                        <div class="emi-result" style="flex: 1; margin-bottom: 0;">
+                            <small>Monthly EMI</small>
+                            <h3 id="emiHeadline">₹0</h3>
+                            <small>for <span id="emiMonths">{{ emi_defaults.tenure_default }}</span> months</small>
+                        </div>
+                        
+                        <!-- Pie Chart -->
+                        <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                            <canvas id="emiPieChart" width="100" height="100"></canvas>
+                            <div style="font-size: 0.7rem; display: flex; gap: 12px;">
+                                <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 8px; height: 8px; border-radius: 2px; background: #fbbf24;"></span> Principal</span>
+                                <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 8px; height: 8px; border-radius: 2px; background: #ef4444;"></span> Interest</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="slider-group">
+                        <div class="slider-header">
+                            <span>Down Payment</span>
+                            <strong id="downPaymentDisplay">₹{{ emi_defaults.down_payment_default|intcomma }}</strong>
+                        </div>
+                        <input type="range" class="form-range" id="downPaymentSlider" 
+                            min="{{ emi_defaults.down_payment_min }}" 
+                            max="{{ emi_defaults.down_payment_max }}" 
+                            step="10000" 
+                            value="{{ emi_defaults.down_payment_default }}">
+                    </div>
+                    
+                    <div class="slider-group">
+                        <div class="slider-header">
+                            <span>Tenure</span>
+                            <strong><span id="tenureYears">{{ emi_defaults.tenure_years_default }}</span> years</strong>
+                        </div>
+                        <input type="range" class="form-range" id="tenureSlider" 
+                            min="{{ emi_defaults.tenure_min }}" 
+                            max="{{ emi_defaults.tenure_max }}" 
+                            step="12" 
+                            value="{{ emi_defaults.tenure_default }}">
+                    </div>
+                    
+                    <div class="slider-group">
+                        <div class="slider-header">
+                            <span>Interest Rate</span>
+                            <strong><span id="interestRate">{{ emi_defaults.interest_default }}</span>%</strong>
+                        </div>
+                        <input type="range" class="form-range" id="interestSlider" 
+                            min="{{ emi_defaults.interest_min }}" 
+                            max="{{ emi_defaults.interest_max }}" 
+                            step="0.5" 
+                            value="{{ emi_defaults.interest_default }}">
+                    </div>
+                    
+                    <div class="summary-grid">
+                        <div class="summary-item">
+                            <small>Loan Amount</small>
+                            <div id="loanAmount">₹0</div>
+                        </div>
+                        <div class="summary-item">
+                            <small>Total Interest</small>
+                            <div id="totalInterest">₹0</div>
+                        </div>
+                        <div class="summary-item">
+                            <small>Total Payment</small>
+                            <div id="totalAmount">₹0</div>
+                        </div>
+                        <div class="summary-item">
+                            <small>Down Payment</small>
+                            <div id="downPaymentSummary">₹0</div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Related Cars Section -->
+{% if related_cars %}
+<div class="detail-container" style="padding-top: 0;">
+    <div class="section-card" style="padding: 30px;" id="related">
+        <div class="slider-header mb-4">
+            <h5 class="section-title" style="margin-bottom: 0;">
+                <i class="fas fa-car-side me-2" style="color: #fbbf24;"></i>
+                You May Also Like
+            </h5>
+            <span class="text-muted small">More from {{ car.brand }}</span>
+        </div>
+        <div class="row">
+            {% for related in related_cars|slice:":6" %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="premium-car-card car-card" 
+                     data-car-id="{{ related.id }}" 
+                     data-car-name="{{ related.brand }} {{ related.name }}"
+                     data-car-brand="{{ related.brand }}"
+                     data-car-image="{% if related.colors.first.images.first %}{{ related.colors.first.images.first.image_url }}{% else %}{{ related.image_src }}{% endif %}"
+                     data-car-price="{{ related.price_display }}"
+                     data-car-year="{{ related.model_year }}"
+                     data-car-fuel="{{ related.get_fuel_type_display }}"
+                     data-car-transmission="{{ related.get_transmission_display }}"
+                     data-car-mileage="{{ related.mileage|default:'-' }}"
+                     data-car-engine="{{ related.engine|default:'-' }}"
+                     data-href="{% url 'car_detail' related.id %}">
+                    
+                    <!-- Compare Checkbox -->
+                    <div class="card-compare-check compare-checkbox">
+                        <input type="checkbox" id="compare-related-{{ related.id }}" class="compare-check" data-car-id="{{ related.id }}">
+                    </div>
+                    
+                    <!-- Car Image -->
+                    <div class="card-image-area">
+                        {% with first_color=related.colors.first %}
+                        {% with first_img=first_color.images.first %}
+                        <img src="{% if first_img %}{{ first_img.image_url }}{% else %}{{ related.image_src }}{% endif %}" 
+                             alt="{{ related.name }}" class="card-car-image"
+                             onload="this.style.opacity='1';"
+                             onerror="this.style.opacity='0'; this.nextElementSibling.style.display='flex';">
+                        {% endwith %}
+                        {% endwith %}
+                        <div class="no-image-placeholder">
+                            <i class="fas fa-car"></i>
+                            <span>No Image</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Brand Badge -->
+                    <div class="card-brand-badge">
+                        <span>{{ related.brand|upper }}</span>
+                    </div>
+                    
+                    <!-- Card Content -->
+                    <div class="card-content">
+                        <h3 class="card-car-name card-title">{{ related.name }}</h3>
+                        <p class="card-tagline">{{ related.model_year }} • {{ related.get_fuel_type_display }} • {{ related.get_transmission_display }}</p>
+                        
+                        <!-- Specs Row -->
+                        <div class="card-specs-row">
+                            <div class="spec-item">
+                                <span class="spec-value">{{ related.engine|default:"-"|truncatechars:12 }}</span>
+                                <span class="spec-label">Engine</span>
+                            </div>
+                            <div class="spec-divider"></div>
+                            <div class="spec-item">
+                                <span class="spec-value">{{ related.mileage|default:"-"|truncatechars:10 }}</span>
+                                <span class="spec-label">Mileage</span>
+                            </div>
+                            <div class="spec-divider"></div>
+                            <div class="spec-item">
+                                <span class="spec-value">{{ related.get_fuel_type_display }}</span>
+                                <span class="spec-label">Fuel</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Price Row -->
+                        <div class="card-price-row">
+                            <span class="card-price">{{ related.price_display }}</span>
+                            <span class="card-view-btn">View <i class="fas fa-arrow-right"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<script>
+(function() {
+    const form = document.getElementById('emiForm');
+    if (!form) return;
+    
+    const carPrice = parseFloat(document.getElementById('carPrice').value) || 0;
+    const downSlider = document.getElementById('downPaymentSlider');
+    const tenureSlider = document.getElementById('tenureSlider');
+    const interestSlider = document.getElementById('interestSlider');
+    
+    const fmt = (n) => '₹' + new Intl.NumberFormat('en-IN').format(Math.round(n));
+    
+    // Pie chart animation variables
+    let currentAngle = 0;
+    let targetAngle = 0;
+    let animationId = null;
+    
+    function drawPieChart(principal, interest, animated = true) {
+        const canvas = document.getElementById('emiPieChart');
+        if (!canvas) return;
+        
+        const ctx = canvas.getContext('2d');
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        const radius = Math.min(centerX, centerY) - 5;
+        
+        const total = principal + interest;
+        targetAngle = (principal / total) * 2 * Math.PI;
+        
+        if (!animated) {
+            currentAngle = targetAngle;
+            renderPie(ctx, centerX, centerY, radius, currentAngle);
+            return;
+        }
+        
+        if (animationId) cancelAnimationFrame(animationId);
+        
+        const startAngle = currentAngle;
+        const diff = targetAngle - startAngle;
+        const duration = 300;
+        const startTime = performance.now();
+        
+        function animate(time) {
+            const elapsed = time - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3); // Ease out cubic
+            
+            currentAngle = startAngle + diff * eased;
+            renderPie(ctx, centerX, centerY, radius, currentAngle);
+            
+            if (progress < 1) {
+                animationId = requestAnimationFrame(animate);
+            }
+        }
+        
+        animationId = requestAnimationFrame(animate);
+    }
+    
+    function renderPie(ctx, centerX, centerY, radius, principalAngle) {
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        
+        // Draw principal slice (golden)
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.arc(centerX, centerY, radius, -Math.PI / 2, -Math.PI / 2 + principalAngle);
+        ctx.closePath();
+        ctx.fillStyle = '#fbbf24';
+        ctx.fill();
+        
+        // Draw interest slice (red)
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.arc(centerX, centerY, radius, -Math.PI / 2 + principalAngle, -Math.PI / 2 + 2 * Math.PI);
+        ctx.closePath();
+        ctx.fillStyle = '#ef4444';
+        ctx.fill();
+        
+        // Draw center circle (donut effect)
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius * 0.5, 0, 2 * Math.PI);
+        ctx.fillStyle = 'rgba(17, 24, 39, 0.95)';
+        ctx.fill();
+    }
+    
+    const update = () => {
+        const down = parseFloat(downSlider.value);
+        const months = parseInt(tenureSlider.value);
+        const rate = parseFloat(interestSlider.value);
+        const loan = carPrice - down;
+        const r = rate / 12 / 100;
+        const emi = r > 0 ? (loan * r * Math.pow(1 + r, months)) / (Math.pow(1 + r, months) - 1) : loan / months;
+        const total = emi * months;
+        const interest = total - loan;
+        
+        document.getElementById('downPaymentDisplay').textContent = fmt(down);
+        document.getElementById('tenureYears').textContent = months / 12;
+        document.getElementById('interestRate').textContent = rate;
+        document.getElementById('emiHeadline').textContent = fmt(emi);
+        document.getElementById('emiMonths').textContent = months;
+        document.getElementById('loanAmount').textContent = fmt(loan);
+        document.getElementById('totalInterest').textContent = fmt(interest);
+        document.getElementById('totalAmount').textContent = fmt(total);
+        document.getElementById('downPaymentSummary').textContent = fmt(down);
+        
+        // Update pie chart
+        drawPieChart(loan, interest);
+    };
+    
+    downSlider.addEventListener('input', update);
+    tenureSlider.addEventListener('input', update);
+    interestSlider.addEventListener('input', update);
+    update();
+})();
+
+// Smooth scroll for section navigation
+document.querySelectorAll('.section-nav a').forEach(link => {
+    link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href').substring(1);
+        const target = document.getElementById(targetId);
+        if (target) {
+            const offset = 20;
+            const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+            window.scrollTo({ top: top, behavior: 'smooth' });
+            
+            // Update active state
+            document.querySelectorAll('.section-nav a').forEach(a => a.classList.remove('active'));
+            this.classList.add('active');
+        }
+    });
+});
+
+// Update active nav on scroll
+window.addEventListener('scroll', function() {
+    const sections = ['about', 'reviews', 'related'];
+    let current = '';
+    
+    sections.forEach(id => {
+        const section = document.getElementById(id);
+        if (section) {
+            const rect = section.getBoundingClientRect();
+            if (rect.top <= 100) {
+                current = id;
+            }
+        }
+    });
+    
+    document.querySelectorAll('.section-nav a').forEach(a => {
+        a.classList.remove('active');
+        if (a.getAttribute('href') === '#' + current) {
+            a.classList.add('active');
+        }
+    });
+});
+
+// ========== IMAGE GALLERY SLIDER WITH COLOR FILTER ==========
+(function() {
+    const mainImage = document.getElementById('mainGalleryImage');
+    const allDots = document.querySelectorAll('.gallery-dot');
+    const currentNum = document.getElementById('currentImageNum');
+    const totalNum = document.getElementById('totalImages');
+    const colorSwatches = document.querySelectorAll('.color-swatch');
+    
+    let currentIndex = 0;
+    let visibleDots = Array.from(allDots);
+    let images = visibleDots.map(d => d.dataset.imageUrl);
+    
+    // Define filterByColor FIRST (before any early returns) so it's always available
+    window.filterByColor = function(colorName) {
+        // Find the swatch for this color to get IDs
+        const activeSwatch = document.querySelector(`.color-swatch[data-color="${colorName}"]`);
+        
+        // Update active swatch
+        colorSwatches.forEach(s => s.classList.remove('active'));
+        if (activeSwatch) activeSwatch.classList.add('active');
+        
+        // Update Action Links with Color ID
+        if (activeSwatch) {
+            const colorId = activeSwatch.dataset.colorId;
+            if (colorId) {
+                const updateLink = (btnId) => {
+                    const btn = document.getElementById(btnId);
+                    if (btn) {
+                        const baseHref = btn.dataset.baseHref || btn.getAttribute('href').split('?')[0];
+                        // If baseHref isn't set yet, set it
+                        if (!btn.dataset.baseHref) btn.dataset.baseHref = baseHref;
+                        
+                        // Check if Login URL style (contains ?next=)
+                        if (btn.getAttribute('href').includes('login')) {
+                            // Complex case: /login/?next=/car/1/payment/
+                            // We need to append color to the 'next' param content, which is hard.
+                            // Simplified: Just append &color=ID to the whole string, likely next param will ignore it or we need to encode it.
+                            // Better: Let's assume user is logged in for the main buttons we changed (IDs added to authenticated block).
+                            // For non-authenticated, we didn't add IDs in the chunk above! We should add them there too or handle generic class.
+                            // I only updated the `if user.is_authenticated` block in previous chunk. 
+                            // I should update the else block too or use class selector.
+                        } else {
+                            btn.href = `${baseHref}?color=${colorId}`;
+                        }
+                    }
+                };
+                updateLink('btnBuyNow');
+                updateLink('btnTestDrive');
+                updateLink('btnInquiry');
+            }
+        }
+
+        // Update title with color name
+        const colorDisplay = document.getElementById('colorNameDisplay');
+        if (colorDisplay) {
+            colorDisplay.textContent = colorName !== 'all' ? `(${colorName})` : '';
+        }
+        
+        // Filter dots by color (only if dots exist)
+        if (allDots.length > 0) {
+            if (colorName === 'all') {
+                visibleDots = Array.from(allDots);
+                allDots.forEach(d => d.classList.remove('hidden'));
+            } else {
+                allDots.forEach(d => {
+                    const dotColor = d.getAttribute('data-color');
+                    // Show image if it matches the selected color OR if it has no color assigned
+                    if (dotColor === colorName || dotColor === 'none') {
+                        d.classList.remove('hidden');
+                    } else {
+                        d.classList.add('hidden');
+                    }
+                });
+                visibleDots = Array.from(allDots).filter(d => !d.classList.contains('hidden'));
+            }
+            
+            // Update total count
+            if (totalNum) totalNum.textContent = visibleDots.length;
+            
+            const mainImg = document.getElementById('mainGalleryImage');
+            const placeholder = document.getElementById('noImagePlaceholder');
+
+            if (visibleDots.length > 0) {
+                // Images found: Show first one
+                currentIndex = 0;
+                showImage(0);
+                
+                // Ensure placeholder logic resets (showImage handles src update which triggers onload/onerror)
+                // But we manually force display block here just in case showImage doesn't trigger load event immediately
+                if (mainImg) mainImg.style.display = 'block';
+                if (placeholder) placeholder.style.display = 'none';
+            } else {
+                // No images for this color: Show placeholder
+                if (mainImg) mainImg.style.display = 'none';
+                if (placeholder) placeholder.style.display = 'flex';
+            }
+        }
+    };
+    
+    // Auto-select color from URL parameter (runs before early return so it always works)
+    {% if selected_color_id %}
+    setTimeout(function() {
+        {% for color in car.colors.all %}
+        if ('{{ color.id }}' === '{{ selected_color_id }}') {
+            filterByColor('{{ color.name }}');
+        }
+        {% endfor %}
+    }, 100);
+    {% endif %}
+    
+    // Early return for gallery-specific functionality if no main image or dots
+    if (!mainImage || allDots.length === 0) {
+        return;
+    }
+    
+    window.showImage = function(index) {
+        // If index is a number from onclick (original index in allDots), find the clicked dot
+        const clickedDot = allDots[index];
+        
+        // Find position in visibleDots array
+        let visibleIndex = -1;
+        if (clickedDot) {
+            visibleIndex = visibleDots.indexOf(clickedDot);
+        } else {
+            visibleIndex = index; // It's already a visible index (from prev/next)
+        }
+        
+        // If dot is not visible, just return
+        if (visibleIndex === -1 && visibleDots.length > 0) {
+            visibleIndex = 0;
+        }
+        
+        // Wrap around
+        if (visibleIndex < 0) visibleIndex = visibleDots.length - 1;
+        if (visibleIndex >= visibleDots.length) visibleIndex = 0;
+        
+        currentIndex = visibleIndex;
+        mainImage.style.opacity = '0';
+        
+        setTimeout(() => {
+            if (visibleDots[visibleIndex]) {
+                mainImage.src = visibleDots[visibleIndex].dataset.imageUrl;
+            }
+            mainImage.style.opacity = '1';
+        }, 200);
+        
+        allDots.forEach(t => t.classList.remove('active'));
+        if (visibleDots[visibleIndex]) {
+            visibleDots[visibleIndex].classList.add('active');
+        }
+        
+        if (currentNum) currentNum.textContent = visibleIndex + 1;
+    };
+    
+    window.prevImage = function() {
+        showImage(currentIndex - 1);
+    };
+    
+    window.nextImage = function() {
+        showImage(currentIndex + 1);
+    };
+    
+    // Mobile Touch Swipe Support (1:1 Tracking)
+    const galleryContainer = document.querySelector('.gallery-main');
+    if (galleryContainer) {
+        let startX = 0;
+        let currentX = 0;
+        let isDragging = false;
+        
+        galleryContainer.addEventListener('touchstart', e => {
+            startX = e.touches[0].clientX;
+            isDragging = true;
+            mainImage.style.transition = 'none'; // Disable transition for 1:1 movement
+        }, {passive: true});
+        
+        galleryContainer.addEventListener('touchmove', e => {
+            if (!isDragging) return;
+            currentX = e.touches[0].clientX;
+            const diff = currentX - startX;
+            // Move image with finger (resistance at edges could be added here)
+            mainImage.style.transform = `translateX(${diff}px)`;
+        }, {passive: true});
+        
+        galleryContainer.addEventListener('touchend', e => {
+            if (!isDragging) return;
+            isDragging = false;
+            const diff = currentX - startX;
+            
+            // Re-enable transition for snap animation
+            mainImage.style.transition = 'transform 0.3s ease, opacity 0.4s ease';
+            mainImage.style.transform = ''; // Reset transform
+            
+            // Threshold to trigger change (e.g., 50px)
+            if (Math.abs(diff) > 50) {
+                if (diff < 0) {
+                    nextImage();
+                } else {
+                    prevImage();
+                }
+            }
+            
+            // Reset variables
+            startX = 0;
+            currentX = 0;
+        }, {passive: true});
+    }
+    
+    // Keyboard navigation
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowLeft') prevImage();
+        if (e.key === 'ArrowRight') nextImage();
+    });
+})();
+</script>
+{% endblock %}
